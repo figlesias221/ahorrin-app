@@ -1,0 +1,27 @@
+import { MetadataRoute } from 'next';
+
+export default function robots(): MetadataRoute.Robots {
+  const baseUrl = 'https://gasty-app.xyz221.workers.dev';
+
+  return {
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: [
+          '/dashboard/',
+          '/api/',
+          '/onboarding/',
+          '/settings/',
+          '/transactions/',
+          '/categories/',
+          '/upload/',
+          '/summary/',
+          '/rules/',
+          '/ai/',
+        ],
+      },
+    ],
+    sitemap: `${baseUrl}/sitemap.xml`,
+  };
+}

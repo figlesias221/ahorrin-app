@@ -1,0 +1,2150 @@
+'use client';
+
+import { useEffect, useState, Fragment } from 'react';
+import { Card } from '@/components/ui/card';
+import { PeriodSelector, type PeriodType as PeriodSelectorType } from '@/components/ui/period-selector';
+import { SkeletonDashboard } from '@/components/ui/skeleton';
+import { formatCurrency } from '@/lib/utils/formatters';
+import { TrendingUp, TrendingDown, LayoutDashboard, Tags, Folder, LineChart as LineChartIcon, DollarSign, PiggyBank, ChevronDown, ChevronUp } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { Transaction, Category } from '@/types';
+import { useCurrency } from '@/contexts/currency-context';
+import { AreaChart } from '@/components/charts/area-chart';
+import { LineChart } from '@/components/charts/line-chart';
+import { BarChart } from '@/components/charts/bar-chart';
+import { PieChart } from '@/components/charts/pie-chart';
+import { motion } from 'framer-motion';
+import { motionVariants } from '@/lib/design-tokens';
+
+interface MonthlyData {
+  month: string;
+  income: number;
+  expenses: number;
+  savings: number;
+  cumulativeSavings: number;
+}
+
+interface CategoryAnalysis {
+  name: string;
+  total: number;
+  average: number;
+  percentage: number;
+  color: string;
+}
+
+interface ParentCategoryAnalysis extends CategoryAnalysis {
+  subcategoryCount: number;
+  subcategories: CategoryAnalysis[];
+}
+
+interface SourceAnalysis {
+  source: string;
+  count: number;
+  amount: number;
+  color: string;
+}
+
+interface PeriodStats {
+  totalIncome: number;
+  totalExpenses: number;
+  totalSavings: number;
+  avgMonthlyIncome: number;
+  avgMonthlyExpenses: number;
+  avgMonthlySavings: number;
+  incomePercentage: number;
+  expensesPercentage: number;
+  savingsPercentage: number;
+  monthOverMonthChange: number;
+  expenseTrend: 'up' | 'down' | 'stable';
+}
+
+type PeriodType = PeriodSelectorType;
+type ViewType = 'overview' | 'categories' | 'parents' | 'trends';
+
+export default function DashboardPage() {
+  const [loading, setLoading] = useState(true);
+  const [periodType, setPeriodType] = useState<PeriodType>('ytd');
+  const [viewType, setViewType] = useState<ViewType>('overview');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
+  const [expenseCategories, setExpenseCategories] = useState<CategoryAnalysis[]>([]);
+  const [incomeCategories, setIncomeCategories] = useState<CategoryAnalysis[]>([]);
+  const [parentExpenseCategories, setParentExpenseCategories] = useState<ParentCategoryAnalysis[]>([]);
+  const [periodStats, setPeriodStats] = useState<PeriodStats | null>(null);
+  const [sourceData, setSourceData] = useState<SourceAnalysis[]>([]);
+
+  const { displayCurrency } = useCurrency();
+  const supabase = createClient();
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [periodType, startDate, endDate, displayCurrency]);
+
+  function calculateDateRange(): { start: string; end: string; months: number } {
+    const today = new Date();
+    let start: Date;
+    let end: Date;
+    let months: number;
+
+    if (periodType === 'custom' && startDate && endDate) {
+      const startD = new Date(startDate);
+      const endD = new Date(endDate);
+      months = Math.max(1, Math.ceil((endD.getTime() - startD.getTime()) / (1000 * 60 * 60 * 24 * 30)));
+      return { start: startDate, end: endDate, months };
+    }
+
+    switch (periodType) {
+      case 'last7days':
+        start = new Date(today);
+        start.setDate(today.getDate() - 6);
+        end = new Date(today);
+        months = 1;
+        break;
+      case 'last30days':
+        start = new Date(today);
+        start.setDate(today.getDate() - 29);
+        end = new Date(today);
+        months = 1;
+        break;
+      case 'thisMonth':
+        start = new Date(today.getFullYear(), today.getMonth(), 1);
+        end = new Date(today);
+        months = 1;
+        break;
+      case 'lastMonth':
+        start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        end = new Date(today.getFullYear(), today.getMonth(), 0);
+        months = 1;
+        break;
+      case 'ytd':
+        start = new Date(today.getFullYear(), 0, 1);
+        end = new Date(today);
+        months = today.getMonth() + 1;
+        break;
+      case 'thisYear':
+        start = new Date(today.getFullYear(), 0, 1);
+        end = new Date(today.getFullYear(), 11, 31);
+        months = 12;
+        break;
+      case 'lastYear':
+        start = new Date(today.getFullYear() - 1, 0, 1);
+        end = new Date(today.getFullYear() - 1, 11, 31);
+        months = 12;
+        break;
+      case 'last3months':
+        start = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+        end = new Date(today);
+        months = 3;
+        break;
+      case 'last6months':
+        start = new Date(today.getFullYear(), today.getMonth() - 5, 1);
+        end = new Date(today);
+        months = 6;
+        break;
+      case 'last12months':
+      default:
+        start = new Date(today.getFullYear(), today.getMonth() - 11, 1);
+        end = new Date(today);
+        months = 12;
+    }
+
+    return {
+      start: start.toISOString().split('T')[0],
+      end: end.toISOString().split('T')[0],
+      months,
+    };
+  }
+
+  function convertCurrency(amount: number, fromCurrency: string): number {
+    const EXCHANGE_RATE = 40;
+
+    if (displayCurrency === fromCurrency) {
+      return amount;
+    }
+
+    if (displayCurrency === 'USD' && fromCurrency === 'UYU') {
+      return amount / EXCHANGE_RATE;
+    }
+
+    if (displayCurrency === 'UYU' && fromCurrency === 'USD') {
+      return amount * EXCHANGE_RATE;
+    }
+
+    return amount;
+  }
+
+  async function loadData() {
+    try {
+      setLoading(true);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const dateRange = calculateDateRange();
+
+      // Fetch categories
+      const { data: categoriesData } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_active', true);
+
+      const mappedCategories: Category[] = (categoriesData || []).map(cat => ({
+        id: cat.id,
+        userId: cat.user_id,
+        name: cat.name,
+        color: cat.color,
+        icon: cat.icon,
+        type: cat.type,
+        isActive: cat.is_active,
+        parentId: cat.parent_id,
+        createdAt: new Date(cat.created_at),
+        updatedAt: new Date(cat.updated_at),
+      }));
+
+      // Fetch transactions (excluding ignored)
+      const { data: transactionsData } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_ignored', false)
+        .gte('date', dateRange.start)
+        .lte('date', dateRange.end)
+        .order('date', { ascending: true });
+
+      const mappedTransactions: Transaction[] = (transactionsData || []).map(tx => ({
+        id: tx.id,
+        userId: tx.user_id,
+        categoryId: tx.category_id,
+        date: new Date(tx.date),
+        vendor: tx.vendor,
+        amount: convertCurrency(tx.amount, tx.currency),
+        type: tx.type,
+        currency: tx.currency,
+        bank: tx.bank,
+        isManuallyVerified: tx.is_manually_verified,
+        isIgnored: tx.is_ignored,
+        confidenceScore: tx.confidence_score,
+        notes: tx.notes,
+        createdAt: new Date(tx.created_at),
+        updatedAt: new Date(tx.updated_at),
+        category: mappedCategories.find(c => c.id === tx.category_id),
+      }));
+
+      // Calculate monthly data
+      const monthlyMap = new Map<string, { income: number; expenses: number }>();
+      const start = new Date(dateRange.start);
+      const end = new Date(dateRange.end);
+
+      for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        monthlyMap.set(key, { income: 0, expenses: 0 });
+      }
+
+      let totalIncome = 0;
+      let totalExpenses = 0;
+
+      mappedTransactions.forEach(tx => {
+        const monthKey = tx.date.toISOString().substring(0, 7);
+        const current = monthlyMap.get(monthKey) || { income: 0, expenses: 0 };
+
+        if (tx.type === 'income') {
+          current.income += tx.amount;
+          totalIncome += tx.amount;
+        } else {
+          current.expenses += tx.amount;
+          totalExpenses += tx.amount;
+        }
+
+        monthlyMap.set(monthKey, current);
+      });
+
+      let cumulativeSavings = 0;
+      const monthlyDataArray: MonthlyData[] = Array.from(monthlyMap.entries())
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([month, data]) => {
+          const savings = data.income - data.expenses;
+          cumulativeSavings += savings;
+          return {
+            month: new Date(month + '-01').toLocaleDateString('es-ES', { month: 'short', year: '2-digit' }),
+            income: data.income,
+            expenses: data.expenses,
+            savings,
+            cumulativeSavings,
+          };
+        });
+
+      setMonthlyData(monthlyDataArray);
+
+      // Calculate month-over-month change
+      let monthOverMonthChange = 0;
+      if (monthlyDataArray.length >= 2) {
+        const lastMonth = monthlyDataArray[monthlyDataArray.length - 1];
+        const prevMonth = monthlyDataArray[monthlyDataArray.length - 2];
+        if (prevMonth.expenses > 0) {
+          monthOverMonthChange = ((lastMonth.expenses - prevMonth.expenses) / prevMonth.expenses) * 100;
+        }
+      }
+
+      // Determine expense trend
+      let expenseTrend: 'up' | 'down' | 'stable' = 'stable';
+      if (monthOverMonthChange > 5) expenseTrend = 'up';
+      else if (monthOverMonthChange < -5) expenseTrend = 'down';
+
+      // Calculate category breakdown
+      const expenseCategoryMap = new Map<string, { total: number; color: string }>();
+      const incomeCategoryMap = new Map<string, { total: number; color: string }>();
+
+      // Only process transactions that have a category assigned
+      mappedTransactions.forEach(tx => {
+        // Skip transactions without category
+        if (!tx.category) return;
+
+        const categoryName = tx.category.name;
+        const categoryColor = tx.category.color;
+
+        if (tx.type === 'expense') {
+          const current = expenseCategoryMap.get(categoryName) || { total: 0, color: categoryColor };
+          current.total += tx.amount;
+          expenseCategoryMap.set(categoryName, current);
+        } else {
+          const current = incomeCategoryMap.get(categoryName) || { total: 0, color: categoryColor };
+          current.total += tx.amount;
+          incomeCategoryMap.set(categoryName, current);
+        }
+      });
+
+      const monthCount = dateRange.months;
+
+      // Calculate totals for categorized transactions only
+      const categorizedExpenses = Array.from(expenseCategoryMap.values()).reduce((sum, cat) => sum + cat.total, 0);
+      const categorizedIncome = Array.from(incomeCategoryMap.values()).reduce((sum, cat) => sum + cat.total, 0);
+
+      const expenseCategoriesArray: CategoryAnalysis[] = Array.from(expenseCategoryMap.entries())
+        .map(([name, data]) => ({
+          name,
+          total: data.total,
+          average: data.total / monthCount,
+          percentage: categorizedExpenses > 0 ? (data.total / categorizedExpenses) * 100 : 0,
+          color: data.color,
+        }))
+        .sort((a, b) => b.total - a.total);
+
+      const incomeCategoriesArray: CategoryAnalysis[] = Array.from(incomeCategoryMap.entries())
+        .map(([name, data]) => ({
+          name,
+          total: data.total,
+          average: data.total / monthCount,
+          percentage: categorizedIncome > 0 ? (data.total / categorizedIncome) * 100 : 0,
+          color: data.color,
+        }))
+        .sort((a, b) => b.total - a.total);
+
+      setExpenseCategories(expenseCategoriesArray);
+      setIncomeCategories(incomeCategoriesArray);
+
+      // Calculate parent category aggregations for expense categories
+      // Include ALL parent categories (with or without children)
+      const parentExpenseMap = new Map<string, {
+        total: number;
+        color: string;
+        subcategories: Map<string, { total: number; color: string }>;
+        parentDirectTotal: number; // Transactions assigned directly to parent
+        hasChildren: boolean; // Track if this parent has subcategories
+      }>();
+
+      // First, identify all parent categories (categories without a parent)
+      const allParentCategories = mappedCategories.filter(cat =>
+        cat.type === 'expense' &&
+        !cat.parentId
+      );
+
+      // Initialize parent map with ALL parent categories
+      allParentCategories.forEach(parent => {
+        const hasChildren = mappedCategories.some(c => c.parentId === parent.id);
+        parentExpenseMap.set(parent.name, {
+          total: 0,
+          color: parent.color,
+          subcategories: new Map(),
+          parentDirectTotal: 0,
+          hasChildren
+        });
+      });
+
+      // Process all expense transactions
+      mappedTransactions.forEach(tx => {
+        if (!tx.category || tx.type !== 'expense') return;
+
+        // Use the category already populated in the transaction
+        const category = tx.category;
+
+        // Case 1: Transaction is assigned to a subcategory
+        if (category.parentId) {
+          const parentCat = mappedCategories.find(c => c.id === category.parentId);
+          if (parentCat && parentExpenseMap.has(parentCat.name)) {
+            const parentData = parentExpenseMap.get(parentCat.name)!;
+            parentData.total += tx.amount;
+
+            const subData = parentData.subcategories.get(category.name) || { total: 0, color: category.color };
+            subData.total += tx.amount;
+            parentData.subcategories.set(category.name, subData);
+          }
+        }
+        // Case 2: Transaction is assigned directly to a parent category
+        else if (parentExpenseMap.has(category.name)) {
+          const parentData = parentExpenseMap.get(category.name)!;
+          parentData.total += tx.amount;
+          parentData.parentDirectTotal += tx.amount;
+        }
+      });
+
+      // Calculate total for parent categories (sum of all subcategory transactions)
+      const totalParentExpenses = Array.from(parentExpenseMap.values())
+        .reduce((sum, data) => sum + data.total, 0);
+
+      // Calculate parent category array with corrected percentages
+      // Filter out parent categories with no transactions (total = 0)
+      const parentExpenseCategoriesArray: ParentCategoryAnalysis[] = Array.from(parentExpenseMap.entries())
+        .filter(([name, data]) => data.total > 0) // Only include parents with actual transactions
+        .map(([name, data]) => {
+          const subcategoriesArray: CategoryAnalysis[] = [];
+
+          // Add actual subcategories
+          data.subcategories.forEach((subData, subName) => {
+            subcategoriesArray.push({
+              name: subName,
+              total: subData.total,
+              average: subData.total / monthCount,
+              percentage: data.total > 0 ? (subData.total / data.total) * 100 : 0,
+              color: subData.color,
+            });
+          });
+
+          // If there are transactions assigned directly to the parent, show them as a special entry
+          if (data.parentDirectTotal > 0) {
+            subcategoriesArray.push({
+              name: `${name} (directo)`,
+              total: data.parentDirectTotal,
+              average: data.parentDirectTotal / monthCount,
+              percentage: data.total > 0 ? (data.parentDirectTotal / data.total) * 100 : 0,
+              color: data.color,
+            });
+          }
+
+          subcategoriesArray.sort((a, b) => b.total - a.total);
+
+          return {
+            name,
+            total: data.total,
+            average: data.total / monthCount,
+            // Percentage is calculated against the total of all parent category expenses
+            percentage: totalParentExpenses > 0 ? (data.total / totalParentExpenses) * 100 : 0,
+            color: data.color,
+            subcategoryCount: subcategoriesArray.length,
+            subcategories: subcategoriesArray,
+          };
+        })
+        .sort((a, b) => b.total - a.total);
+
+      setParentExpenseCategories(parentExpenseCategoriesArray);
+
+      // Calculate source data (by bank)
+      const sourceMap = new Map<string, { count: number; amount: number }>();
+
+      // Bank color mapping
+      const bankColors: Record<string, string> = {
+        'BBVA': '#004481',
+        'Scotia': '#ed1c24',
+        'Itaú': '#ec7000',
+        'Itaú Master': '#eb6c00',
+        'Itaú Visa': '#ff8200',
+        'Auto': '#6b7280',
+      };
+
+      mappedTransactions.forEach(tx => {
+        const bank = tx.bank || 'Sin banco';
+        const current = sourceMap.get(bank) || { count: 0, amount: 0 };
+        current.count += 1;
+        current.amount += tx.amount;
+        sourceMap.set(bank, current);
+      });
+
+      const sourceDataArray: SourceAnalysis[] = Array.from(sourceMap.entries())
+        .map(([bank, data]) => ({
+          source: bank,
+          count: data.count,
+          amount: data.amount,
+          color: bankColors[bank] || '#8b5cf6',
+        }))
+        .sort((a, b) => b.amount - a.amount);
+
+      setSourceData(sourceDataArray);
+
+      // Calculate period stats
+      const totalSavings = totalIncome - totalExpenses;
+      const baseAmount = totalIncome > 0 ? totalIncome : Math.abs(totalSavings);
+
+      setPeriodStats({
+        totalIncome,
+        totalExpenses,
+        totalSavings,
+        avgMonthlyIncome: totalIncome / monthCount,
+        avgMonthlyExpenses: totalExpenses / monthCount,
+        avgMonthlySavings: totalSavings / monthCount,
+        incomePercentage: baseAmount > 0 ? (totalIncome / baseAmount) * 100 : 0,
+        expensesPercentage: baseAmount > 0 ? (totalExpenses / baseAmount) * 100 : 0,
+        savingsPercentage: totalIncome > 0 ? (totalSavings / totalIncome) * 100 : 0,
+        monthOverMonthChange,
+        expenseTrend,
+      });
+    } catch (err) {
+      console.error('Error loading dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-10 pb-10">
+      {/* Header with Period Selector */}
+      <motion.div
+        initial="initial"
+        animate="animate"
+        variants={motionVariants.fadeIn}
+      >
+        <Card className="p-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-2">Panel Financiero</h1>
+              <p className="text-sm text-muted-foreground">
+                Mostrando en {displayCurrency}
+              </p>
+            </div>
+
+            <PeriodSelector
+              value={periodType}
+              onChange={setPeriodType}
+              onCustomRangeChange={(start, end) => {
+                setStartDate(start);
+                setEndDate(end);
+              }}
+              customStartDate={startDate}
+              customEndDate={endDate}
+              className="lg:min-w-[280px]"
+            />
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* View Tabs */}
+      <div className="flex gap-2 border-b border-border">
+        <button
+          onClick={() => setViewType('overview')}
+          className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 ${
+            viewType === 'overview'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <LayoutDashboard className="h-4 w-4" />
+          Vista General
+        </button>
+        <button
+          onClick={() => setViewType('categories')}
+          className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 ${
+            viewType === 'categories'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Tags className="h-4 w-4" />
+          Por Categorías
+        </button>
+        <button
+          onClick={() => setViewType('parents')}
+          className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 ${
+            viewType === 'parents'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Folder className="h-4 w-4" />
+          Por Categorías Padre
+        </button>
+        <button
+          onClick={() => setViewType('trends')}
+          className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 ${
+            viewType === 'trends'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <LineChartIcon className="h-4 w-4" />
+          Tendencias
+        </button>
+        <button
+          onClick={() => setViewType('shadcn')}
+          className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 ${
+            viewType === 'shadcn'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Sparkles className="h-4 w-4" />
+          Shadcn Charts
+        </button>
+      </div>
+
+      {/* VIEW: OVERVIEW */}
+      {viewType === 'overview' && (
+        <>
+          {/* Key Metrics Cards */}
+          <div className="grid gap-6 md:grid-cols-3">
+        <Card className="p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <p className="text-xs font-medium text-muted-foreground mb-2">Ingresos Totales</p>
+              <p className="text-3xl font-semibold text-foreground tracking-tight">
+                {formatCurrency(periodStats?.totalIncome || 0, displayCurrency)}
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                {formatCurrency(periodStats?.avgMonthlyIncome || 0, displayCurrency)}/mes
+              </p>
+            </div>
+            <div className="p-2.5 bg-success/5 rounded-lg">
+              <TrendingUp className="h-5 w-5 text-success" />
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <p className="text-xs font-medium text-muted-foreground mb-2">Gastos Totales</p>
+              <p className="text-3xl font-semibold text-foreground tracking-tight">
+                {formatCurrency(periodStats?.totalExpenses || 0, displayCurrency)}
+              </p>
+              <div className="flex items-center gap-2 mt-2">
+                <p className="text-sm text-muted-foreground">
+                  {formatCurrency(periodStats?.avgMonthlyExpenses || 0, displayCurrency)}/mes
+                </p>
+                {periodStats && periodStats.expenseTrend !== 'stable' && (
+                  <span className={`text-xs font-medium flex items-center ${
+                    periodStats.expenseTrend === 'up' ? 'text-error' : 'text-success'
+                  }`}>
+                    {periodStats.expenseTrend === 'up' ? '↑' : '↓'}
+                    {Math.abs(periodStats.monthOverMonthChange).toFixed(1)}%
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="p-2.5 bg-error/5 rounded-lg">
+              <TrendingDown className="h-5 w-5 text-error" />
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <p className="text-xs font-medium text-muted-foreground mb-2">Ahorro Neto</p>
+              <p className={`text-3xl font-semibold tracking-tight mt-0 ${
+                (periodStats?.totalSavings || 0) >= 0 ? 'text-success' : 'text-error'
+              }`}>
+                {formatCurrency(periodStats?.totalSavings || 0, displayCurrency)}
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                {periodStats?.savingsPercentage.toFixed(1)}% tasa
+              </p>
+            </div>
+            <div className={`p-2.5 rounded-lg ${
+              (periodStats?.totalSavings || 0) >= 0 ? 'bg-muted' : 'bg-error/5'
+            }`}>
+              <span className="text-lg font-semibold text-foreground">
+                {periodStats?.savingsPercentage.toFixed(0)}%
+              </span>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Main Charts Row */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Income vs Expenses Trend */}
+        <Card className="p-6">
+          <h2 className="text-base font-medium mb-4">Tendencia de Ingresos vs Gastos</h2>
+          <ShadcnAreaChart
+            data={monthlyData}
+            xKey="month"
+            datasets={[
+              { key: 'income', label: 'Ingresos', color: 'hsl(var(--chart-1))', fillOpacity: 0.3 },
+              { key: 'expenses', label: 'Gastos', color: 'hsl(var(--chart-2))', fillOpacity: 0.3 },
+            ]}
+            height={180}
+            yAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+            tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+          />
+        </Card>
+
+        {/* Cumulative Savings Trend */}
+        <Card className="p-6">
+          <h2 className="text-base font-medium mb-4">Tendencia de Ahorro Acumulado</h2>
+          <ShadcnLineChart
+            data={monthlyData}
+            xKey="month"
+            datasets={[
+              { key: 'cumulativeSavings', label: 'Ahorro Acumulado', color: 'hsl(var(--chart-3))', strokeWidth: 2 },
+            ]}
+            height={180}
+            yAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+            tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+          />
+        </Card>
+      </div>
+
+      {/* Transactions by Source */}
+      {sourceData.length > 0 && (
+        <Card className="p-6">
+          <h2 className="text-lg font-bold text-foreground mb-4">Transacciones por Banco</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Distribución de transacciones por banco y monto total
+          </p>
+          <ShadcnMixedChart
+            data={sourceData.map(s => ({ name: s.source, amount: s.amount, count: s.count }))}
+            xKey="name"
+            datasets={[
+              { key: 'amount', label: 'Monto Total', color: 'hsl(var(--chart-1))', type: 'bar', yAxisId: 'left' },
+              { key: 'count', label: 'Transacciones', color: 'hsl(var(--chart-3))', type: 'line', yAxisId: 'right' },
+            ]}
+            height={280}
+            yAxisFormatter={(value) => formatCurrency(value, displayCurrency)}
+            tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+            useDualAxis={true}
+            showLegend={true}
+          />
+          <div className="mt-4 pt-4 border-t border-border grid grid-cols-2 gap-4">
+            {sourceData.map((source, idx) => (
+              <div key={idx} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: source.color }} />
+                  <span className="text-sm font-medium text-foreground">{source.source}</span>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-foreground">
+                    {formatCurrency(source.amount, displayCurrency)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{source.count} transacciones</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Monthly Charts Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Income by Month */}
+        <Card className="p-6">
+          <h2 className="text-base font-medium mb-4">Ingresos por Mes</h2>
+          <ShadcnBarChart
+            data={monthlyData}
+            xKey="month"
+            datasets={[
+              { key: 'income', label: 'Ingresos', color: 'hsl(var(--chart-1))', radius: [4, 4, 0, 0] },
+            ]}
+            height={180}
+            yAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+            tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+          />
+          <div className="mt-3 pt-3 border-t border-border">
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">Promedio:</span>
+              <span className="font-semibold">{formatCurrency(periodStats?.avgMonthlyIncome || 0, displayCurrency)}</span>
+            </div>
+          </div>
+        </Card>
+
+        {/* Expenses by Month */}
+        <Card className="p-6">
+          <h2 className="text-base font-medium mb-4">Gastos por Mes</h2>
+          <ShadcnBarChart
+            data={monthlyData}
+            xKey="month"
+            datasets={[
+              { key: 'expenses', label: 'Gastos', color: 'hsl(var(--chart-2))', radius: [4, 4, 0, 0] },
+            ]}
+            height={180}
+            yAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+            tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+          />
+          <div className="mt-3 pt-3 border-t border-border">
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">Promedio:</span>
+              <span className="font-semibold">{formatCurrency(periodStats?.avgMonthlyExpenses || 0, displayCurrency)}</span>
+            </div>
+          </div>
+        </Card>
+
+        {/* Savings by Month */}
+        <Card className="p-6">
+          <h2 className="text-base font-medium mb-4">Ahorro por Mes</h2>
+          <ShadcnBarChart
+            data={monthlyData}
+            xKey="month"
+            datasets={[
+              { key: 'savings', label: 'Ahorro', color: 'hsl(var(--chart-3))', radius: [4, 4, 0, 0] },
+            ]}
+            height={180}
+            yAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+            tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+          />
+          <div className="mt-3 pt-3 border-t border-border">
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">Promedio:</span>
+              <span className="font-semibold">{formatCurrency(periodStats?.avgMonthlySavings || 0, displayCurrency)}</span>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Top Categories - Horizontal Bar Chart */}
+      {expenseCategories.length > 0 && (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card className="p-4">
+            <h2 className="text-sm font-semibold mb-3">Principales Categorías de Gastos (Total)</h2>
+            <ShadcnBarChart
+              data={expenseCategories.slice(0, 5)}
+              xKey="name"
+              datasets={[
+                { key: 'total', label: 'Total', color: (index) => expenseCategories.slice(0, 5)[index].color, radius: [0, 4, 4, 0] },
+              ]}
+              height={180}
+              horizontal={true}
+              xAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+              tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+            />
+          </Card>
+
+          <Card className="p-4">
+            <h2 className="text-sm font-semibold mb-3">Promedio Mensual por Categoría</h2>
+            <ShadcnBarChart
+              data={expenseCategories.slice(0, 5)}
+              xKey="name"
+              datasets={[
+                { key: 'average', label: 'Promedio', color: (index) => expenseCategories.slice(0, 5)[index].color, radius: [0, 4, 4, 0] },
+              ]}
+              height={180}
+              horizontal={true}
+              xAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+              tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+            />
+          </Card>
+        </div>
+      )}
+
+      {/* Detailed Category Analysis Table */}
+      {expenseCategories.length > 0 && (
+        <Card className="p-6 overflow-hidden">
+          <h2 className="text-lg font-bold text-foreground mb-4">Análisis Detallado por Categoría</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-2 px-2 text-xs font-medium text-muted-foreground">Categoría</th>
+                  <th className="text-right py-2 px-2 text-xs font-medium text-muted-foreground">Total</th>
+                  <th className="text-right py-2 px-2 text-xs font-medium text-muted-foreground">Promedio/Mes</th>
+                  <th className="text-right py-2 px-2 text-xs font-medium text-muted-foreground">% Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {expenseCategories.map((cat, idx) => (
+                  <tr key={idx} className="border-b border-border hover:bg-muted/50">
+                    <td className="py-2 px-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />
+                        <span className="font-medium text-foreground">{cat.name}</span>
+                      </div>
+                    </td>
+                    <td className="text-right py-2 px-2 font-semibold text-foreground">
+                      {formatCurrency(cat.total, displayCurrency)}
+                    </td>
+                    <td className="text-right py-2 px-2 font-semibold text-primary">
+                      {formatCurrency(cat.average, displayCurrency)}
+                    </td>
+                    <td className="text-right py-2 px-2 text-muted-foreground">
+                      {cat.percentage.toFixed(1)}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-border font-semibold">
+                  <td className="py-2 px-2 text-foreground">TOTAL</td>
+                  <td className="text-right py-2 px-2 text-foreground">
+                    {formatCurrency(periodStats?.totalExpenses || 0, displayCurrency)}
+                  </td>
+                  <td className="text-right py-2 px-2 text-primary">
+                    {formatCurrency(periodStats?.avgMonthlyExpenses || 0, displayCurrency)}
+                  </td>
+                  <td className="text-right py-2 px-2 text-muted-foreground">100%</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {/* Category Breakdown - Enhanced with Expense Focus */}
+      {(expenseCategories.length > 0 || incomeCategories.length > 0) && (
+        <div className="grid gap-4 lg:grid-cols-3">
+          {/* Expenses by Category - FEATURED (full width) */}
+          {expenseCategories.length > 0 && (
+            <Card className="p-6 lg:col-span-3 overflow-hidden">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-lg font-bold text-foreground">Distribución de Gastos por Categoría</h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                Total: {formatCurrency(periodStats?.totalExpenses || 0, displayCurrency)} •
+                Promedio/mes: {formatCurrency(periodStats?.avgMonthlyExpenses || 0, displayCurrency)}
+              </p>
+            </div>
+          </div>
+          <div className="w-full h-[500px]">
+            <PieChart
+              data={expenseCategories.map(cat => ({
+                name: cat.name,
+                value: cat.total,
+                color: cat.color,
+              }))}
+              height={500}
+              innerRadius="35%"
+              outerRadius="65%"
+              showLabels={false}
+              showLegend={false}
+              tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+            />
+          </div>
+          {/* Legend below chart */}
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[200px] overflow-y-auto">
+            {expenseCategories.map((cat, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-medium text-foreground truncate">{cat.name}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {formatCurrency(cat.total, displayCurrency)} ({cat.percentage.toFixed(1)}%)
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+          )}
+
+          {/* Income by Category - Compact */}
+          {incomeCategories.length > 0 && (
+            <Card className="p-6 overflow-hidden">
+          <h2 className="text-base font-semibold mb-3">Distribución de Ingresos</h2>
+          <p className="text-xs text-muted-foreground mb-4">
+            {(periodStats?.avgMonthlyIncome || 0) > 0
+              ? `Promedio/mes: ${formatCurrency(periodStats.avgMonthlyIncome, displayCurrency)}`
+              : 'Promedio/mes'}
+          </p>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-center overflow-visible">
+              <div className="w-[180px] h-[180px] flex items-center justify-center">
+                <PieChart
+                  data={incomeCategories.slice(0, 5).map(cat => ({
+                    name: cat.name,
+                    value: cat.total,
+                    color: cat.color,
+                  }))}
+                  height={180}
+                  innerRadius={40}
+                  outerRadius={65}
+                  showLabels={false}
+                  showLegend={false}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              {incomeCategories.slice(0, 5).map((cat, idx) => (
+                <div key={idx} className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />
+                    <span className="text-foreground truncate">{cat.name}</span>
+                  </div>
+                  <div className="flex gap-2 text-right flex-shrink-0 ml-2">
+                    <span className="font-medium text-foreground">{formatCurrency(cat.total, displayCurrency)}</span>
+                    <span className="text-muted-foreground w-10">{cat.percentage.toFixed(1)}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+          )}
+        </div>
+      )}
+        </>
+      )}
+
+      {/* VIEW: CATEGORIES */}
+      {viewType === 'categories' && expenseCategories.length > 0 && (
+        <>
+          {/* Category Rankings */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card className="p-6">
+              <h2 className="text-lg font-bold text-foreground mb-4">Top 5 Categorías de Gasto</h2>
+              <div className="space-y-3">
+                {expenseCategories.slice(0, 5).map((cat, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" style={{ backgroundColor: cat.color, color: '#fff' }}>
+                      {idx + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-semibold text-foreground">{cat.name}</span>
+                        <span className="text-sm font-bold text-foreground">{cat.percentage.toFixed(1)}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full transition-all"
+                          style={{ backgroundColor: cat.color, width: `${cat.percentage}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between mt-1 text-xs text-muted-foreground">
+                        <span>Total: {formatCurrency(cat.total, displayCurrency)}</span>
+                        <span>Promedio: {formatCurrency(cat.average, displayCurrency)}/mes</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h2 className="text-lg font-bold text-foreground mb-4">Bottom 5 Categorías de Gasto</h2>
+              <div className="space-y-3">
+                {expenseCategories.slice(-5).reverse().map((cat, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm bg-muted text-muted-foreground">
+                      {expenseCategories.length - idx}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-semibold text-foreground">{cat.name}</span>
+                        <span className="text-sm font-bold text-foreground">{cat.percentage.toFixed(1)}%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full transition-all"
+                          style={{ backgroundColor: cat.color, width: `${cat.percentage}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between mt-1 text-xs text-muted-foreground">
+                        <span>Total: {formatCurrency(cat.total, displayCurrency)}</span>
+                        <span>Promedio: {formatCurrency(cat.average, displayCurrency)}/mes</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+
+          {/* Large Category Breakdown */}
+          <Card className="p-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Todas las Categorías - Comparación</h2>
+            <BarChart
+              data={expenseCategories}
+              xKey="name"
+              datasets={[
+                {
+                  key: 'total',
+                  label: 'Total Período',
+                  color: (index) => {
+                    const color = expenseCategories[index].color;
+                    return color.replace(')', ', 0.6)').replace('rgb', 'rgba');
+                  },
+                  radius: [0, 4, 4, 0]
+                },
+                {
+                  key: 'average',
+                  label: 'Promedio Mensual',
+                  color: (index) => expenseCategories[index].color,
+                  radius: [0, 4, 4, 0]
+                },
+              ]}
+              height={Math.max(400, expenseCategories.length * 35)}
+              horizontal={true}
+              xAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+              tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+              showLegend={true}
+            />
+          </Card>
+
+          {/* Category Insights */}
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Card className="p-6">
+              <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Categoría con Mayor Gasto</h3>
+              {expenseCategories[0] && (
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: expenseCategories[0].color }} />
+                    <span className="font-bold text-lg text-foreground">{expenseCategories[0].name}</span>
+                  </div>
+                  <p className="text-2xl font-bold text-foreground mb-1">
+                    {formatCurrency(expenseCategories[0].total, displayCurrency)}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {expenseCategories[0].percentage.toFixed(1)}% del total • {formatCurrency(expenseCategories[0].average, displayCurrency)}/mes
+                  </p>
+                </div>
+              )}
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Número de Categorías Activas</h3>
+              <p className="text-4xl font-bold text-foreground mb-1">{expenseCategories.length}</p>
+              <p className="text-sm text-muted-foreground">
+                categorías con gastos en este período
+              </p>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Promedio por Categoría</h3>
+              <p className="text-2xl font-bold text-foreground mb-1">
+                {formatCurrency(
+                  expenseCategories.length > 0
+                    ? (periodStats?.totalExpenses || 0) / expenseCategories.length
+                    : 0,
+                  displayCurrency
+                )}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                gasto promedio total por categoría
+              </p>
+            </Card>
+          </div>
+
+          {/* Detailed Table */}
+          <Card className="p-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Tabla Completa de Categorías</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-3 px-3 text-xs font-medium text-muted-foreground">#</th>
+                    <th className="text-left py-3 px-3 text-xs font-medium text-muted-foreground">Categoría</th>
+                    <th className="text-right py-3 px-3 text-xs font-medium text-muted-foreground">Total</th>
+                    <th className="text-right py-3 px-3 text-xs font-medium text-muted-foreground">Promedio/Mes</th>
+                    <th className="text-right py-3 px-3 text-xs font-medium text-muted-foreground">% Total</th>
+                    <th className="text-center py-3 px-3 text-xs font-medium text-muted-foreground">Barra</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {expenseCategories.map((cat, idx) => (
+                    <tr key={idx} className="border-b border-border hover:bg-muted/50">
+                      <td className="py-3 px-3 text-muted-foreground font-medium">{idx + 1}</td>
+                      <td className="py-3 px-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />
+                          <span className="font-medium text-foreground">{cat.name}</span>
+                        </div>
+                      </td>
+                      <td className="text-right py-3 px-3 font-semibold text-foreground">
+                        {formatCurrency(cat.total, displayCurrency)}
+                      </td>
+                      <td className="text-right py-3 px-3 font-semibold text-primary">
+                        {formatCurrency(cat.average, displayCurrency)}
+                      </td>
+                      <td className="text-right py-3 px-3 text-muted-foreground">
+                        {cat.percentage.toFixed(1)}%
+                      </td>
+                      <td className="py-3 px-3">
+                        <div className="w-full max-w-[100px] mx-auto bg-muted rounded-full h-2">
+                          <div
+                            className="h-2 rounded-full"
+                            style={{ backgroundColor: cat.color, width: `${cat.percentage}%` }}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
+
+      {/* VIEW: PARENT CATEGORIES */}
+      {viewType === 'parents' && (
+        <>
+          {parentExpenseCategories.length === 0 ? (
+            <Card className="p-12 text-center">
+              <Folder className="h-16 w-16 mx-auto text-muted-foreground mb-4 opacity-50" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">Sin Gastos en Categorías Padre</h3>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                Esta vista muestra categorías padre que tienen transacciones de gastos en el período seleccionado.
+                Las transacciones pueden estar asignadas a las subcategorías (hijos) o directamente a la categoría padre.
+              </p>
+              <p className="text-xs text-muted-foreground max-w-md mx-auto mt-3">
+                💡 Asigna transacciones a categorías con estructura padre-hijo para ver el análisis jerárquico aquí.
+              </p>
+            </Card>
+          ) : (
+            <>
+              {/* Parent Categories Overview */}
+              <Card className="p-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Distribución por Categorías Padre</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Vista jerárquica de gastos agrupados por categorías principales
+            </p>
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Pie Chart */}
+              <div>
+                <PieChart
+                  data={parentExpenseCategories.map(cat => ({
+                    name: cat.name,
+                    value: cat.total,
+                    color: cat.color,
+                  }))}
+                  height={400}
+                  innerRadius="40%"
+                  outerRadius="70%"
+                  showLabels={true}
+                  showLegend={false}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                />
+              </div>
+
+              {/* Stats Grid */}
+              <div className="space-y-3">
+                {parentExpenseCategories.map((cat, idx) => (
+                  <div key={idx} className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: cat.color }} />
+                        <span className="font-semibold text-foreground">{cat.name}</span>
+                      </div>
+                      <span className="text-sm font-bold text-primary">{cat.percentage.toFixed(1)}%</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        {cat.subcategoryCount} subcategoría{cat.subcategoryCount !== 1 ? 's' : ''}
+                      </span>
+                      <span className="font-bold text-foreground">
+                        {formatCurrency(cat.total, displayCurrency)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+
+          {/* Detailed Parent Category Cards */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {parentExpenseCategories.map((parent, idx) => (
+              <Card key={idx} className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full" style={{ backgroundColor: parent.color }} />
+                    <h3 className="text-lg font-bold text-foreground">{parent.name}</h3>
+                  </div>
+                  <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
+                    {parent.percentage.toFixed(1)}%
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-4 pb-4 border-b border-border">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Total</p>
+                    <p className="text-lg font-bold text-foreground">
+                      {formatCurrency(parent.total, displayCurrency)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Promedio/mes</p>
+                    <p className="text-lg font-bold text-foreground">
+                      {formatCurrency(parent.average, displayCurrency)}
+                    </p>
+                  </div>
+                </div>
+
+                {parent.subcategoryCount > 0 ? (
+                  <>
+                    <h4 className="text-sm font-semibold text-muted-foreground mb-3">
+                      Subcategorías ({parent.subcategoryCount})
+                    </h4>
+                    <div className="space-y-2">
+                      {parent.subcategories.map((sub, subIdx) => (
+                        <div key={subIdx} className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: sub.color }} />
+                            <span className="text-foreground truncate">{sub.name}</span>
+                          </div>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <span className="font-semibold text-foreground">
+                              {formatCurrency(sub.total, displayCurrency)}
+                            </span>
+                            <span className="text-muted-foreground w-12 text-right">
+                              {sub.percentage.toFixed(1)}%
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-sm text-muted-foreground italic">
+                    Categoría sin subcategorías
+                  </div>
+                )}
+              </Card>
+            ))}
+          </div>
+
+          {/* Comparison Bar Chart */}
+          <Card className="p-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Comparación de Categorías Padre</h2>
+            <BarChart
+              data={parentExpenseCategories}
+              xKey="name"
+              datasets={[
+                {
+                  key: 'total',
+                  label: 'Total Período',
+                  color: (index) => parentExpenseCategories[index].color,
+                  radius: [0, 4, 4, 0]
+                },
+              ]}
+              height={Math.max(300, parentExpenseCategories.length * 50)}
+              horizontal={true}
+              xAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+              tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+              showLegend={false}
+            />
+          </Card>
+
+          {/* Hierarchical Table */}
+          <Card className="p-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Vista Jerárquica Completa</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-3 px-3 text-xs font-medium text-muted-foreground">Categoría</th>
+                    <th className="text-right py-3 px-3 text-xs font-medium text-muted-foreground">Total</th>
+                    <th className="text-right py-3 px-3 text-xs font-medium text-muted-foreground">Promedio/Mes</th>
+                    <th className="text-right py-3 px-3 text-xs font-medium text-muted-foreground">% del Total</th>
+                    <th className="text-center py-3 px-3 text-xs font-medium text-muted-foreground">Subcategorías</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {parentExpenseCategories.map((parent, idx) => (
+                    <Fragment key={`parent-${idx}`}>
+                      <tr className="border-b border-border bg-muted/30 font-semibold">
+                        <td className="py-3 px-3">
+                          <div className="flex items-center gap-2">
+                            <Folder className="h-4 w-4 text-muted-foreground" />
+                            <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: parent.color }} />
+                            <span className="text-foreground">{parent.name}</span>
+                          </div>
+                        </td>
+                        <td className="text-right py-3 px-3 text-foreground">
+                          {formatCurrency(parent.total, displayCurrency)}
+                        </td>
+                        <td className="text-right py-3 px-3 text-primary">
+                          {formatCurrency(parent.average, displayCurrency)}
+                        </td>
+                        <td className="text-right py-3 px-3 text-foreground">
+                          {parent.percentage.toFixed(1)}%
+                        </td>
+                        <td className="text-center py-3 px-3 text-muted-foreground">
+                          {parent.subcategoryCount}
+                        </td>
+                      </tr>
+                      {parent.subcategories.map((sub, subIdx) => (
+                        <tr key={`sub-${idx}-${subIdx}`} className="border-b border-border hover:bg-muted/30">
+                          <td className="py-2 px-3 pl-12">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: sub.color }} />
+                              <span className="text-muted-foreground text-sm">{sub.name}</span>
+                            </div>
+                          </td>
+                          <td className="text-right py-2 px-3 text-sm text-muted-foreground">
+                            {formatCurrency(sub.total, displayCurrency)}
+                          </td>
+                          <td className="text-right py-2 px-3 text-sm text-muted-foreground">
+                            {formatCurrency(sub.average, displayCurrency)}
+                          </td>
+                          <td className="text-right py-2 px-3 text-sm text-muted-foreground">
+                            {sub.percentage.toFixed(1)}%
+                          </td>
+                          <td className="text-center py-2 px-3 text-sm text-muted-foreground">
+                            -
+                          </td>
+                        </tr>
+                      ))}
+                    </Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          {/* Summary Statistics */}
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Card className="p-6">
+              <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Categoría Padre con Mayor Gasto</h3>
+              {parentExpenseCategories[0] && (
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: parentExpenseCategories[0].color }} />
+                    <span className="font-bold text-lg text-foreground">{parentExpenseCategories[0].name}</span>
+                  </div>
+                  <p className="text-2xl font-bold text-foreground mb-1">
+                    {formatCurrency(parentExpenseCategories[0].total, displayCurrency)}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {parentExpenseCategories[0].percentage.toFixed(1)}% del total • {parentExpenseCategories[0].subcategoryCount} subcategoría{parentExpenseCategories[0].subcategoryCount !== 1 ? 's' : ''}
+                  </p>
+                </div>
+              )}
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Total Categorías Padre</h3>
+              <p className="text-4xl font-bold text-foreground mb-1">{parentExpenseCategories.length}</p>
+              <p className="text-sm text-muted-foreground">
+                categorías principales activas
+              </p>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Total Subcategorías</h3>
+              <p className="text-4xl font-bold text-foreground mb-1">
+                {parentExpenseCategories.reduce((sum, cat) => sum + cat.subcategoryCount, 0)}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                subcategorías en total
+              </p>
+            </Card>
+          </div>
+            </>
+          )}
+        </>
+      )}
+
+      {/* VIEW: TRENDS */}
+      {viewType === 'trends' && (
+        <>
+          {/* Trend Summary Cards */}
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Card className="p-6">
+              <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Tendencia de Gastos</h3>
+              <div className="flex items-center gap-3">
+                <div className={`p-3 rounded-full ${
+                  periodStats && periodStats.expenseTrend === 'up' ? 'bg-error/10' :
+                  periodStats && periodStats.expenseTrend === 'down' ? 'bg-success/10' : 'bg-muted'
+                }`}>
+                  {periodStats?.expenseTrend === 'up' ? (
+                    <TrendingUp className="h-6 w-6 text-error" />
+                  ) : periodStats?.expenseTrend === 'down' ? (
+                    <TrendingDown className="h-6 w-6 text-success" />
+                  ) : (
+                    <span className="text-2xl">→</span>
+                  )}
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-foreground">
+                    {Math.abs(periodStats?.monthOverMonthChange || 0).toFixed(1)}%
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {periodStats?.expenseTrend === 'up' ? 'Aumento' :
+                     periodStats?.expenseTrend === 'down' ? 'Reducción' : 'Sin cambio'} mes a mes
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Gasto Promedio Diario</h3>
+              <p className="text-2xl font-bold text-foreground mb-1">
+                {formatCurrency(
+                  monthlyData.length > 0
+                    ? (periodStats?.avgMonthlyExpenses || 0) / 30
+                    : 0,
+                  displayCurrency
+                )}
+              </p>
+              <p className="text-sm text-muted-foreground">por día en promedio</p>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Velocidad de Ahorro</h3>
+              <p className="text-2xl font-bold text-foreground mb-1">
+                {formatCurrency(
+                  monthlyData.length > 0
+                    ? (periodStats?.avgMonthlySavings || 0) / 30
+                    : 0,
+                  displayCurrency
+                )}
+              </p>
+              <p className="text-sm text-muted-foreground">ahorro por día</p>
+            </Card>
+          </div>
+
+          {/* Evolution of Top Categories */}
+          <Card className="p-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Evolución de Categorías en el Tiempo</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Seguimiento de las top 5 categorías de gasto a lo largo del período
+            </p>
+            <LineChart
+              data={monthlyData}
+              xKey="month"
+              datasets={[
+                { key: 'expenses', label: 'Gastos Totales', color: '#ef4444', strokeWidth: 3 },
+                { key: 'income', label: 'Ingresos', color: '#10b981', strokeWidth: 2, strokeDasharray: '5 5' },
+                { key: 'savings', label: 'Ahorro', color: '#8b5cf6', strokeWidth: 2 },
+              ]}
+              height={400}
+              yAxisFormatter={(value) => `${displayCurrency === 'USD' ? '$' : '$'}${(value / 1000).toFixed(0)}k`}
+              tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+              showLegend={true}
+            />
+          </Card>
+
+          {/* Monthly Comparison */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card className="p-6">
+              <h2 className="text-lg font-bold text-foreground mb-4">Comparación Mes a Mes</h2>
+              <div className="space-y-3">
+                {monthlyData.map((month, idx) => {
+                  const prevMonth = monthlyData[idx - 1];
+                  const change = prevMonth
+                    ? ((month.expenses - prevMonth.expenses) / prevMonth.expenses) * 100
+                    : 0;
+
+                  return (
+                    <div key={idx} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium text-foreground w-16">{month.month}</span>
+                        <span className="text-sm font-semibold text-foreground">
+                          {formatCurrency(month.expenses, displayCurrency)}
+                        </span>
+                      </div>
+                      {idx > 0 && (
+                        <div className={`flex items-center gap-1 text-sm font-medium ${
+                          change > 0 ? 'text-error' : change < 0 ? 'text-success' : 'text-muted-foreground'
+                        }`}>
+                          {change > 0 ? '↑' : change < 0 ? '↓' : '→'}
+                          {Math.abs(change).toFixed(1)}%
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h2 className="text-lg font-bold text-foreground mb-4">Estadísticas del Período</h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between py-3 border-b border-border">
+                  <span className="text-sm text-muted-foreground">Mes con mayor gasto</span>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-foreground">
+                      {monthlyData.length > 0
+                        ? monthlyData.reduce((max, m) => m.expenses > max.expenses ? m : max, monthlyData[0]).month
+                        : 'N/A'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {monthlyData.length > 0
+                        ? formatCurrency(monthlyData.reduce((max, m) => m.expenses > max.expenses ? m : max, monthlyData[0]).expenses, displayCurrency)
+                        : '$0'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between py-3 border-b border-border">
+                  <span className="text-sm text-muted-foreground">Mes con menor gasto</span>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-foreground">
+                      {monthlyData.length > 0
+                        ? monthlyData.reduce((min, m) => m.expenses < min.expenses ? m : min, monthlyData[0]).month
+                        : 'N/A'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {monthlyData.length > 0
+                        ? formatCurrency(monthlyData.reduce((min, m) => m.expenses < min.expenses ? m : min, monthlyData[0]).expenses, displayCurrency)
+                        : '$0'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between py-3 border-b border-border">
+                  <span className="text-sm text-muted-foreground">Mejor mes de ahorro</span>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-success">
+                      {monthlyData.length > 0
+                        ? monthlyData.reduce((max, m) => m.savings > max.savings ? m : max, monthlyData[0]).month
+                        : 'N/A'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {monthlyData.length > 0
+                        ? formatCurrency(monthlyData.reduce((max, m) => m.savings > max.savings ? m : max, monthlyData[0]).savings, displayCurrency)
+                        : '$0'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-sm text-muted-foreground">Variación total del período</span>
+                  <div className="text-right">
+                    <p className={`text-sm font-bold ${
+                      monthlyData.length >= 2 && monthlyData[monthlyData.length - 1].expenses > monthlyData[0].expenses
+                        ? 'text-error'
+                        : 'text-success'
+                    }`}>
+                      {monthlyData.length >= 2
+                        ? `${monthlyData[0].expenses > 0 ? ((monthlyData[monthlyData.length - 1].expenses - monthlyData[0].expenses) / monthlyData[0].expenses * 100).toFixed(1) : 0}%`
+                        : '0%'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {monthlyData.length >= 2 ? `${monthlyData[0].month} → ${monthlyData[monthlyData.length - 1].month}` : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Projections */}
+          <Card className="p-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Proyección Simple</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Basado en el promedio de gastos de los últimos meses
+            </p>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Proyección próximo mes</p>
+                <p className="text-xl font-bold text-foreground">
+                  {formatCurrency(periodStats?.avgMonthlyExpenses || 0, displayCurrency)}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">gastos estimados</p>
+              </div>
+
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Proyección próximos 3 meses</p>
+                <p className="text-xl font-bold text-foreground">
+                  {formatCurrency((periodStats?.avgMonthlyExpenses || 0) * 3, displayCurrency)}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">gastos estimados</p>
+              </div>
+
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Ahorro potencial (3 meses)</p>
+                <p className={`text-xl font-bold ${
+                  (periodStats?.avgMonthlySavings || 0) >= 0 ? 'text-success' : 'text-error'
+                }`}>
+                  {formatCurrency((periodStats?.avgMonthlySavings || 0) * 3, displayCurrency)}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">ahorro estimado</p>
+              </div>
+            </div>
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <p className="text-xs text-blue-700 dark:text-blue-300">
+                💡 Estas proyecciones son estimaciones simples basadas en tus promedios históricos.
+                Los gastos reales pueden variar según tus necesidades y circunstancias.
+              </p>
+            </div>
+          </Card>
+        </>
+      )}
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">✨ Recharts</span>
+              <span className="px-3 py-1 bg-success/10 text-success rounded-full text-xs font-medium">🎨 Tailwind CSS</span>
+              <span className="px-3 py-1 bg-accent-purple/10 text-accent-purple rounded-full text-xs font-medium">🔷 TypeScript</span>
+              <span className="px-3 py-1 bg-accent-cyan/10 text-accent-cyan rounded-full text-xs font-medium">📱 Responsive</span>
+              <span className="px-3 py-1 bg-error/10 text-error rounded-full text-xs font-medium">⚡ Interactive</span>
+              <span className="px-3 py-1 bg-warning/10 text-warning rounded-full text-xs font-medium">🎭 Animated</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-border">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-primary">12+</p>
+                <p className="text-xs text-muted-foreground">Chart Types</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-success">100%</p>
+                <p className="text-xs text-muted-foreground">Responsive</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-accent-purple">A11y</p>
+                <p className="text-xs text-muted-foreground">Accessible</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-accent-cyan">∞</p>
+                <p className="text-xs text-muted-foreground">Customizable</p>
+              </div>
+            </div>
+          </Card>
+
+          {/* Interactive Controls Demo */}
+          <Card className="p-6">
+            <h3 className="text-lg font-bold text-foreground mb-4">🎮 Interactive Controls</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Charts with built-in controls for dynamic data exploration
+            </p>
+            <ChartControls
+              showChartTypeSelector={true}
+              showTimeRangeSelector={true}
+              showStackedToggle={true}
+              showAnimationToggle={true}
+            />
+          </Card>
+
+          {/* Section 1: Basic Charts */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-1 bg-primary rounded-full" />
+              <h3 className="text-xl font-bold text-foreground">Basic Charts</h3>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <Card className="p-6 border-l-4 border-l-primary">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">📈 Area Chart</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Income vs Expenses over time</p>
+                  </div>
+                </div>
+                <ShadcnAreaChart
+                  data={monthlyData}
+                  xKey="month"
+                  datasets={[
+                    { key: 'income', label: 'Ingresos', color: 'hsl(var(--chart-1))' },
+                    { key: 'expenses', label: 'Gastos', color: 'hsl(var(--chart-2))' },
+                  ]}
+                  height={300}
+                  yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                />
+              </Card>
+
+              <Card className="p-6 border-l-4 border-l-success">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">📉 Line Chart</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Cumulative savings trend</p>
+                  </div>
+                </div>
+                <ShadcnLineChart
+                  data={monthlyData}
+                  xKey="month"
+                  datasets={[
+                    { key: 'cumulativeSavings', label: 'Ahorro Acumulado', color: 'hsl(var(--chart-3))' },
+                  ]}
+                  height={300}
+                  yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                  showLegend={true}
+                />
+              </Card>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <Card className="p-6 border-l-4 border-l-accent-purple">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">📊 Bar Chart - Vertical</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Monthly expenses comparison</p>
+                  </div>
+                </div>
+                <ShadcnBarChart
+                  data={monthlyData.slice(-6)}
+                  xKey="month"
+                  datasets={[
+                    { key: 'expenses', label: 'Gastos', color: 'hsl(var(--chart-4))' },
+                  ]}
+                  height={300}
+                  yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                />
+              </Card>
+
+              <Card className="p-6 border-l-4 border-l-accent-cyan">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">📊 Bar Chart - Horizontal</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Top 5 expense categories</p>
+                  </div>
+                </div>
+                <ShadcnBarChart
+                  data={expenseCategories.slice(0, 5)}
+                  xKey="name"
+                  datasets={[
+                    { key: 'total', label: 'Total', color: 'hsl(var(--chart-5))' },
+                  ]}
+                  height={300}
+                  horizontal={true}
+                  xAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                />
+              </Card>
+            </div>
+          </div>
+
+          {/* Section 2: Advanced Stacked & Grouped Charts */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-1 bg-success rounded-full" />
+              <h3 className="text-xl font-bold text-foreground">Advanced: Stacked & Grouped</h3>
+            </div>
+
+            <Card className="p-6 border-l-4 border-l-success">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">🔥 Stacked Area Chart</h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Visualize cumulative values over time
+                  </p>
+                </div>
+              </div>
+              <ShadcnStackedAreaChart
+                data={monthlyData}
+                xKey="month"
+                datasets={[
+                  { key: 'income', label: 'Ingresos', color: 'hsl(var(--chart-1))' },
+                  { key: 'expenses', label: 'Gastos', color: 'hsl(var(--chart-2))' },
+                  { key: 'savings', label: 'Ahorro', color: 'hsl(var(--chart-3))' },
+                ]}
+                height={400}
+                yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                stacked={true}
+              />
+            </Card>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <Card className="p-6 border-l-4 border-l-warning">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">📊 Grouped Bar Chart</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Compare multiple metrics side by side</p>
+                  </div>
+                </div>
+                <ShadcnGroupedBarChart
+                  data={monthlyData.slice(-6)}
+                  xKey="month"
+                  datasets={[
+                    { key: 'income', label: 'Ingresos', color: 'hsl(var(--chart-1))' },
+                    { key: 'expenses', label: 'Gastos', color: 'hsl(var(--chart-2))' },
+                  ]}
+                  height={350}
+                  yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                  stacked={false}
+                />
+              </Card>
+
+              <Card className="p-6 border-l-4 border-l-error">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">📊 Stacked Bar Chart</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Show composition of totals</p>
+                  </div>
+                </div>
+                <ShadcnGroupedBarChart
+                  data={monthlyData.slice(-6)}
+                  xKey="month"
+                  datasets={[
+                    { key: 'income', label: 'Ingresos', color: 'hsl(var(--chart-1))' },
+                    { key: 'expenses', label: 'Gastos', color: 'hsl(var(--chart-2))' },
+                  ]}
+                  height={350}
+                  yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                  stacked={true}
+                />
+              </Card>
+            </div>
+          </div>
+
+          {/* Section 3: Mixed & Composed Charts */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-1 bg-accent-purple rounded-full" />
+              <h3 className="text-xl font-bold text-foreground">Advanced: Mixed & Composed</h3>
+            </div>
+
+            <Card className="p-6 border-l-4 border-l-accent-purple">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">🎨 Mixed Chart (Area + Bar + Line)</h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Combine different chart types for powerful insights
+                  </p>
+                </div>
+              </div>
+              <ShadcnMixedChart
+                data={monthlyData}
+                xKey="month"
+                datasets={[
+                  { key: 'income', label: 'Ingresos', color: 'hsl(var(--chart-1))', type: 'area', fillOpacity: 0.3 },
+                  { key: 'expenses', label: 'Gastos', color: 'hsl(var(--chart-2))', type: 'bar' },
+                  { key: 'savings', label: 'Ahorro', color: 'hsl(var(--chart-3))', type: 'line' },
+                ]}
+                height={400}
+                yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+              />
+            </Card>
+
+            <Card className="p-6 border-l-4 border-l-accent-cyan">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">📊 Dual Axis Mixed Chart</h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Compare metrics with different scales using dual Y-axes
+                  </p>
+                </div>
+              </div>
+              <ShadcnMixedChart
+                data={monthlyData}
+                xKey="month"
+                datasets={[
+                  { key: 'income', label: 'Ingresos', color: 'hsl(var(--chart-1))', type: 'bar', yAxisId: 'left' },
+                  { key: 'cumulativeSavings', label: 'Ahorro Acumulado', color: 'hsl(var(--chart-3))', type: 'line', yAxisId: 'right' },
+                ]}
+                height={400}
+                useDualAxis={true}
+                yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                rightYAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+              />
+            </Card>
+          </div>
+
+          {/* Section 4: Circular & Radial Charts */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-1 bg-warning rounded-full" />
+              <h3 className="text-xl font-bold text-foreground">Circular & Radial Charts</h3>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <Card className="p-6 border-l-4 border-l-warning">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">🍩 Donut Chart</h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Expense distribution by category
+                    </p>
+                  </div>
+                </div>
+                <ShadcnPieChart
+                  data={expenseCategories.slice(0, 8).map(cat => ({
+                    name: cat.name,
+                    value: cat.total,
+                    color: cat.color,
+                  }))}
+                  height={400}
+                  innerRadius="50%"
+                  outerRadius="80%"
+                  showLegend={true}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                />
+              </Card>
+
+              <Card className="p-6 border-l-4 border-l-error">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">🎯 Radial Bar Chart</h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Percentage-based comparison of top categories
+                    </p>
+                  </div>
+                </div>
+                <ShadcnRadialBarChart
+                  data={expenseCategories.slice(0, 5).map((cat, idx) => {
+                    const maxValue = expenseCategories[0]?.total || 1;
+                    return {
+                      name: cat.name,
+                      value: (cat.total / maxValue) * 100,
+                      fill: cat.color,
+                    };
+                  }).filter(item => item.value > 0)}
+                  height={400}
+                  showLegend={true}
+                  tooltipFormatter={(value) => `${value.toFixed(1)}%`}
+                />
+              </Card>
+            </div>
+
+            <Card className="p-6 border-l-4 border-l-primary">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">🕸️ Radar Chart - Multi-dimensional Analysis</h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Compare multiple metrics across categories simultaneously
+                  </p>
+                </div>
+              </div>
+              <ShadcnRadarChart
+                data={expenseCategories.slice(0, 6).map(cat => ({
+                  category: cat.name,
+                  total: cat.total,
+                  average: cat.average,
+                }))}
+                categoryKey="category"
+                datasets={[
+                  { key: 'total', label: 'Total', color: 'hsl(var(--chart-1))', fillOpacity: 0.3 },
+                  { key: 'average', label: 'Promedio', color: 'hsl(var(--chart-2))', fillOpacity: 0.3 },
+                ]}
+                height={400}
+                tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                showLegend={true}
+              />
+            </Card>
+          </div>
+
+          {/* Section 5: Comparison View */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-1 bg-error rounded-full" />
+              <h3 className="text-xl font-bold text-foreground">Side-by-Side Comparisons</h3>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-3">
+              <Card className="p-6 border-l-4 border-l-success">
+                <h4 className="text-sm font-bold text-foreground mb-4">📈 Income Trend</h4>
+                <ShadcnAreaChart
+                  data={monthlyData}
+                  xKey="month"
+                  datasets={[
+                    { key: 'income', label: 'Ingresos', color: 'hsl(var(--chart-1))' },
+                  ]}
+                  height={250}
+                  yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                  showLegend={false}
+                  showGrid={false}
+                />
+              </Card>
+
+              <Card className="p-6 border-l-4 border-l-error">
+                <h4 className="text-sm font-bold text-foreground mb-4">📉 Expense Trend</h4>
+                <ShadcnAreaChart
+                  data={monthlyData}
+                  xKey="month"
+                  datasets={[
+                    { key: 'expenses', label: 'Gastos', color: 'hsl(var(--chart-2))' },
+                  ]}
+                  height={250}
+                  yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                  showLegend={false}
+                  showGrid={false}
+                />
+              </Card>
+
+              <Card className="p-6 border-l-4 border-l-accent-purple">
+                <h4 className="text-sm font-bold text-foreground mb-4">💰 Savings Trend</h4>
+                <ShadcnLineChart
+                  data={monthlyData}
+                  xKey="month"
+                  datasets={[
+                    { key: 'savings', label: 'Ahorro', color: 'hsl(var(--chart-3))' },
+                  ]}
+                  height={250}
+                  yAxisFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  tooltipFormatter={(value) => formatCurrency(value, displayCurrency)}
+                  showLegend={false}
+                  showGrid={false}
+                />
+              </Card>
+            </div>
+          </div>
+
+          {/* Comparison Section */}
+          <Card className="p-6">
+            <h3 className="text-lg font-bold text-foreground mb-4">Why Shadcn/UI Charts?</h3>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="p-4 border border-border rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">🎨</span>
+                  <h4 className="font-semibold text-foreground">Beautiful Design</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Modern, clean aesthetics that match your design system perfectly
+                </p>
+              </div>
+              <div className="p-4 border border-border rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">♿</span>
+                  <h4 className="font-semibold text-foreground">Accessible</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Built with accessibility in mind, keyboard navigation, screen readers
+                </p>
+              </div>
+              <div className="p-4 border border-border rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">📱</span>
+                  <h4 className="font-semibold text-foreground">Responsive</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Automatically adapts to any screen size and device
+                </p>
+              </div>
+              <div className="p-4 border border-border rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">🔧</span>
+                  <h4 className="font-semibold text-foreground">Customizable</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Easy to customize with Tailwind CSS and CSS variables
+                </p>
+              </div>
+              <div className="p-4 border border-border rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">⚡</span>
+                  <h4 className="font-semibold text-foreground">Lightweight</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Smaller bundle size compared to heavy charting libraries
+                </p>
+              </div>
+              <div className="p-4 border border-border rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">🌙</span>
+                  <h4 className="font-semibold text-foreground">Dark Mode</h4>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Seamless dark mode support with automatic theme detection
+                </p>
+              </div>
+            </div>
+          </Card>
+        </>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,184 @@
+import { openai } from '@ai-sdk/openai';
+import { streamText, convertToCoreMessages, Message, tool } from 'ai';
+import { z } from 'zod';
+import { createClient } from '@/lib/supabase/server';
+
+// Chat API uses Node.js runtime for Supabase and tool functions
+// export const runtime = 'edge';
+export const maxDuration = 30; // Maximum duration for responses
+
+export async function POST(request: Request) {
+  try {
+    const { messages } = await request.json();
+    const supabase = await createClient();
+
+    if (!messages || messages.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'Messages are required' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Extract transaction context from system message
+    const systemMessage = messages.find((m: any) => m.role === 'system');
+    const transactionContext = systemMessage?.content || systemMessage?.parts?.[0]?.text || '';
+
+    // Get user ID
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Concise system prompt
+    const systemPrompt = `Eres un asistente financiero experto. Analiza los gastos del usuario y proporciona respuestas claras y concisas.
+
+${transactionContext}
+
+Directrices:
+- Sé breve y directo
+- Usa las herramientas disponibles para consultar datos específicos cuando sea necesario
+- Responde en español
+- Máximo 3-4 oraciones por respuesta`;
+
+    // Filter out system messages for the conversation
+    const conversationMessages = messages.filter((m: any) => m.role !== 'system');
+
+    // Validate we have at least one user message
+    if (conversationMessages.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'At least one user message is required' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Convert UI messages to core messages format
+    const coreMessages = convertToCoreMessages(conversationMessages);
+
+    // Define tools for querying transactions
+    const tools = {
+      getTransactionsByCategory: tool({
+        description: 'Obtiene transacciones filtradas por categoría',
+        inputSchema: z.object({
+          categoryName: z.string().describe('Nombre de la categoría'),
+        }),
+        execute: async ({ categoryName }) => {
+          const { data, error } = await supabase
+            .from('transactions')
+            .select('*, categories(name, type)')
+            .eq('user_id', user.id)
+            .eq('is_ignored', false)
+            .ilike('categories.name', `%${categoryName}%`)
+            .order('date', { ascending: false })
+            .limit(20);
+
+          if (error) return { error: error.message };
+          return { transactions: data };
+        },
+      }),
+
+      getTransactionsByDateRange: tool({
+        description: 'Obtiene transacciones en un rango de fechas',
+        inputSchema: z.object({
+          startDate: z.string().describe('Fecha inicial (YYYY-MM-DD)'),
+          endDate: z.string().describe('Fecha final (YYYY-MM-DD)'),
+        }),
+        execute: async ({ startDate, endDate }) => {
+          const { data, error } = await supabase
+            .from('transactions')
+            .select('*, categories(name, type)')
+            .eq('user_id', user.id)
+            .eq('is_ignored', false)
+            .gte('date', startDate)
+            .lte('date', endDate)
+            .order('date', { ascending: false })
+            .limit(50);
+
+          if (error) return { error: error.message };
+          return { transactions: data };
+        },
+      }),
+
+      getCategorySummary: tool({
+        description: 'Obtiene el resumen de gastos por categoría en un rango de fechas opcional',
+        inputSchema: z.object({}),
+        execute: async () => {
+          const { data, error } = await supabase
+            .from('transactions')
+            .select('amount, type, categories(name)')
+            .eq('user_id', user.id)
+            .eq('is_ignored', false)
+            .eq('type', 'expense');
+
+          if (error) return { error: error.message };
+
+          // Group by category
+          const summary: Record<string, number> = {};
+          data?.forEach((t: any) => {
+            if (t.categories?.name) {
+              summary[t.categories.name] = (summary[t.categories.name] || 0) + t.amount;
+            }
+          });
+
+          return { categorySummary: summary };
+        },
+      }),
+    };
+
+    // Stream response using AI SDK with gpt-5-mini
+    const result = streamText({
+      model: openai('gpt-5-mini'),
+      system: systemPrompt,
+      messages: coreMessages,
+      tools,
+      maxTokens: 500,
+      temperature: 0.5,
+    });
+
+    // Return streaming response
+    return result.toTextStreamResponse();
+  } catch (error: any) {
+    console.error('AI API error:', error);
+
+    // Better error handling with specific error types
+    if (error?.status === 401) {
+      return new Response(
+        JSON.stringify({
+          error: 'API key inválida o no configurada',
+          details: 'Verifica tu OPENAI_API_KEY en las variables de entorno'
+        }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (error?.status === 429) {
+      return new Response(
+        JSON.stringify({
+          error: 'Límite de requests excedido',
+          details: 'Por favor intenta nuevamente en unos momentos'
+        }),
+        { status: 429, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (error?.status === 500 || error?.status === 503) {
+      return new Response(
+        JSON.stringify({
+          error: 'Servicio de OpenAI temporalmente no disponible',
+          details: 'Por favor intenta nuevamente'
+        }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    return new Response(
+      JSON.stringify({
+        error: 'Error procesando la solicitud de AI',
+        details: error?.message || 'Error desconocido'
+      }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+}
