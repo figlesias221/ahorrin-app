@@ -166,22 +166,22 @@ export function ChatSidebar({
                 <div className="space-y-1">
                   <AnimatePresence>
                     {convs.map((conv) => (
-                      <motion.button
+                      <motion.div
                         key={conv.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -10 }}
-                        onClick={() => {
-                          onSelectConversation(conv.id);
-                          onClose?.();
-                        }}
                         className={`
-                          w-full flex items-start gap-3 p-3 rounded-xl text-left transition-colors group
+                          w-full flex items-start gap-3 p-3 rounded-xl transition-colors group cursor-pointer
                           ${currentConversationId === conv.id
                             ? 'bg-primary/10 ring-1 ring-primary/20'
                             : 'hover:bg-muted'
                           }
                         `}
+                        onClick={() => {
+                          onSelectConversation(conv.id);
+                          onClose?.();
+                        }}
                       >
                         <MessageSquare className={`
                           h-4 w-4 mt-0.5 shrink-0
@@ -194,9 +194,6 @@ export function ChatSidebar({
                           }`}>
                             {conv.title || 'Nueva conversación'}
                           </p>
-                          <p className={`${typography.bodySmall} text-muted-foreground capitalize`}>
-                            Modo: {conv.mode}
-                          </p>
                         </div>
 
                         <button
@@ -205,7 +202,7 @@ export function ChatSidebar({
                         >
                           <Trash2 className="h-3.5 w-3.5 text-destructive" />
                         </button>
-                      </motion.button>
+                      </motion.div>
                     ))}
                   </AnimatePresence>
                 </div>
