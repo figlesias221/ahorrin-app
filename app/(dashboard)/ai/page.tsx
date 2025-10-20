@@ -635,15 +635,7 @@ export default function AIPage() {
                                   })()}
                                 </>
                               ) : autoSummary ? (
-                                <div className="space-y-3">
-                                  <AutoSummaryRenderer summary={autoSummary} />
-                                  <div className="pt-2 mt-3 border-t border-border/50">
-                                    <p className="text-xs text-muted-foreground italic flex items-center gap-1.5">
-                                      <Sparkles className="h-3 w-3" />
-                                      Resumen generado automáticamente
-                                    </p>
-                                  </div>
-                                </div>
+                                <AutoSummaryRenderer summary={autoSummary} />
                               ) : isProcessing ? (
                                 <div className="flex items-center gap-2">
                                   <Loader2 className="h-4 w-4 animate-spin text-primary" />
