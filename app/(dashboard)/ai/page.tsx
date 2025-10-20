@@ -48,8 +48,20 @@ function AutoSummaryRenderer({ summary }: { summary: string }) {
   return (
     <div className="space-y-2 text-sm">
       {lines.map((line, idx) => {
-        // Headers (lines starting with emojis and **)
-        if (line.match(/^.*[📊📈💡✨🔄📅📁🏪💰⚖️🏦🔍].*/)) {
+        // Markdown headers (### text)
+        if (line.trim().startsWith('###')) {
+          const headerText = line.replace(/^###\s*/, '');
+          return (
+            <div key={idx} className="pt-3 first:pt-0">
+              <h3 className="text-base font-bold text-foreground">
+                <MarkdownText text={headerText} />
+              </h3>
+            </div>
+          );
+        }
+
+        // Headers (lines with emojis or starting with special keywords)
+        if (line.match(/^.*[📊📈💡✨🔄📅📁🏪💰⚖️🏦🔍].*/) || line.match(/^(Total|Resumen|Análisis|Predicción)/)) {
           return (
             <div key={idx} className="pt-2 first:pt-0">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
