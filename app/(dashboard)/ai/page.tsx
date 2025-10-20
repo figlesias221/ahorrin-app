@@ -129,6 +129,8 @@ export default function AIPage() {
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [conversationTitle, setConversationTitle] = useState<string | null>(null);
   const [input, setInput] = useState('');
+  const [initialMessages, setInitialMessages] = useState<UIMessage[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const transport = useMemo(() => new DefaultChatTransport({
@@ -138,6 +140,7 @@ export default function AIPage() {
 
   const { messages, status, error, sendMessage } = useChat({
     transport,
+    initialMessages,
     onError: (error) => {
       console.error('Chat error:', error);
     },
@@ -184,26 +187,65 @@ export default function AIPage() {
   }
 
   async function loadMessages(convId: string) {
+    setIsLoadingHistory(true);
     try {
       const supabase = createClient();
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('chat_messages')
         .select('*')
         .eq('conversation_id', convId)
         .order('created_at', { ascending: true });
 
-      // Note: In a full implementation, you'd populate the messages array here
-      // For now, useChat handles message state
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        // Transform DB messages to UIMessage format
+        const transformedMessages: UIMessage[] = data.map((msg: any) => {
+          const parts: any[] = [];
+
+          // Add text content as a part
+          if (msg.content) {
+            parts.push({
+              type: 'text',
+              text: msg.content
+            });
+          }
+
+          // Add tool calls if they exist
+          if (msg.tool_calls_metadata && Array.isArray(msg.tool_calls_metadata)) {
+            msg.tool_calls_metadata.forEach((tool: any) => {
+              parts.push({
+                type: `tool-${tool.name}`,
+                state: 'output-available',
+                output: tool.output
+              });
+            });
+          }
+
+          return {
+            id: msg.id,
+            role: msg.role,
+            parts,
+            createdAt: new Date(msg.created_at)
+          } as UIMessage;
+        });
+
+        setInitialMessages(transformedMessages);
+      } else {
+        setInitialMessages([]);
+      }
     } catch (error) {
       console.error('Error loading messages:', error);
+      setInitialMessages([]);
+    } finally {
+      setIsLoadingHistory(false);
     }
   }
 
   function handleSelectConversation(id: string | null) {
     setConversationId(id);
     setConversationTitle(null);
-    // Messages will be managed by backend persistence
-    // For now, switching conversations won't show old messages (they're not loaded)
+    setInitialMessages([]); // Clear messages for new conversation
   }
 
   function handlePromptSelect(prompt: string) {
@@ -318,7 +360,16 @@ export default function AIPage() {
 
         {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2">
-          {messages.length === 0 ? (
+          {isLoadingHistory ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="flex flex-col items-center gap-3">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className={`${typography.body} text-muted-foreground`}>
+                  Cargando conversación...
+                </p>
+              </div>
+            </div>
+          ) : messages.length === 0 ? (
             <div className="max-w-5xl mx-auto">
               <div className="flex flex-col items-center justify-center text-center mb-4">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/20 mb-4">
