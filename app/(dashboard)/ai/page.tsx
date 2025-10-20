@@ -269,7 +269,7 @@ export default function AIPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div key={conversationId || 'new'} className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-3 py-1.5 border-b border-border bg-surface shrink-0">
           <div className="flex items-center gap-3">
