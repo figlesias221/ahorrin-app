@@ -257,9 +257,9 @@ export default function AIPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface">
+        <div className="flex items-center justify-between px-3 py-1.5 border-b border-border bg-surface shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -305,10 +305,10 @@ export default function AIPage() {
         )}
 
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-3">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2">
           {messages.length === 0 ? (
             <div className="max-w-5xl mx-auto">
-              <div className="flex flex-col items-center justify-center text-center mb-8">
+              <div className="flex flex-col items-center justify-center text-center mb-4">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/20 mb-4">
                   <Sparkles className="h-12 w-12 text-primary" />
                 </div>
@@ -326,7 +326,7 @@ export default function AIPage() {
               />
             </div>
           ) : (
-            <div className="max-w-5xl mx-auto space-y-6">
+            <div className="max-w-5xl mx-auto space-y-4">
               <AnimatePresence>
                 {messages.map((message, index) => {
                   // Extract text parts
@@ -586,7 +586,7 @@ export default function AIPage() {
                       className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                       {message.role === 'user' ? (
-                        <div className="max-w-[80%] rounded-2xl px-5 py-3 bg-primary text-primary-foreground">
+                        <div className="max-w-[80%] rounded-2xl px-4 py-2 bg-primary text-primary-foreground">
                           <p className={typography.body}>{textContent}</p>
                         </div>
                       ) : (
@@ -606,7 +606,7 @@ export default function AIPage() {
 
                           {/* Show text response or generate summary */}
                           {(textContent || autoSummary || isProcessing || (!textContent && toolParts.length > 0)) && (
-                            <div className="rounded-2xl px-5 py-4 bg-surface ring-1 ring-border">
+                            <div className="rounded-2xl px-4 py-3 bg-surface ring-1 ring-border">
                               {textContent ? (
                                 <>
                                   <p className={`${typography.body} whitespace-pre-wrap`}>
@@ -661,7 +661,7 @@ export default function AIPage() {
                   animate={{ opacity: 1 }}
                   className="flex justify-start"
                 >
-                  <div className="bg-surface ring-1 ring-border rounded-2xl px-5 py-4">
+                  <div className="bg-surface ring-1 ring-border rounded-2xl px-4 py-3">
                     <Loader2 className="h-5 w-5 animate-spin text-primary" />
                   </div>
                 </motion.div>
@@ -673,19 +673,19 @@ export default function AIPage() {
         </div>
 
         {/* Input Form */}
-        <div className="border-t border-border p-4 bg-surface">
-          <form onSubmit={handleSubmit} className="max-w-5xl mx-auto flex gap-3">
+        <div className="border-t border-border p-3 bg-surface shrink-0">
+          <form onSubmit={handleSubmit} className="max-w-5xl mx-auto flex gap-2">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Pregunta sobre tus gastos..."
               disabled={isLoading}
-              className="flex-1 px-5 py-3 rounded-xl bg-background ring-1 ring-border focus:ring-2 focus:ring-primary outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex-1 px-4 py-2.5 rounded-xl bg-background ring-1 ring-border focus:ring-2 focus:ring-primary outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             />
             <button
               type="submit"
               disabled={isLoading || !input?.trim()}
-              className="px-5 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+              className="px-4 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
             >
               {isLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
