@@ -1,0 +1,13 @@
+node_modules
+.next
+.open-next
+.wrangler
+build.tar.gz
+ecosystem.config.js
+*.pdf
+coverage
+.git
+.env*
+!.env.example
+*.log
+.DS_Store
