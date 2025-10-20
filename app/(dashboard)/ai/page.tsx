@@ -247,7 +247,7 @@ export default function AIPage() {
   const ModeIcon = modeConfig[mode].icon;
 
   return (
-    <div className="flex h-[calc(100vh-theme(spacing.16)-theme(spacing.6))] overflow-hidden">
+    <div className="fixed inset-0 top-16 flex overflow-hidden bg-background">
       {/* Sidebar - Desktop */}
       <div className="hidden lg:block w-80 shrink-0">
         <ChatSidebar
