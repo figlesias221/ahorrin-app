@@ -609,9 +609,7 @@ export default function AIPage() {
                             <div className="rounded-2xl px-4 py-3 bg-surface ring-1 ring-border">
                               {textContent ? (
                                 <>
-                                  <p className={`${typography.body} whitespace-pre-wrap`}>
-                                    {textContent}
-                                  </p>
+                                  <AutoSummaryRenderer summary={textContent} />
                                   {/* Auto-detect and render charts */}
                                   {(() => {
                                     const chartData = detectChartData(textContent);
