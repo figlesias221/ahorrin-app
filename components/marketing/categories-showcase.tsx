@@ -10,35 +10,45 @@ export function CategoriesShowcase() {
       status: 'Activa',
       transactions: 45,
       total: 68450.50,
-      color: 'bg-success/10 text-success',
+      color: 'bg-emerald-500',
+      bgColor: 'bg-emerald-500/10',
+      textColor: 'text-emerald-600',
     },
     {
       name: 'Internet',
       status: 'Activa',
       transactions: 12,
       total: 22680.00,
-      color: 'bg-accent-purple/10 text-accent-purple',
+      color: 'bg-purple-500',
+      bgColor: 'bg-purple-500/10',
+      textColor: 'text-purple-600',
     },
     {
       name: 'Electricidad',
       status: 'Activa',
       transactions: 12,
       total: 15000.00,
-      color: 'bg-warning/10 text-warning',
+      color: 'bg-amber-500',
+      bgColor: 'bg-amber-500/10',
+      textColor: 'text-amber-600',
     },
     {
       name: 'Nafta',
       status: 'Activa',
       transactions: 22,
       total: 50412.70,
-      color: 'bg-accent-cyan/10 text-accent-cyan',
+      color: 'bg-cyan-500',
+      bgColor: 'bg-cyan-500/10',
+      textColor: 'text-cyan-600',
     },
     {
       name: 'Restaurantes',
       status: 'Activa',
       transactions: 35,
       total: 42750.00,
-      color: 'bg-error/10 text-error',
+      color: 'bg-rose-500',
+      bgColor: 'bg-rose-500/10',
+      textColor: 'text-rose-600',
     },
   ];
 
@@ -91,10 +101,10 @@ export function CategoriesShowcase() {
                 transition={{ delay: index * 0.1 }}
               >
                 {/* Category - Desktop */}
-                <div className="hidden md:grid grid-cols-10 gap-4 px-6 py-4 hover:bg-muted/30 transition-colors">
+                <div className={`hidden md:grid grid-cols-10 gap-4 px-6 py-4 hover:bg-muted/30 transition-colors ${category.bgColor}`}>
                   <div className="col-span-4 flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${category.color}`} />
-                    <span className="font-semibold">{category.name}</span>
+                    <div className={`w-5 h-5 rounded-full ${category.color} shadow-sm`} />
+                    <span className={`font-semibold ${category.textColor}`}>{category.name}</span>
                   </div>
                   <div className="col-span-2 text-center">
                     <span className="inline-flex items-center px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
@@ -110,11 +120,11 @@ export function CategoriesShowcase() {
                 </div>
 
                 {/* Category - Mobile */}
-                <div className="md:hidden px-4 py-4 hover:bg-muted/30 transition-colors">
+                <div className={`md:hidden px-4 py-4 hover:bg-muted/30 transition-colors ${category.bgColor}`}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${category.color}`} />
-                      <span className="font-semibold text-base">{category.name}</span>
+                      <div className={`w-5 h-5 rounded-full ${category.color} shadow-sm`} />
+                      <span className={`font-semibold text-base ${category.textColor}`}>{category.name}</span>
                     </div>
                     <span className="inline-flex items-center px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
                       {category.status}
