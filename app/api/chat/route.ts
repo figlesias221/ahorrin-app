@@ -43,15 +43,26 @@ export async function POST(request: Request) {
     // System prompt based on mode
     const systemPrompts = {
       quick: `Eres un asistente financiero experto. Proporciona respuestas rápidas y concisas (máximo 2-3 oraciones).
-Usa las herramientas solo cuando sean estrictamente necesarias. Responde en español.`,
+Usa las herramientas solo cuando sean estrictamente necesarias.
+IMPORTANTE: Después de usar cualquier herramienta, SIEMPRE genera una respuesta de texto explicando los resultados.
+Responde en español.`,
 
       deep: `Eres un asistente financiero experto con análisis profundo. Proporciona insights detallados, tendencias,
-patrones y recomendaciones personalizadas. Usa múltiples herramientas para análisis completos. Responde en español.`,
+patrones y recomendaciones personalizadas. Usa múltiples herramientas para análisis completos.
+IMPORTANTE: Después de usar cualquier herramienta, SIEMPRE genera una respuesta de texto explicando los resultados.
+Responde en español.`,
 
       adaptive: `Eres un asistente financiero experto. Adapta tu nivel de detalle según la pregunta:
 - Preguntas simples (ej: "cuánto gasté"): Respuesta directa y concisa
 - Preguntas analíticas (ej: "cómo puedo ahorrar"): Análisis profundo con insights y recomendaciones
-Usa las herramientas disponibles inteligentemente. Responde en español.`
+
+REGLAS OBLIGATORIAS:
+1. Usa las herramientas cuando necesites datos
+2. DESPUÉS de obtener resultados de herramientas, DEBES generar una respuesta explicando los datos al usuario
+3. NUNCA termines sin dar una respuesta de texto después de usar herramientas
+4. Interpreta y explica los datos de forma clara y útil
+
+Responde en español.`
     };
 
     const systemPrompt = systemPrompts[mode as keyof typeof systemPrompts] || systemPrompts.adaptive;
@@ -74,14 +85,14 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
       // EXISTING TOOLS (improved)
       getTransactionsByCategory: tool({
         description: 'Obtiene transacciones filtradas por categoría específica',
-        parameters: z.object({
+        inputSchema: z.object({
           categoryName: z.string().describe('Nombre de la categoría'),
           limit: z.number().optional().default(20).describe('Número de transacciones a retornar'),
         }),
         execute: async ({ categoryName, limit }) => {
           const { data, error } = await supabase
             .from('transactions')
-            .select('*, categories(name, type, color)')
+            .select('*, categories(name, color)')
             .eq('user_id', user.id)
             .eq('is_ignored', false)
             .ilike('categories.name', `%${categoryName}%`)
@@ -104,7 +115,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
 
       getTransactionsByDateRange: tool({
         description: 'Obtiene transacciones en un rango de fechas específico',
-        parameters: z.object({
+        inputSchema: z.object({
           startDate: z.string().describe('Fecha inicial (YYYY-MM-DD)'),
           endDate: z.string().describe('Fecha final (YYYY-MM-DD)'),
           type: z.enum(['expense', 'income', 'all']).optional().default('all'),
@@ -112,7 +123,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
         execute: async ({ startDate, endDate, type }) => {
           let query = supabase
             .from('transactions')
-            .select('*, categories(name, type, color)')
+            .select('*, categories(name, color)')
             .eq('user_id', user.id)
             .eq('is_ignored', false)
             .gte('date', startDate)
@@ -145,7 +156,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
 
       getCategorySummary: tool({
         description: 'Obtiene resumen de gastos agrupados por categoría con totales',
-        parameters: z.object({
+        inputSchema: z.object({
           startDate: z.string().optional().describe('Fecha inicial opcional'),
           endDate: z.string().optional().describe('Fecha final opcional'),
           type: z.enum(['expense', 'income', 'all']).optional().default('expense'),
@@ -192,7 +203,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
       // NEW TOOLS
       getTrendAnalysis: tool({
         description: 'Analiza tendencias de gastos e ingresos mes a mes con comparaciones',
-        parameters: z.object({
+        inputSchema: z.object({
           months: z.number().optional().default(6).describe('Número de meses a analizar'),
           type: z.enum(['expense', 'income', 'both']).optional().default('both'),
         }),
@@ -247,7 +258,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
 
       getSpendingByVendor: tool({
         description: 'Analiza gastos agrupados por vendor/comercio con frecuencia',
-        parameters: z.object({
+        inputSchema: z.object({
           limit: z.number().optional().default(10).describe('Top N vendors'),
           startDate: z.string().optional(),
           endDate: z.string().optional(),
@@ -297,7 +308,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
 
       getBudgetAnalysis: tool({
         description: 'Compara presupuestos establecidos vs gastos reales por categoría',
-        parameters: z.object({
+        inputSchema: z.object({
           period: z.enum(['monthly', 'yearly']).optional().default('monthly'),
         }),
         execute: async ({ period }) => {
@@ -357,7 +368,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
 
       getAccountsSummary: tool({
         description: 'Obtiene resumen de balance y actividad por cuenta bancaria',
-        parameters: z.object({}),
+        inputSchema: z.object({}),
         execute: async () => {
           const { data: accounts } = await supabase
             .from('accounts')
@@ -402,7 +413,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
 
       searchTransactions: tool({
         description: 'Búsqueda avanzada de transacciones por texto, monto o vendor',
-        parameters: z.object({
+        inputSchema: z.object({
           query: z.string().describe('Texto a buscar en vendor o description'),
           minAmount: z.number().optional().describe('Monto mínimo'),
           maxAmount: z.number().optional().describe('Monto máximo'),
@@ -411,7 +422,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
         execute: async ({ query, minAmount, maxAmount, limit }) => {
           let dbQuery = supabase
             .from('transactions')
-            .select('*, categories(name, type, color)')
+            .select('*, categories(name, color)')
             .eq('user_id', user.id)
             .eq('is_ignored', false)
             .or(`vendor.ilike.%${query}%,description.ilike.%${query}%`)
@@ -433,7 +444,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
 
       getRecurringTransactions: tool({
         description: 'Detecta gastos recurrentes (subscripciones, servicios fijos)',
-        parameters: z.object({
+        inputSchema: z.object({
           minOccurrences: z.number().optional().default(3).describe('Mínimo de ocurrencias para considerar recurrente'),
         }),
         execute: async ({ minOccurrences }) => {
@@ -482,7 +493,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
 
       comparePeriodsAnalysis: tool({
         description: 'Compara gastos/ingresos entre diferentes períodos de tiempo',
-        parameters: z.object({
+        inputSchema: z.object({
           comparison: z.enum(['month-vs-previous', 'month-vs-year-ago', 'year-vs-previous']).describe('Tipo de comparación'),
         }),
         execute: async ({ comparison }) => {
@@ -554,7 +565,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
 
       getPredictionsInsights: tool({
         description: 'Genera predicciones e insights basados en patrones de gasto',
-        parameters: z.object({}),
+        inputSchema: z.object({}),
         execute: async () => {
           // Get last 3 months data for predictions
           const threeMonthsAgo = subMonths(new Date(), 3);
@@ -605,17 +616,21 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
       system: systemPrompt,
       messages: coreMessages,
       tools,
+      toolChoice: 'auto', // Let model decide when to use tools
       maxTokens: config.maxTokens,
       temperature: config.temperature,
-      maxSteps: mode === 'deep' ? 5 : 3,
+      // Increase maxSteps to ensure model generates text after tools
+      maxSteps: mode === 'deep' ? 10 : 5,
       onFinish: async ({ text, toolCalls }) => {
-        // Save assistant message
-        await supabase.from('chat_messages').insert({
-          conversation_id: currentConversationId,
-          role: 'assistant',
-          content: text,
-          tool_calls_metadata: toolCalls ? JSON.stringify(toolCalls) : null,
-        });
+        // Save assistant message only if there's text
+        if (text) {
+          await supabase.from('chat_messages').insert({
+            conversation_id: currentConversationId,
+            role: 'assistant',
+            content: text,
+            tool_calls_metadata: toolCalls ? JSON.stringify(toolCalls) : null,
+          });
+        }
       },
     });
 
@@ -629,7 +644,7 @@ Usa las herramientas disponibles inteligentemente. Responde en español.`
       });
     }
 
-    return result.toDataStreamResponse({
+    return result.toUIMessageStreamResponse({
       headers: {
         'X-Conversation-Id': currentConversationId,
       }

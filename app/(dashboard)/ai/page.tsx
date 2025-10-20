@@ -247,7 +247,7 @@ export default function AIPage() {
   const ModeIcon = modeConfig[mode].icon;
 
   return (
-    <div className="flex h-[calc(100vh-theme(spacing.16)-theme(spacing.6))]">
+    <div className="flex h-[calc(100vh-theme(spacing.16)-theme(spacing.6))] overflow-hidden">
       {/* Sidebar - Desktop */}
       <div className="hidden lg:block w-80 shrink-0">
         <ChatSidebar
@@ -590,7 +590,7 @@ export default function AIPage() {
                           <p className={typography.body}>{textContent}</p>
                         </div>
                       ) : (
-                        <div className="max-w-[85%] space-y-3">
+                        <div className="max-w-[90%] space-y-3">
                           {/* Show tool calls */}
                           {toolParts.map((tool: any, i: number) => {
                             const toolName = tool.type?.replace('tool-', '') || 'Unknown';

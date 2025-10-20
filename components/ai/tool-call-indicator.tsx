@@ -78,11 +78,39 @@ export function ToolCallIndicator({ toolName, status, result }: ToolCallIndicato
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mt-2 p-4 rounded-xl bg-surface ring-1 ring-border"
+          className="mt-2 p-4 rounded-xl bg-surface ring-1 ring-border space-y-2"
         >
-          <pre className="text-xs text-muted-foreground overflow-x-auto">
-            {JSON.stringify(result, null, 2)}
-          </pre>
+          {/* Show summary for category data */}
+          {result.categorySummary && (
+            <div className="space-y-2">
+              <p className={`${typography.bodySmall} font-medium`}>Top Categorías:</p>
+              {result.categorySummary.slice(0, 5).map((cat: any, idx: number) => (
+                <div key={idx} className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: cat.color }}
+                    />
+                    <span>{cat.name}</span>
+                  </div>
+                  <span className="font-medium">${cat.amount.toFixed(2)}</span>
+                </div>
+              ))}
+              {result.total && (
+                <div className="pt-2 border-t border-border flex justify-between text-sm font-medium">
+                  <span>Total:</span>
+                  <span>${result.total.toFixed(2)}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Fallback to JSON for other data */}
+          {!result.categorySummary && (
+            <pre className="text-xs text-muted-foreground overflow-x-auto">
+              {JSON.stringify(result, null, 2)}
+            </pre>
+          )}
         </motion.div>
       )}
     </motion.div>
