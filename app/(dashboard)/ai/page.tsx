@@ -137,6 +137,7 @@ export default function AIPage() {
   }), [conversationId, mode]);
 
   const { messages, status, error, sendMessage } = useChat({
+    id: conversationId || 'new-chat',
     transport,
     onError: (error) => {
       console.error('Chat error:', error);
