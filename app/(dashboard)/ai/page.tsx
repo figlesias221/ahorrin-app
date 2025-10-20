@@ -137,7 +137,6 @@ export default function AIPage() {
   }), [conversationId, mode]);
 
   const { messages, status, error, sendMessage } = useChat({
-    id: conversationId || 'new-chat',
     transport,
     onError: (error) => {
       console.error('Chat error:', error);
@@ -203,8 +202,8 @@ export default function AIPage() {
   function handleSelectConversation(id: string | null) {
     setConversationId(id);
     setConversationTitle(null);
-    // Clear current messages when selecting new conversation
-    // In a full implementation, you'd reload messages for the selected conversation
+    // Messages will be managed by backend persistence
+    // For now, switching conversations won't show old messages (they're not loaded)
   }
 
   function handlePromptSelect(prompt: string) {
