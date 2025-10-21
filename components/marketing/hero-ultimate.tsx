@@ -43,7 +43,7 @@ export function HeroUltimate() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="relative"
           >
-            <div className="bg-card rounded-xl border-2 border-border shadow-xl overflow-hidden flex flex-col h-full">
+            <div className="bg-card rounded-xl border-2 border-primary/30 shadow-xl shadow-primary/10 overflow-hidden flex flex-col h-full hover:border-primary/50 hover:shadow-primary/20 transition-all duration-300">
               {/* Header */}
               <div className="bg-card p-3 border-b-2 border-border flex-shrink-0">
                 <div className="flex items-center justify-between gap-2.5">
@@ -160,7 +160,7 @@ export function HeroUltimate() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="relative"
           >
-            <div className="bg-card rounded-xl border border-border shadow-lg overflow-hidden flex flex-col h-full">
+            <div className="bg-card rounded-xl border-2 border-purple-500/30 shadow-xl shadow-purple-500/10 overflow-hidden flex flex-col h-full hover:border-purple-500/50 hover:shadow-purple-500/20 transition-all duration-300">
               {/* Header */}
               <div className="bg-card p-3 border-b border-border flex-shrink-0">
                 <div className="flex items-center justify-between gap-2.5">
@@ -272,7 +272,7 @@ export function HeroUltimate() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <div className="bg-card rounded-xl border border-border shadow-lg overflow-hidden flex flex-col h-full">
+            <div className="bg-card rounded-xl border-2 border-cyan-500/30 shadow-xl shadow-cyan-500/10 overflow-hidden flex flex-col h-full hover:border-cyan-500/50 hover:shadow-cyan-500/20 transition-all duration-300">
               {/* Header */}
               <div className="bg-card p-3 border-b border-border flex-shrink-0">
                 <div className="flex items-center justify-between gap-2.5">
