@@ -22,7 +22,6 @@ export function Navbar() {
 
   const navLinks = [
     { name: 'Features', href: '#features' },
-    { name: 'Cómo funciona', href: '#showcase' },
     { name: 'FAQ', href: '#faq' },
   ];
 

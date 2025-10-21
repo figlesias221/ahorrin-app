@@ -23,6 +23,7 @@ export default function SignupPage() {
   const [success, setSuccess] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
@@ -377,10 +378,33 @@ export default function SignupPage() {
               </AnimatePresence>
             </div>
 
+            {/* Terms and Conditions Checkbox */}
+            <div className="flex items-start gap-3 pt-2">
+              <input
+                id="terms"
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                disabled={loading}
+                className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              />
+              <label htmlFor="terms" className="text-sm text-muted-foreground leading-relaxed">
+                Acepto los{' '}
+                <Link
+                  href="/terminos"
+                  target="_blank"
+                  className="text-primary hover:underline font-medium"
+                >
+                  términos y condiciones
+                </Link>
+                . Entiendo que Gasty no brinda asesoramiento financiero y soy responsable de mis propios datos bancarios.
+              </label>
+            </div>
+
             <Button
               type="submit"
               className="w-full mt-6"
-              disabled={loading || !!emailError || (confirmPassword && password !== confirmPassword)}
+              disabled={loading || !!emailError || (confirmPassword && password !== confirmPassword) || !termsAccepted}
             >
               {loading ? (
                 <>
@@ -409,7 +433,7 @@ export default function SignupPage() {
                 variant="outline"
                 className="w-full flex items-center justify-center gap-3"
                 onClick={handleGoogleSignup}
-                disabled={loading}
+                disabled={loading || !termsAccepted}
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24">
                   <path

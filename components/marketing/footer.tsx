@@ -14,7 +14,7 @@ export function Footer() {
               <span className="text-2xl font-bold">Gasty</span>
             </Link>
             <p className="text-sm  max-w-xs leading-relaxed">
-              Organizá tus finanzas automáticamente. Hecho para Uruguay.
+              Organizá tus finanzas automáticamente. Hecho para 🇺🇾
             </p>
           </div>
 
@@ -71,7 +71,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/terminos"
                   className="text-sm   transition-colors"
                 >
                   Términos de uso
@@ -85,7 +85,7 @@ export function Footer() {
         <div className="py-6 border-t border-border">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm ">
-              © {new Date().getFullYear()} Gasty. Hecho en Uruguay.
+              © {new Date().getFullYear()} Gasty. Hecho en 🇺🇾
             </p>
             <p className="text-sm ">
               Control financiero simple y automático
