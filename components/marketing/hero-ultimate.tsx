@@ -20,7 +20,7 @@ export function HeroUltimate() {
             transition={{ duration: 0.5 }}
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-3 sm:mb-4 md:mb-6 px-4"
           >
-            Control financiero en 3 pasos
+            Control de Gastos y Finanzas Personales Inteligente
           </motion.h1>
 
           <motion.p
@@ -29,7 +29,7 @@ export function HeroUltimate() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-sm sm:text-base md:text-lg lg:text-xl  max-w-2xl mx-auto px-6"
           >
-            Ingresá tus gastos a mano o subí tu extracto bancario. Vos elegís.
+            La mejor app para controlar gastos en Uruguay. Importá extractos de BBVA, Scotia e Itaú o ingresá manualmente. Categorización automática con IA.
           </motion.p>
         </div>
 

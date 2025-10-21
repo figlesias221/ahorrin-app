@@ -12,28 +12,46 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://gasty-app.xyz221.workers.dev'),
+  metadataBase: new URL('https://www.gasty.app'),
   title: {
     default: "Gasty - Gestión Financiera Personal Inteligente | Control de Gastos",
     template: "%s | Gasty"
   },
-  description: "Controla tus finanzas personales con inteligencia artificial. Importa extractos bancarios (BBVA, Scotia, Itaú), categorización automática, gráficas en tiempo real y reportes personalizados. Ahorra tiempo y toma mejores decisiones financieras.",
+  description: "App para controlar gastos y finanzas personales en Uruguay. Importá extractos bancarios de BBVA, Scotia, Itaú automáticamente. Categorización inteligente con IA, gráficas en tiempo real y reportes personalizados. Gratis y sin conectar tu banco.",
   keywords: [
-    "gestión financiera personal",
+    // Primary keywords (alto volumen)
+    "finanzas personales",
     "control de gastos",
-    "finanzas personales Uruguay",
-    "categorización automática",
-    "extractos bancarios",
-    "BBVA Uruguay",
-    "Scotiabank Uruguay",
-    "Itaú Uruguay",
-    "dashboard financiero",
+    "app finanzas",
+    "gestión financiera personal",
     "presupuesto personal",
-    "análisis de gastos",
-    "reportes financieros",
-    "ahorro personal",
-    "finanzas inteligentes",
-    "app finanzas Uruguay"
+
+    // Long-tail commercial (alta conversión)
+    "app para controlar gastos uruguay",
+    "como organizar finanzas personales uruguay",
+    "mejor app finanzas personales uruguay",
+    "app control gastos gratis",
+    "categorizar gastos automaticamente",
+    "app presupuesto familiar uruguay",
+
+    // Bank-specific (geo-targeted)
+    "extracto bancario bbva uruguay",
+    "scotiabank uruguay",
+    "itau uruguay extracto",
+    "brou extracto bancario",
+    "importar extracto bancario",
+
+    // Feature-based
+    "categorizar transacciones bancarias",
+    "dashboard financiero personal",
+    "graficas gastos mensuales",
+    "inteligencia artificial finanzas",
+
+    // General Uruguay finance
+    "finanzas personales Uruguay",
+    "ahorro personal uruguay",
+    "app finanzas Uruguay",
+    "gestionar gastos mensuales"
   ],
   authors: [{ name: "Gasty" }],
   creator: "Gasty",
@@ -46,9 +64,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "es_UY",
-    url: "https://gasty-app.xyz221.workers.dev",
-    title: "Gasty - Gestión Financiera Personal Inteligente",
-    description: "Control total de tus finanzas. Importa extractos, categorización automática con IA, gráficas en tiempo real. Compatible con BBVA, Scotia e Itaú.",
+    url: "https://www.gasty.app",
+    title: "Gasty - App Control de Gastos y Finanzas Personales Uruguay",
+    description: "La mejor app para controlar gastos en Uruguay. Importá extractos de BBVA, Scotia, Itaú. Categorización automática con IA, gráficas y reportes. Gratis.",
     siteName: "Gasty",
     images: [
       {
@@ -61,8 +79,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gasty - Gestión Financiera Personal Inteligente",
-    description: "Control total de tus finanzas. Importa extractos, categorización automática con IA, gráficas en tiempo real.",
+    title: "Gasty - App Control de Gastos y Finanzas Personales Uruguay",
+    description: "La mejor app para controlar gastos en Uruguay. Importá extractos de BBVA, Scotia, Itaú. Categorización automática con IA. Gratis.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -90,11 +108,13 @@ export default function RootLayout({
   return (
     <html lang="es-UY" suppressHydrationWarning>
       <head>
-        <link rel="canonical" href="https://gasty-app.xyz221.workers.dev" />
+        <link rel="canonical" href="https://www.gasty.app" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-        <link rel="alternate icon" type="image/svg+xml" href="/logo.svg" />
-        <link rel="apple-touch-icon" href="/logo.svg" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#3b82f6" />
         <script
           dangerouslySetInnerHTML={{

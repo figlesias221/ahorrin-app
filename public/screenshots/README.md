@@ -92,12 +92,41 @@ Necesitas tomar 6 screenshots de la aplicación para mostrar en la landing page.
 
 ---
 
-## Opcional: Optimización de imágenes
+## Optimización de Imágenes ✅
 
-Si quieres optimizar las imágenes para mejor performance:
+**COMPLETADO**: Todas las screenshots han sido optimizadas a WebP con ahorros de 66-78%
 
-```bash
-npm install -D sharp
+| Screenshot | PNG Original | WebP Optimizado | Ahorro |
+|-----------|--------------|-----------------|--------|
+| dashboard | 222KB | 61KB | 72.6% |
+| categories | 393KB | 96KB | 75.6% |
+| transactions | 352KB | 80KB | 77.2% |
+| upload | 327KB | 85KB | 74.0% |
+| summary | 199KB | 52KB | 73.7% |
+| rules | 326KB | 70KB | 78.6% |
+
+### Cómo usar las imágenes optimizadas:
+
+Usa el componente `OptimizedImage` para servir automáticamente WebP con fallback a PNG:
+
+```tsx
+import { OptimizedImage } from '@/components/optimized-image';
+
+<OptimizedImage
+  src="/screenshots/dashboard.webp"
+  alt="Gasty Dashboard - Vista General Financiera"
+  width={1200}
+  height={800}
+  loading="lazy"
+/>
 ```
 
-Next.js optimizará automáticamente las imágenes al usar el componente `<Image>`.
+### Re-optimizar screenshots nuevos:
+
+Si agregas nuevos screenshots, ejecuta:
+
+```bash
+node scripts/optimize-screenshots.mjs
+```
+
+Esto generará automáticamente versiones WebP optimizadas.

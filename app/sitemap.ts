@@ -1,10 +1,19 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://gasty-app.xyz221.workers.dev';
+  const baseUrl = 'https://www.gasty.app';
   const currentDate = new Date();
 
+  // Blog posts (will be dynamically loaded from content later)
+  const blogPosts = [
+    {
+      slug: 'organizar-finanzas-personales-uruguay-2025',
+      date: '2025-10-21',
+    },
+  ];
+
   return [
+    // Main pages
     {
       url: baseUrl,
       lastModified: currentDate,
@@ -15,7 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/login`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.5,
     },
     {
       url: `${baseUrl}/signup`,
@@ -23,18 +32,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
-    // Add more routes as needed
+
+    // Blog pages
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    ...blogPosts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+
+    // Bank-specific landing pages (to be created)
     // {
-    //   url: `${baseUrl}/pricing`,
+    //   url: `${baseUrl}/bbva`,
     //   lastModified: currentDate,
     //   changeFrequency: 'monthly',
-    //   priority: 0.7,
+    //   priority: 0.8,
     // },
     // {
-    //   url: `${baseUrl}/blog`,
+    //   url: `${baseUrl}/scotiabank`,
     //   lastModified: currentDate,
-    //   changeFrequency: 'weekly',
-    //   priority: 0.6,
+    //   changeFrequency: 'monthly',
+    //   priority: 0.8,
+    // },
+    // {
+    //   url: `${baseUrl}/itau`,
+    //   lastModified: currentDate,
+    //   changeFrequency: 'monthly',
+    //   priority: 0.8,
     // },
   ];
 }
