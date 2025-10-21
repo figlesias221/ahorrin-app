@@ -8,7 +8,36 @@ import { Button } from '@/components/ui/button';
 export function HeroMobile() {
   return (
     <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-24 pb-12 px-4">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-muted/10 to-background" />
+      {/* Vibrant animated background */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-background to-cyan-500/10" />
+
+        {/* Floating orbs */}
+        <motion.div
+          className="absolute -top-20 -left-20 w-64 h-64 bg-gradient-to-br from-violet-500/30 to-purple-500/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-20 -right-20 w-72 h-72 bg-gradient-to-br from-cyan-500/30 to-blue-500/30 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.4, 0.6, 0.4],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
 
       <div className="max-w-md mx-auto w-full">
         {/* Header */}
@@ -35,10 +64,10 @@ export function HeroMobile() {
           className="mb-8 space-y-3"
         >
           {/* Step 1 */}
-          <div className="bg-card rounded-2xl border-2 border-border shadow-lg p-4">
+          <div className="bg-card rounded-2xl border-2 border-violet-500/20 shadow-lg shadow-violet-500/10 p-4 hover:border-violet-500/40 transition-colors">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
-                <Upload className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-500/50">
+                <Upload className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-bold text-sm">1. Ingresá gastos</div>
@@ -67,10 +96,10 @@ export function HeroMobile() {
           </div>
 
           {/* Step 2 */}
-          <div className="bg-card rounded-2xl border-2 border-border shadow-lg p-4">
+          <div className="bg-card rounded-2xl border-2 border-blue-500/20 shadow-lg shadow-blue-500/10 p-4 hover:border-blue-500/40 transition-colors">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
-                <Zap className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/50">
+                <Zap className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-bold text-sm">2. Categorizá auto</div>
@@ -101,10 +130,10 @@ export function HeroMobile() {
           </div>
 
           {/* Step 3 */}
-          <div className="bg-card rounded-2xl border-2 border-border shadow-lg p-4">
+          <div className="bg-card rounded-2xl border-2 border-cyan-500/20 shadow-lg shadow-cyan-500/10 p-4 hover:border-cyan-500/40 transition-colors">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
-                <BarChart3 className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-cyan-500/50">
+                <BarChart3 className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-bold text-sm">3. Analizá claro</div>
@@ -149,7 +178,7 @@ export function HeroMobile() {
           className="space-y-4"
         >
           <Link href="/signup" className="block">
-            <Button size="lg" className="w-full h-14 text-lg font-bold shadow-xl shadow-primary/25">
+            <Button size="lg" className="w-full h-14 text-lg font-bold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-2xl shadow-violet-500/50">
               Empezar gratis ahora
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>

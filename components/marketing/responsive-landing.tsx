@@ -7,6 +7,7 @@ import { IngestionShowcase } from './ingestion-showcase';
 import { CategoriesShowcase } from './categories-showcase';
 import { ChartsShowcase } from './charts-showcase';
 import { AIAssistantShowcase } from './ai-assistant-showcase';
+import { BlogSection } from './blog-section';
 import { FAQReal } from './faq-real';
 import { FeaturesMobile } from './features-mobile';
 import { ShowcaseMobile } from './showcase-mobile';
@@ -42,6 +43,7 @@ export function ResponsiveLanding() {
         <HeroMobile />
         <FeaturesMobile />
         <ShowcaseMobile />
+        <BlogSection />
         <FAQReal />
       </>
     );
@@ -55,6 +57,7 @@ export function ResponsiveLanding() {
       <CategoriesShowcase />
       <ChartsShowcase />
       <AIAssistantShowcase />
+      <BlogSection />
       <FAQReal />
     </>
   );
