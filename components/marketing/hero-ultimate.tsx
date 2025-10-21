@@ -417,16 +417,11 @@ export function HeroUltimate() {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="text-center space-y-6"
         >
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-            <Link href="/signup" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold">
+          <div className="flex justify-center px-4">
+            <Link href="/signup">
+              <Button size="lg" className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold">
                 Empezar gratis ahora
                 <ArrowRight className="ml-2 w-4 sm:w-5 h-4 sm:h-5" />
-              </Button>
-            </Link>
-            <Link href="#showcase" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold">
-                Ver más ejemplos
               </Button>
             </Link>
           </div>
