@@ -253,7 +253,7 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <main className="min-h-screen">
+      <main className="min-h-screen overflow-x-hidden">
         <Navbar />
         <ResponsiveLanding />
         <Footer />

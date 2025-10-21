@@ -21,7 +21,7 @@ export function FAQReal() {
     {
       question: '¿Qué bancos uruguayos están soportados?',
       answer:
-        'Soportamos los principales bancos uruguayos: ITAÚ, BBVA, Scotiabank, BROU, Santander y Heritage. Puedes subir extractos en formato PDF, Excel o CSV de cualquiera de estos bancos, y Gasty los procesará automáticamente.',
+        'Soportamos los principales bancos uruguayos: ITAÚ, BBVA, Scotiabank, BROU, Santander y Heritage. Puedes subir extractos en formato PDF, Excel o CSV de cualquiera de estos bancos, y Gasty los procesará automáticamente. Si querés agregar otro proveedor, escribinos a soporte@gasty.app',
     },
     {
       question: '¿Mis datos están seguros?',

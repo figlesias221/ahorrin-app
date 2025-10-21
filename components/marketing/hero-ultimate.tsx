@@ -29,7 +29,7 @@ export function HeroUltimate() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-sm sm:text-base md:text-lg lg:text-xl  max-w-2xl mx-auto px-6"
           >
-            La mejor app para controlar gastos en Uruguay. Importá extractos de BBVA, Scotia e Itaú o ingresá manualmente. Categorización automática con IA.
+            La mejor app para controlar gastos en 🇺🇾. Importá extractos de BBVA, Scotia e Itaú o ingresá manualmente. Categorización automática.
           </motion.p>
         </div>
 

@@ -34,11 +34,11 @@ Anotá TODOS tus ingresos:
 
 **Ejemplo Real Uruguay 2025**:
 ```
-Sueldo líquido:        $55,000
-Aguinaldo/12:          $ 4,583
-Freelance promedio:    $10,000
+Sueldo líquido:        $35,000
+Aguinaldo/12:          $ 2,917
+Freelance promedio:    $ 5,000
 ----------------------------
-TOTAL MENSUAL:         $69,583
+TOTAL MENSUAL:         $42,917
 ```
 
 **Pro tip**: Si tenés ingresos variables (freelance), usá el promedio de los últimos 6 meses para ser conservador.
@@ -78,25 +78,25 @@ Ahora viene lo importante: entender en QUÉ gastás tu plata. Las categorías b�
 **Ejemplo Real de Gastos - Montevideo 2025**:
 ```
 GASTOS FIJOS:
-Alquiler 1 dormitorio (Pocitos):     $28,000
-UTE (promedio):                       $ 2,500
-OSE:                                  $   800
-Antel (fibra + móvil):                $ 2,400
-Mutualista:                           $ 3,200
+Alquiler 1 dormitorio (barrio):      $18,000
+UTE (promedio):                       $ 2,000
+OSE:                                  $   700
+Antel (fibra + móvil):                $ 1,800
+Mutualista:                           $ 2,800
 STM Común:                            $ 1,650
 --------------------------------------------
-Subtotal Fijos:                       $38,550
+Subtotal Fijos:                       $26,950
 
 GASTOS VARIABLES:
-Supermercado (Disco/Devoto):          $15,000
-Delivery/Salidas:                     $ 5,000
-Ropa/Personal:                        $ 3,000
-Netflix/Spotify/otros:                $ 1,200
-Imprevistos:                          $ 2,000
+Supermercado:                         $10,000
+Delivery/Salidas:                     $ 3,000
+Ropa/Personal:                        $ 2,000
+Netflix/Spotify/otros:                $ 1,000
+Imprevistos:                          $ 1,500
 --------------------------------------------
-Subtotal Variables:                   $26,200
+Subtotal Variables:                   $17,500
 
-TOTAL GASTOS:                         $64,750
+TOTAL GASTOS:                         $44,450
 ```
 
 ## Paso 2: Creá tu Presupuesto Personal (El Plan de Acción)
@@ -112,11 +112,11 @@ Este método divide tus ingresos en 3 categorías:
 - **20% - Ahorro y Deudas**: Fondo emergencia, inversiones, pagar deudas
 
 **Aplicado a Uruguay 2025**:
-Con ingresos de $69,583:
+Con ingresos de $42,917:
 ```
-50% Necesidades:  $34,791
-30% Deseos:       $20,875
-20% Ahorro:       $13,917
+50% Necesidades:  $21,459
+30% Deseos:       $12,875
+20% Ahorro:       $ 8,583
 ```
 
 **PERO**: Este método es una guía. En Uruguay, con el costo de vida actual, muchas veces las necesidades superan el 50%. Ajustá según tu realidad:
@@ -137,8 +137,8 @@ En vez de ahorrar lo que "sobra" (spoiler: nunca sobra), hacé esto:
 2. RECIÉN después pagá el resto
 
 **Ejemplo práctico**:
-- Cobrás $55,000 → Transferís $8,250 (15%) a cuenta de ahorro
-- Vivís con los $46,750 restantes
+- Cobrás $35,000 → Transferís $5,250 (15%) a cuenta de ahorro
+- Vivís con los $29,750 restantes
 
 **Herramientas en Uruguay 2025**:
 - **BBVA**: Cuenta Ahorro Programado
@@ -152,13 +152,13 @@ Asigná un límite mensual a cada categoría de gasto variable:
 
 ```
 CATEGORÍA              LÍMITE     ACTUAL    DIFERENCIA
-Supermercado          $12,000    $15,000    -$3,000 ❌
-Delivery/Salidas      $ 4,000    $ 5,000    -$1,000 ❌
-Ropa                  $ 2,000    $ 3,000    -$1,000 ❌
-Entretenimiento       $ 1,500    $ 1,200    +$  300 ✅
+Supermercado          $ 8,000    $10,000    -$2,000 ❌
+Delivery/Salidas      $ 2,500    $ 3,000    -$  500 ❌
+Ropa                  $ 1,500    $ 2,000    -$  500 ❌
+Entretenimiento       $ 1,000    $ 1,000         $0 ✅
 ```
 
-¿Ves el problema? Estás gastando $5,000 de más por mes. Ahí está tu ahorro perdido.
+Aquí se puede identificar dónde ajustar el presupuesto. Estás gastando $3,000 de más por mes en categorías variables.
 
 ## Paso 3: Automatizá tus Finanzas (Trabajá Menos, Ahorrá Más)
 
@@ -213,19 +213,19 @@ Son gastos chicos que parecen inofensivos pero suman MUCHO:
 
 **Ejemplo Real Uruguay**:
 ```
-Café diario Starbucks ($180 × 22 días):   $ 3,960
-Delivery almuerzo (2× semana × 4):        $ 4,000
-Snacks kiosco ($100 × 20 días):           $ 2,000
-Taxi en vez de bus (2× semana × 4):       $ 1,600
+Café diario ($150 × 22 días):             $ 3,300
+Delivery almuerzo (2× semana × 4):        $ 3,200
+Snacks kiosco ($80 × 20 días):            $ 1,600
+Taxi en vez de bus (2× semana × 4):       $ 1,200
 -----------------------------------------------
-TOTAL MENSUAL:                             $11,560
-TOTAL ANUAL:                              $138,720 🤯
+TOTAL MENSUAL:                             $ 9,300
+TOTAL ANUAL:                              $111,600
 ```
 
 **Soluciones**:
-- ☕ Café en casa → ahorras $3,500/mes
-- 🍱 Vianda casera → ahorras $2,500/mes
-- 🚌 Bus en vez de Uber → ahorras $1,200/mes
+- ☕ Café en casa → ahorras $2,800/mes
+- 🍱 Vianda casera → ahorras $2,000/mes
+- 🚌 Bus en vez de taxi → ahorras $900/mes
 
 ### 4.2. Renegocia tus Servicios (5 llamadas = $5,000 anuales)
 
@@ -238,7 +238,7 @@ TOTAL ANUAL:                              $138,720 🤯
 
 ### 4.3. Compará Comisiones Bancarias
 
-Las comisiones bancarias en Uruguay son CARAS:
+Las comisiones bancarias varían significativamente entre instituciones:
 
 **Comparativa 2025**:
 ```
@@ -276,10 +276,10 @@ Antes de invertir, viajes o lujos, NECESITÁS un fondo de emergencia.
 **Meta Ideal**: 6 meses de gastos
 **Meta Premium**: 12 meses de gastos
 
-**Ejemplo con gastos de $65,000/mes**:
-- Mínimo: $195,000
-- Ideal: $390,000
-- Premium: $780,000
+**Ejemplo con gastos de $44,450/mes**:
+- Mínimo: $133,350
+- Ideal: $266,700
+- Premium: $533,400
 
 ### 5.2. ¿Dónde Guardar tu Fondo?
 
@@ -301,14 +301,14 @@ Fondos Monetarios       24-48hs     4.2% anual     Bajo
 
 ### 5.3. Cómo Armar tu Fondo (Plan 12 Meses)
 
-Si tu meta es $390,000 en 12 meses:
+Si tu meta es $266,700 en 12 meses:
 ```
-$390,000 ÷ 12 = $32,500/mes
+$266,700 ÷ 12 = $22,225/mes
 ```
 
 **Estrategia más realista** (24 meses):
 ```
-$390,000 ÷ 24 = $16,250/mes
+$266,700 ÷ 24 = $11,113/mes
 ```
 
 **Micro-hábitos que suman**:
@@ -337,9 +337,9 @@ El 42% de los uruguayos tiene deudas de tarjeta de crédito. Si sos parte de ese
 **Ejemplo Real Uruguay**:
 ```
 DEUDA                MONTO      TASA      MÉTODO
-TC Scotiabank       $45,000     52%      Avalancha ←
-TC BBVA             $28,000     48%
-Préstamo BROU       $85,000     18%      Bola Nieve ←
+TC Scotiabank       $35,000     52%      Avalancha ←
+TC BBVA             $20,000     48%
+Préstamo BROU       $60,000     18%      Bola Nieve ←
 ```
 
 ### 6.2. Refinanciación (Última Opción)
@@ -348,7 +348,7 @@ Si las tasas de TC te están matando (50%+), considerá:
 - **Préstamo personal** (18-25%) para pagar las TC
 - **Reperfilamiento** (pedílo al banco directamente)
 
-**CUIDADO**: Solo si vas a cambiar tus hábitos. Si no, estás patéando el problema.
+**Importante**: Esta estrategia funciona mejor cuando se acompaña de un cambio de hábitos de consumo.
 
 ## Paso 7: Herramientas y Apps Recomendadas (Uruguay 2025)
 
@@ -410,7 +410,7 @@ Organizar tus finanzas no es "una vez y listo". Es un hábito.
 ## Errores Comunes (Y Cómo Evitarlos)
 
 ### ❌ Error #1: Ser Demasiado Restrictivo
-**Solución**: Incluí un presupuesto de "caprichos" ($2,000-5,000). Si te privás de todo, vas a abandonar.
+**Solución**: Incluí un presupuesto de "caprichos" ($1,500-3,000). Un presupuesto muy restrictivo es difícil de mantener a largo plazo.
 
 ### ❌ Error #2: No Trackear Gastos en Efectivo
 **Solución**: Pedí ticket siempre. Usá apps para registrar gastos en efectivo.
@@ -470,7 +470,7 @@ La diferencia entre estar "a las corridas" con la plata y tener tranquilidad fin
 
 ---
 
-**¿Te resultó útil esta guía?** Compartila con alguien que necesite organizar sus finanzas. Un café menos, una vida financiera más tranquila 💪
+**¿Te resultó útil esta guía?** Compartila con alguien que necesite organizar sus finanzas.
 
 ---
 
