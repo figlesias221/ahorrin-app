@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     default: "Gasty - Gestión Financiera Personal Inteligente | Control de Gastos",
     template: "%s | Gasty"
   },
-  description: "App para controlar gastos y finanzas personales en Uruguay. Importá extractos bancarios de BBVA, Scotia, Itaú automáticamente. Categorización inteligente, gráficas en tiempo real y reportes personalizados. Gratis y sin conectar tu banco.",
+  description: "App para controlar gastos y finanzas personales en Uruguay. Importá extractos bancarios en PDF o CSV de cualquier banco. Gráficas en tiempo real y reportes personalizados. Gratis y sin conectar tu banco.",
   keywords: [
     // Primary keywords (alto volumen)
     "finanzas personales",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     locale: "es_UY",
     url: "https://www.gasty.app",
     title: "Gasty - App Control de Gastos y Finanzas Personales Uruguay",
-    description: "La mejor app para controlar gastos en Uruguay. Importá extractos de BBVA, Scotia, Itaú. Categorización automática, gráficas y reportes. Gratis.",
+    description: "La mejor app para controlar gastos en Uruguay. Importá extractos PDF/CSV de cualquier banco. Gráficas en tiempo real y reportes. Gratis.",
     siteName: "Gasty",
     images: [
       {
@@ -84,7 +84,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Gasty - App Control de Gastos y Finanzas Personales Uruguay",
-    description: "La mejor app para controlar gastos en Uruguay. Importá extractos de BBVA, Scotia, Itaú. Categorización automática. Gratis.",
+    description: "La mejor app para controlar gastos en Uruguay. Importá extractos PDF/CSV de cualquier banco. Gráficas y reportes. Gratis.",
     images: ["/og-image.png"],
   },
   robots: {
