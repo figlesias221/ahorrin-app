@@ -9,6 +9,25 @@ type BankType = 'bbva' | 'scotia' | 'itau-master' | 'itau-visa' | 'itau-account'
 
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY: Check if PDF bank statements are enabled
+    // Disabled by default for privacy reasons (PDFs contain excessive PII)
+    const enableBankStatementPDF = process.env.NEXT_PUBLIC_ENABLE_BANK_STATEMENT_PDF === 'true';
+
+    if (!enableBankStatementPDF) {
+      return NextResponse.json(
+        {
+          success: false,
+          transactions: [],
+          errors: [
+            '🔒 PDFs de extractos bancarios están deshabilitados por seguridad.',
+            'Por favor usa CSV/XLS exportado desde tu banco, o entrada manual.',
+            'Estos archivos contienen información sensible innecesaria (número de cuenta, saldo, etc.).'
+          ]
+        },
+        { status: 403 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const bankType = formData.get('bankType') as BankType | null;

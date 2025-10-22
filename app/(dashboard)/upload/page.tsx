@@ -13,6 +13,8 @@ import { QuickCategoryModal } from '@/components/upload/QuickCategoryModal';
 import { QuickRuleModal } from '@/components/upload/QuickRuleModal';
 import { AddToRuleModal } from '@/components/upload/AddToRuleModal';
 import { CustomBankModal } from '@/components/upload/CustomBankModal';
+import { PrivacyNotice } from '@/components/upload/PrivacyNotice';
+import { BankExportGuide } from '@/components/upload/BankExportGuide';
 import { parseStatement, validateTransactions, deduplicateTransactions, type ParsedTransaction, type ParserResult } from '@/lib/parsers/bank-statements';
 import { createClient } from '@/lib/supabase/client';
 import { formatDate } from '@/lib/utils/formatters';
@@ -38,6 +40,9 @@ interface FileWithData {
 }
 
 export default function UploadPage() {
+  // Feature flag: Check if PDF bank statements are enabled (disabled by default for privacy)
+  const enableBankStatementPDF = process.env.NEXT_PUBLIC_ENABLE_BANK_STATEMENT_PDF === 'true';
+
   const [files, setFiles] = useState<File[]>([]);
   const [fileNames, setFileNames] = useState<Record<number, string>>({}); // index -> edited name
   const [dragging, setDragging] = useState(false);
@@ -593,7 +598,8 @@ export default function UploadPage() {
     setDragging(false);
 
     const droppedFiles = Array.from(e.dataTransfer.files);
-    const validExtensions = ['.csv', '.xls', '.xlsx', '.pdf'];
+    // Security: PDF bank statements disabled by default for privacy
+    const validExtensions = enableBankStatementPDF ? ['.csv', '.xls', '.xlsx', '.pdf'] : ['.csv', '.xls', '.xlsx'];
     const validFiles = droppedFiles.filter(file =>
       validExtensions.some(ext => file.name.toLowerCase().endsWith(ext))
     );
@@ -608,7 +614,8 @@ export default function UploadPage() {
       setFileNames(initialNames);
       parseFiles(validFiles);
     } else {
-      toast.error('Por favor sube archivos CSV, XLS/XLSX o PDF válidos', 'Archivos inválidos');
+      const allowedFormats = enableBankStatementPDF ? 'CSV, XLS/XLSX o PDF' : 'CSV o XLS/XLSX';
+      toast.error(`Por favor sube archivos ${allowedFormats} válidos`, 'Archivos inválidos');
     }
   };
 
@@ -650,10 +657,12 @@ export default function UploadPage() {
       }
 
       if (!fetchedCategories || fetchedCategories.length === 0) {
-        throw new Error('No tienes categorías creadas. Por favor crea al menos una categoría primero.');
+        console.warn('No categories found, transactions will be imported without categories');
+        setCategories([]);
+        toast.info('No tienes categorías creadas. Las transacciones se importarán sin categoría.', 'Sin categorías');
+      } else {
+        setCategories(fetchedCategories.map(c => ({ id: c.id, name: c.name, color: c.color, type: c.type, parentId: c.parent_id })));
       }
-
-      setCategories(fetchedCategories.map(c => ({ id: c.id, name: c.name, color: c.color, type: c.type, parentId: c.parent_id })));
 
       // Parse each file separately
       const parsedFilesData: FileWithData[] = [];
@@ -885,7 +894,8 @@ export default function UploadPage() {
       }
 
       if (!categories || categories.length === 0) {
-        throw new Error('No tienes categorías creadas. Por favor crea al menos una categoría primero.');
+        console.warn('No categories found, transactions will be imported without categories');
+        toast.info('No tienes categorías creadas. Las transacciones se importarán sin categoría.', 'Sin categorías');
       }
 
       const errors: string[] = [];
@@ -975,7 +985,9 @@ export default function UploadPage() {
           }
 
           // Get category from selectedCategories using global index
-          let categoryId = selectedCategories[globalTxIndex];
+          // Ensure empty strings are converted to null (PostgreSQL UUID columns don't accept "")
+          let categoryId = selectedCategories[globalTxIndex] || null;
+          if (categoryId === '') categoryId = null;
           let confidenceScore = 1.0;
 
           // If user didn't select, try automatic rules
@@ -1046,7 +1058,7 @@ export default function UploadPage() {
 
           transactionsToInsert.push({
             user_id: user.id,
-            category_id: categoryId || null, // Allow null for uncategorized
+            category_id: categoryId || null, // Allow null for uncategorized (already sanitized above)
             date: tx.date,
             vendor: tx.vendor,
             amount: tx.amount,
@@ -1302,6 +1314,12 @@ export default function UploadPage() {
         </motion.div>
       </motion.div>
 
+      {/* Privacy Notice */}
+      <PrivacyNotice />
+
+      {/* Bank Export Guide */}
+      <BankExportGuide />
+
       {/* Upload Area */}
       <Card className="p-4">
         <motion.div
@@ -1344,11 +1362,13 @@ export default function UploadPage() {
                 o haz clic para seleccionar
               </p>
               <p className="text-xs text-muted-foreground mb-5">
-                Soporta PDF, CSV, XLS y XLSX de BBVA, Scotia e Itaú
+                {enableBankStatementPDF
+                  ? 'Soporta PDF, CSV, XLS y XLSX de BBVA, Scotia e Itaú'
+                  : 'Soporta CSV, XLS y XLSX de todos los bancos'}
               </p>
               <input
                 type="file"
-                accept=".csv,.xls,.xlsx,.pdf"
+                accept={enableBankStatementPDF ? '.csv,.xls,.xlsx,.pdf' : '.csv,.xls,.xlsx'}
                 onChange={handleFileInput}
                 className="hidden"
                 id="file-upload"

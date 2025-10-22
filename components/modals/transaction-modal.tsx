@@ -24,7 +24,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
     description: transaction?.description || '',
     amount: transaction?.amount || 0,
     type: transaction?.type || 'expense',
-    categoryId: transaction?.categoryId || '',
+    categoryId: transaction?.categoryId || null, // Use null instead of '' to avoid UUID errors
     notes: transaction?.notes || '',
   });
   const [saving, setSaving] = useState(false);
@@ -116,7 +116,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
         description: formData.description || null,
         amount: formData.amount,
         type: formData.type,
-        category_id: formData.categoryId,
+        category_id: formData.categoryId || null, // Ensure empty strings become null for UUID column
         notes: formData.notes || null,
         is_manually_verified: true,
         confidence_score: 1.0,
