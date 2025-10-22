@@ -1441,7 +1441,7 @@ export default function UploadPage() {
               </p>
               <p className="text-xs text-muted-foreground mb-5">
                 {enableBankStatementPDF
-                  ? 'Soporta PDF, CSV, XLS y XLSX de BBVA, Scotia e Itaú'
+                  ? 'Soporta PDF, CSV, XLS y XLSX de cualquier banco'
                   : 'Soporta CSV, XLS y XLSX de todos los bancos'}
               </p>
               <input

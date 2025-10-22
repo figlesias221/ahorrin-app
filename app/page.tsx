@@ -73,7 +73,7 @@ export default async function Home() {
       ratingValue: '4.8',
       ratingCount: '127',
     },
-    description: 'Aplicación de gestión financiera personal con categorización automática mediante IA, compatible con extractos de BBVA, Scotia e Itaú Uruguay.',
+    description: 'Aplicación de gestión financiera personal con categorización automática mediante IA, compatible con extractos de cualquier banco de Uruguay.',
     featureList: [
       'Asistente financiero con IA conversacional',
       'Importación de extractos bancarios CSV/Excel',
