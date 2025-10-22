@@ -187,7 +187,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                   value="expense"
                   checked={formData.type === 'expense'}
                   onChange={(e) => {
-                    setFormData({ ...formData, type: e.target.value as 'expense' | 'income', categoryId: '' });
+                    setFormData({ ...formData, type: e.target.value as 'expense' | 'income', categoryId: null });
                     setShowNewCategory(false);
                     setError('');
                   }}
@@ -202,7 +202,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                   value="income"
                   checked={formData.type === 'income'}
                   onChange={(e) => {
-                    setFormData({ ...formData, type: e.target.value as 'expense' | 'income', categoryId: '' });
+                    setFormData({ ...formData, type: e.target.value as 'expense' | 'income', categoryId: null });
                     setShowNewCategory(false);
                     setError('');
                   }}
@@ -374,7 +374,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
             ) : (
               <Select
                 label="Categoría de destino"
-                value={formData.categoryId}
+                value={formData.categoryId || ''}
                 onChange={(value) => setFormData({ ...formData, categoryId: value })}
                 placeholder="Seleccionar categoría..."
                 options={filteredCategories

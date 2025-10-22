@@ -51,7 +51,7 @@ export function HeroMobile() {
             Controlá tus gastos<br />en 3 simples pasos
           </h1>
 
-          <p className="text-base  mb-6">
+          <p className="text-base text-foreground/80 mb-6 font-medium">
             Subí tu extracto o ingresá manualmente. Automático y rápido.
           </p>
         </motion.div>
@@ -70,8 +70,8 @@ export function HeroMobile() {
                 <Upload className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-bold text-sm">1. Ingresá gastos</div>
-                <div className="text-xs ">Manual o extracto</div>
+                <div className="font-bold text-sm text-foreground">1. Ingresá gastos</div>
+                <div className="text-xs text-foreground/70 font-medium">Manual o extracto</div>
               </div>
             </div>
 
@@ -79,12 +79,12 @@ export function HeroMobile() {
             <div className="bg-card rounded-lg p-3 border border-border">
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold">FROG</span>
-                  <span className="text-red-600 font-extrabold">-$2,450</span>
+                  <span className="font-bold text-foreground">FROG</span>
+                  <span className="text-red-700 dark:text-red-500 font-extrabold">-$2,450</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold">ANTEL</span>
-                  <span className="text-red-600 font-extrabold">-$890</span>
+                  <span className="font-bold text-foreground">ANTEL</span>
+                  <span className="text-red-700 dark:text-red-500 font-extrabold">-$890</span>
                 </div>
               </div>
             </div>
@@ -102,8 +102,8 @@ export function HeroMobile() {
                 <Zap className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-bold text-sm">2. Categorizá auto</div>
-                <div className="text-xs ">Con reglas inteligentes</div>
+                <div className="font-bold text-sm text-foreground">2. Categorizá auto</div>
+                <div className="text-xs text-foreground/70 font-medium">Con reglas inteligentes</div>
               </div>
             </div>
 
@@ -111,14 +111,14 @@ export function HeroMobile() {
             <div className="bg-card rounded-lg p-3 border border-border">
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs bg-primary/10 rounded p-2">
-                  <span className="font-mono font-semibold">FROG</span>
-                  <span className="text-primary">→</span>
-                  <span className="font-semibold">Súper</span>
+                  <span className="font-mono font-semibold text-foreground">FROG</span>
+                  <span className="text-primary font-bold">→</span>
+                  <span className="font-semibold text-foreground">Súper</span>
                 </div>
                 <div className="flex items-center justify-between text-xs bg-primary/10 rounded p-2">
-                  <span className="font-mono font-semibold">ANTEL</span>
-                  <span className="text-primary">→</span>
-                  <span className="font-semibold">Internet</span>
+                  <span className="font-mono font-semibold text-foreground">ANTEL</span>
+                  <span className="text-primary font-bold">→</span>
+                  <span className="font-semibold text-foreground">Internet</span>
                 </div>
               </div>
             </div>
@@ -136,8 +136,8 @@ export function HeroMobile() {
                 <BarChart3 className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-bold text-sm">3. Analizá claro</div>
-                <div className="text-xs ">Gráficas simples</div>
+                <div className="font-bold text-sm text-foreground">3. Analizá claro</div>
+                <div className="text-xs text-foreground/70 font-medium">Gráficas simples</div>
               </div>
             </div>
 
@@ -147,23 +147,23 @@ export function HeroMobile() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-purple-500" />
-                    <span className="text-xs font-medium">Súper</span>
+                    <span className="text-xs font-medium text-foreground">Súper</span>
                   </div>
-                  <span className="text-xs font-bold">$12.4k</span>
+                  <span className="text-xs font-bold text-foreground">$12.4k</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-blue-500" />
-                    <span className="text-xs font-medium">Servicios</span>
+                    <span className="text-xs font-medium text-foreground">Servicios</span>
                   </div>
-                  <span className="text-xs font-bold">$8.2k</span>
+                  <span className="text-xs font-bold text-foreground">$8.2k</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-cyan-500" />
-                    <span className="text-xs font-medium">Transporte</span>
+                    <span className="text-xs font-medium text-foreground">Transporte</span>
                   </div>
-                  <span className="text-xs font-bold">$5.3k</span>
+                  <span className="text-xs font-bold text-foreground">$5.3k</span>
                 </div>
               </div>
             </div>
@@ -178,14 +178,14 @@ export function HeroMobile() {
           className="space-y-4"
         >
           <Link href="/signup" className="block">
-            <Button size="lg" className="w-full h-14 text-lg font-bold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 shadow-2xl shadow-violet-500/50">
+            <Button size="lg" className="w-full h-14 text-lg font-bold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-2xl shadow-violet-500/30 border-0">
               Empezar gratis ahora
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
 
           <div className="text-center space-y-2">
-            <div className="text-xs ">
+            <div className="text-xs text-foreground/70 font-medium">
               ✓ Setup en 2 minutos
             </div>
           </div>

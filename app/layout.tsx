@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import { CurrencyProvider } from "@/contexts/currency-context";
 import { ThemeProvider } from "@/contexts/theme-context";
 import { ToastProvider } from "@/contexts/toast-context";
@@ -147,6 +148,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>
+        <Analytics />
         <ScrollTracker />
         <ThemeProvider>
           <ToastProvider>
