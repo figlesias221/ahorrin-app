@@ -301,17 +301,22 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
               <label htmlFor="category" className="block text-sm font-medium text-foreground">
                 Categoría *
               </label>
-              <button
-                type="button"
-                onClick={() => setShowNewCategory(!showNewCategory)}
-                className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
-              >
-                <Plus className="h-3 w-3" />
-                Nueva Categoría
-              </button>
+              {filteredCategories.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowNewCategory(!showNewCategory);
+                    setError('');
+                  }}
+                  className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  {showNewCategory ? 'Seleccionar existente' : 'Nueva Categoría'}
+                </button>
+              )}
             </div>
 
-            {showNewCategory ? (
+            {(showNewCategory || filteredCategories.length === 0) ? (
               <div className="space-y-3 p-4 rounded-lg border border-border bg-muted/30">
                 <div>
                   <label className="block text-xs font-medium text-foreground mb-1">

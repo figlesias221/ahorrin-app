@@ -204,9 +204,13 @@ export function Select({
 
           {/* Options List */}
           <div className="overflow-y-auto flex-1">
-            {filteredOptions.length === 0 ? (
+            {filteredOptions.length === 0 && !searchText ? (
               <div className="px-4 py-4 text-sm text-muted-foreground text-center">
-                {searchText ? 'No se encontraron opciones' : 'No hay opciones disponibles'}
+                No hay opciones disponibles
+              </div>
+            ) : searchText && filteredOptions.length === 0 ? (
+              <div className="px-4 py-4 text-sm text-muted-foreground text-center">
+                No se encontraron opciones
               </div>
             ) : (
               <div className="py-2">
