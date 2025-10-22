@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp, HelpCircle, ExternalLink, FileSpreadsheet, Building2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface BankGuide {
   id: string;
@@ -46,7 +47,7 @@ const BANK_GUIDES: BankGuide[] = [
     name: 'Santander',
     displayName: 'Santander',
     color: '#ec0000',
-    icon: '🏦',
+    icon: '🔴',
     formats: ['CSV', 'XLS'],
     steps: [
       'Ingresá a tu cuenta en Santander Online Banking',
@@ -68,7 +69,7 @@ const BANK_GUIDES: BankGuide[] = [
     name: 'Scotia',
     displayName: 'Scotiabank',
     color: '#ed1c24',
-    icon: '🏦',
+    icon: '🏴',
     formats: ['CSV', 'XLS'],
     steps: [
       'Ingresá a ScotiaWeb (www.scotiaweb.com.uy)',
@@ -89,7 +90,7 @@ const BANK_GUIDES: BankGuide[] = [
     name: 'BBVA',
     displayName: 'BBVA',
     color: '#004481',
-    icon: '🏦',
+    icon: '🔵',
     formats: ['CSV', 'XLS', 'PDF'],
     steps: [
       'Ingresá a BBVA Net Cash (www.bbva.com.uy)',
@@ -112,7 +113,7 @@ const BANK_GUIDES: BankGuide[] = [
     name: 'BROU',
     displayName: 'Banco República (BROU)',
     color: '#009639',
-    icon: '🏦',
+    icon: '🟢',
     formats: ['CSV', 'XLS'],
     steps: [
       'Ingresá a e-BROU (www.ebrou.com.uy)',
@@ -134,7 +135,7 @@ const BANK_GUIDES: BankGuide[] = [
     name: 'Heritage',
     displayName: 'Heritage Bank',
     color: '#1e3a8a',
-    icon: '🏦',
+    icon: '💼',
     formats: ['CSV', 'XLS'],
     steps: [
       'Ingresá a Heritage Online Banking',
@@ -155,7 +156,7 @@ const BANK_GUIDES: BankGuide[] = [
     name: 'Otro Banco',
     displayName: 'Otro Banco',
     color: '#6b7280',
-    icon: '🏦',
+    icon: '🏛️',
     formats: ['CSV'],
     steps: [
       'Ingresá a tu homebanking',
@@ -183,22 +184,24 @@ export function BankExportGuide() {
   };
 
   return (
-    <Card className="p-4 bg-purple-50 dark:bg-purple-950/40 border-purple-300 dark:border-purple-700">
+    <Card className="p-4">
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 mt-0.5">
-          <HelpCircle className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+            <HelpCircle className="h-5 w-5 text-primary" />
+          </div>
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <FileSpreadsheet className="h-4 w-4" />
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <FileSpreadsheet className="h-4 w-4 text-primary" />
               ¿Cómo exportar desde mi banco?
             </h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setExpanded(!expanded)}
-              className="h-6 px-2 text-gray-700 dark:text-gray-300 hover:bg-purple-100 dark:hover:bg-purple-900/60"
+              className="h-6 px-2 text-muted-foreground hover:bg-muted"
             >
               {expanded ? (
                 <>
@@ -215,52 +218,64 @@ export function BankExportGuide() {
           </div>
 
           {!expanded && (
-            <p className="text-xs text-gray-700 dark:text-gray-300 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Guías paso a paso para exportar CSV/XLS de todos los bancos uruguayos
             </p>
           )}
 
           {expanded && (
             <div className="mt-4 space-y-2">
-              <p className="text-xs text-gray-700 dark:text-gray-300 mb-3">
+              <p className="text-xs text-muted-foreground mb-3">
                 Seleccioná tu banco para ver instrucciones detalladas:
               </p>
 
               {BANK_GUIDES.map((bank) => (
-                <div key={bank.id} className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
+                <div
+                  key={bank.id}
+                  className="border border-border/50 rounded-lg overflow-hidden bg-card hover:border-primary/50 transition-colors"
+                >
                   <button
                     onClick={() => toggleBank(bank.id)}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                        className="w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-sm"
                         style={{ backgroundColor: bank.color }}
                       >
                         {bank.icon}
                       </div>
                       <div className="text-left">
-                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{bank.displayName}</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
-                          Formatos: {bank.formats.join(', ')}
-                        </p>
+                        <p className="text-sm font-semibold text-foreground">{bank.displayName}</p>
+                        <div className="flex gap-1 mt-0.5">
+                          {bank.formats.map((format) => (
+                            <Badge
+                              key={format}
+                              variant="outline"
+                              className="text-xs px-1.5 py-0 h-4 text-muted-foreground border-border/50"
+                            >
+                              {format}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </div>
                     {selectedBank === bank.id ? (
-                      <ChevronUp className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      <ChevronUp className="h-4 w-4 text-primary" />
                     ) : (
-                      <ChevronDown className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     )}
                   </button>
 
                   {selectedBank === bank.id && (
-                    <div className="px-4 pb-4 pt-2 bg-gray-50 dark:bg-gray-900 border-t border-gray-300 dark:border-gray-700">
+                    <div className="px-4 pb-4 pt-2 bg-muted/30 border-t border-border/50">
                       <div className="space-y-3">
+                        {/* Pasos */}
                         <div>
-                          <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                            📋 Pasos para exportar:
+                          <p className="text-xs font-semibold text-foreground mb-2">
+                            Pasos para exportar:
                           </p>
-                          <ol className="space-y-1.5 text-xs text-gray-700 dark:text-gray-300 ml-4">
+                          <ol className="space-y-1.5 text-xs text-muted-foreground ml-4">
                             {bank.steps.map((step, idx) => (
                               <li key={idx} className="list-decimal">
                                 {step}
@@ -269,12 +284,13 @@ export function BankExportGuide() {
                           </ol>
                         </div>
 
+                        {/* Tips */}
                         {bank.tips && bank.tips.length > 0 && (
-                          <div className="pt-2 border-t border-gray-300 dark:border-gray-700">
-                            <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                          <div className="pt-2 border-t border-border/50">
+                            <p className="text-xs font-semibold text-foreground mb-2">
                               💡 Tips:
                             </p>
-                            <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300 ml-4">
+                            <ul className="space-y-1 text-xs text-muted-foreground ml-4">
                               {bank.tips.map((tip, idx) => (
                                 <li key={idx} className="list-disc">
                                   {tip}
@@ -284,13 +300,14 @@ export function BankExportGuide() {
                           </div>
                         )}
 
+                        {/* Link */}
                         {bank.helpLink && (
-                          <div className="pt-2 border-t border-gray-300 dark:border-gray-700">
+                          <div className="pt-2 border-t border-border/50">
                             <a
                               href={bank.helpLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-purple-700 dark:text-purple-300 hover:text-purple-900 dark:hover:text-purple-100 font-medium"
+                              className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-medium"
                             >
                               <ExternalLink className="h-3 w-3" />
                               Ayuda oficial del banco
@@ -303,11 +320,11 @@ export function BankExportGuide() {
                 </div>
               ))}
 
-              <div className="mt-4 pt-3 border-t border-gray-400 dark:border-gray-600">
-                <p className="text-xs text-gray-700 dark:text-gray-300">
-                  <strong>¿No encontrás opción de exportación en tu banco?</strong>
-                  <br />
-                  Usá la <strong>entrada manual rápida</strong> en Gasty para agregar tus transacciones de forma ágil.
+              {/* Mensaje final */}
+              <div className="mt-4 pt-3 border-t border-border/50">
+                <p className="text-xs text-muted-foreground">
+                  <strong className="text-foreground">¿No encontrás opción de exportación en tu banco?</strong>
+                  {' '}Usá la entrada manual rápida en Gasty para agregar tus transacciones de forma ágil.
                   También podés contactarnos y te ayudamos a encontrar una solución.
                 </p>
               </div>

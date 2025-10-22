@@ -104,14 +104,14 @@ export function HeroUltimate() {
                   </div>
                   <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
                     <Upload className="w-3 h-3 " />
-                    <span className=" text-xs">PDF, Excel, CSV</span>
+                    <span className=" text-xs">CSV/Excel</span>
                   </div>
 
-                  {/* PDF to rows example */}
+                  {/* CSV to rows example */}
                   <div className="bg-card rounded-lg p-2 sm:p-3 border-2 border-border">
                     <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                       <FileText className="w-3 sm:w-3.5 h-3 sm:h-3.5 " />
-                      <span className="text-xs font-bold text-foreground">PDF ITAÚ</span>
+                      <span className="text-xs font-bold text-foreground">CSV ITAÚ</span>
                       <div className=" text-xs font-bold">→</div>
                       <span className="text-xs font-bold text-foreground">3 Trans.</span>
                     </div>

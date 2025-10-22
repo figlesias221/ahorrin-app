@@ -299,14 +299,14 @@ export function AppScreenshots() {
                 <Upload className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="font-medium text-sm">Extracto_ITAU_Enero.pdf</p>
+                <p className="font-medium text-sm">Extracto_ITAU_Enero.csv</p>
                 <p className="text-xs  mt-1">
                   ✓ 145 transacciones detectadas
                 </p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs">
-              {['PDF', 'Excel', 'CSV', 'Todos los bancos'].map((format, i) => (
+              {['CSV', 'Excel', 'Todos los bancos', 'Multi-moneda'].map((format, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, scale: 0.9 }}

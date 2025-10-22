@@ -16,12 +16,15 @@ import { CustomBankModal } from '@/components/upload/CustomBankModal';
 import { PrivacyNotice } from '@/components/upload/PrivacyNotice';
 import { BankExportGuide } from '@/components/upload/BankExportGuide';
 import { parseStatement, validateTransactions, deduplicateTransactions, type ParsedTransaction, type ParserResult } from '@/lib/parsers/bank-statements';
+import { autoFixDate, autoFixAmount } from '@/lib/parsers/auto-fix';
 import { createClient } from '@/lib/supabase/client';
 import { formatDate } from '@/lib/utils/formatters';
 import type { Database } from '@/lib/supabase/database.types';
 import { motion } from 'framer-motion';
 import { motionVariants } from '@/lib/design-tokens';
 import { SuggestedBanks } from '@/components/upload/SuggestedBanks';
+import { FilePreview } from '@/components/upload/FilePreview';
+import type { ColumnType } from '@/lib/parsers/preview-types';
 
 type BankStatement = Database['public']['Tables']['bank_statements']['Row'];
 
@@ -93,6 +96,10 @@ export default function UploadPage() {
   const [editingBank, setEditingBank] = useState<{ id: string; name: string; displayName: string; color: string } | null>(null);
   const [deleteBankTarget, setDeleteBankTarget] = useState<{ id: string; name: string } | null>(null);
   const [deletingBank, setDeletingBank] = useState(false);
+
+  // Preview state
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
 
   const supabase = createClient();
   const toast = useToast();
@@ -612,7 +619,20 @@ export default function UploadPage() {
         initialNames[idx] = file.name;
       });
       setFileNames(initialNames);
-      parseFiles(validFiles);
+
+      // Show preview for CSV/XLS files
+      const csvOrExcel = validFiles.find(f =>
+        f.name.toLowerCase().endsWith('.csv') ||
+        f.name.toLowerCase().endsWith('.xls') ||
+        f.name.toLowerCase().endsWith('.xlsx')
+      );
+
+      if (csvOrExcel) {
+        setPreviewFile(csvOrExcel);
+        setShowPreview(true);
+      } else {
+        parseFiles(validFiles);
+      }
     } else {
       const allowedFormats = enableBankStatementPDF ? 'CSV, XLS/XLSX o PDF' : 'CSV o XLS/XLSX';
       toast.error(`Por favor sube archivos ${allowedFormats} válidos`, 'Archivos inválidos');
@@ -629,8 +649,152 @@ export default function UploadPage() {
         initialNames[idx] = file.name;
       });
       setFileNames(initialNames);
-      parseFiles(selectedFiles);
+
+      // Show preview for CSV/XLS files
+      const csvOrExcel = selectedFiles.find(f =>
+        f.name.toLowerCase().endsWith('.csv') ||
+        f.name.toLowerCase().endsWith('.xls') ||
+        f.name.toLowerCase().endsWith('.xlsx')
+      );
+
+      if (csvOrExcel) {
+        setPreviewFile(csvOrExcel);
+        setShowPreview(true);
+      } else {
+        parseFiles(selectedFiles);
+      }
     }
+  };
+
+  const handlePreviewProceed = async (
+    validRows: string[][],
+    columnMapping: { [index: number]: ColumnType },
+    columnTransactionTypes: { [index: number]: 'income' | 'expense' }
+  ) => {
+    if (!previewFile) return;
+
+    setShowPreview(false);
+    setParsing(true);
+
+    try {
+      // Convert validated rows back to transactions using column mapping
+      console.log('Column mapping:', columnMapping);
+      console.log('Column transaction types:', columnTransactionTypes);
+      console.log('Valid rows:', validRows.length);
+
+      const transactions: ParsedTransaction[] = validRows.map((row, idx) => {
+        const tx: Partial<ParsedTransaction> = {
+          currency: 'UYU', // default
+          type: 'expense', // default
+        };
+
+        Object.entries(columnMapping).forEach(([colIdx, colType]) => {
+          const value = row[parseInt(colIdx)];
+          if (!value) return;
+
+          const colIndex = parseInt(colIdx);
+
+          switch (colType) {
+            case 'date':
+              // Convert date to ISO format (YYYY-MM-DD)
+              tx.date = autoFixDate(value).fixed;
+              break;
+            case 'vendor':
+              tx.vendor = value;
+              break;
+            case 'amount':
+              // Parse amount using auto-fix
+              tx.amount = Math.abs(autoFixAmount(value).fixed);
+              // Use transaction type from selector if available
+              if (columnTransactionTypes[colIndex]) {
+                tx.type = columnTransactionTypes[colIndex];
+              }
+              break;
+            case 'amount_usd':
+              // Parse USD amount and set currency
+              tx.amount = Math.abs(autoFixAmount(value).fixed);
+              tx.currency = 'USD';
+              // Use transaction type from selector if available
+              if (columnTransactionTypes[colIndex]) {
+                tx.type = columnTransactionTypes[colIndex];
+              }
+              break;
+            case 'amount_uyu':
+              // Parse UYU amount and set currency
+              tx.amount = Math.abs(autoFixAmount(value).fixed);
+              tx.currency = 'UYU';
+              // Use transaction type from selector if available
+              if (columnTransactionTypes[colIndex]) {
+                tx.type = columnTransactionTypes[colIndex];
+              }
+              break;
+            case 'type':
+              const typeLower = value.toLowerCase();
+              tx.type = (typeLower.includes('ingreso') || typeLower.includes('income') || typeLower.includes('credit'))
+                ? 'income'
+                : 'expense';
+              break;
+            case 'currency':
+              tx.currency = value.toUpperCase();
+              break;
+            case 'reference':
+              tx.reference = value;
+              break;
+          }
+        });
+
+        if (idx < 3) {
+          console.log(`Transaction ${idx}:`, tx);
+        }
+
+        return tx as ParsedTransaction;
+      });
+
+      // Create a result that looks like what parseStatement returns
+      const result: ParserResult = {
+        success: true,
+        transactions,
+        errors: [],
+        metadata: null,
+      };
+
+      // Process as if it was parsed normally
+      console.log('Total transactions before dedup:', transactions.length);
+      const { unique: uniqueTransactions } = deduplicateTransactions(transactions);
+      console.log('Unique transactions:', uniqueTransactions.length);
+      const { valid, invalid } = validateTransactions(uniqueTransactions);
+      console.log('Valid transactions:', valid.length);
+      console.log('Invalid transactions:', invalid.length);
+      if (invalid.length > 0) {
+        console.log('Invalid reasons:', invalid.map(i => ({ vendor: i.transaction.vendor, reason: i.reason })));
+      }
+
+      const dates = valid.map(tx => tx.date).sort();
+      const dateRange = dates.length > 0 ? { start: dates[0], end: dates[dates.length - 1] } : null;
+
+      setParsedFiles([{
+        file: previewFile,
+        fileName: previewFile.name,
+        transactions: valid,
+        errors: [],
+        metadata: null,
+        dateRange,
+      }]);
+
+      setPreviewFile(null);
+    } catch (error) {
+      console.error('Error processing preview data:', error);
+      toast.error('Error al procesar los datos validados', 'Error');
+    } finally {
+      setParsing(false);
+    }
+  };
+
+  const handlePreviewCancel = () => {
+    setShowPreview(false);
+    setPreviewFile(null);
+    setFiles([]);
+    setFileNames({});
   };
 
   const parseFiles = async (filesToParse: File[]) => {
@@ -1163,10 +1327,6 @@ export default function UploadPage() {
     }
   };
 
-  const totalFilesProcessed = statements.length;
-  const totalTransactionsProcessed = statements.reduce((sum, s) => sum + s.transactions_count, 0);
-  const currentSessionTx = parsedFiles.reduce((sum, f) => sum + f.transactions.length, 0);
-
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -1232,89 +1392,7 @@ export default function UploadPage() {
       {/* Tab Content: Subir Extractos */}
       {activeTab === 'upload' && (
         <>
-          {/* Header with Quick Actions */}
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-sm font-medium text-muted-foreground">Estadísticas</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowCustomBankModal(true)}
-              className="flex items-center gap-2 text-xs"
-            >
-              <Building2 className="h-3.5 w-3.5" />
-              Gestionar Bancos
-            </Button>
-          </div>
-
-          {/* Summary Cards - Expanded Grid with Animation */}
-          <motion.div
-            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-            variants={motionVariants.staggerContainer}
-            initial="initial"
-            animate="animate"
-          >
-        <motion.div variants={motionVariants.staggerItem}>
-          <Card className="p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground">Extractos Procesados</p>
-                <p className="text-2xl font-bold text-foreground">{totalFilesProcessed}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Total registrados</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <FileText className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={motionVariants.staggerItem}>
-          <Card className="p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground">Transacciones</p>
-                <p className="text-2xl font-bold text-foreground">{totalTransactionsProcessed.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Importadas en total</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <CheckCircle className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={motionVariants.staggerItem}>
-          <Card className="p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground">En Sesión Actual</p>
-                <p className="text-2xl font-bold text-foreground">{currentSessionTx > 0 ? currentSessionTx : '0'}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Por importar</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Zap className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-
-        <motion.div variants={motionVariants.staggerItem}>
-          <Card className="p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-medium text-muted-foreground">Reglas Activas</p>
-                <p className="text-2xl font-bold text-foreground">{activeRulesCount}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Auto-categorización</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Zap className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-      </motion.div>
-
-      {/* Privacy Notice */}
+          {/* Privacy Notice */}
       <PrivacyNotice />
 
       {/* Bank Export Guide */}
@@ -1385,13 +1463,29 @@ export default function UploadPage() {
               </motion.label>
 
               <div className="mt-8 pt-6 border-t border-border">
-                <p className="text-sm font-medium text-muted-foreground mb-3">
-                  Formato CSV esperado
-                </p>
-                <div className="text-xs font-mono bg-muted border border-border p-4 rounded-lg text-left max-w-md mx-auto">
-                  <div className="text-foreground font-semibold mb-2">Fecha,Concepto,Monto,Tipo</div>
-                  <div className="text-muted-foreground">2025-10-01,Del Campo,3500,Gasto</div>
-                  <div className="text-muted-foreground">2025-10-05,Alquiler,50000,Ingreso</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-sm font-medium mb-3">Cómo funciona</p>
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      <p>1. Subí tu CSV/Excel de cualquier banco</p>
+                      <p>2. Gasty detecta las columnas automáticamente</p>
+                      <p>3. <strong className="text-foreground">Acomodá las columnas</strong> con los dropdowns si hace falta</p>
+                      <p>4. Editá celdas o eliminá filas con errores</p>
+                      <p>5. Importá</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-medium mb-3">Formato CSV esperado</p>
+                    <div className="bg-muted border border-border rounded p-3 text-xs font-mono text-left mb-3">
+                      <div className="font-semibold mb-2">Fecha,Concepto,Monto,Tipo</div>
+                      <div className="text-muted-foreground">2025-10-01,Del Campo,3500,Gasto</div>
+                      <div className="text-muted-foreground">2025-10-05,Alquiler,50000,Ingreso</div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Lo esencial: <strong>Fecha + Descripción + Monto</strong>
+                    </p>
+                  </div>
                 </div>
               </div>
             </>
@@ -2611,6 +2705,19 @@ export default function UploadPage() {
         variant="danger"
         loading={deletingBank}
       />
+
+      {/* File Preview Modal */}
+      {showPreview && previewFile && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-7xl">
+            <FilePreview
+              file={previewFile}
+              onProceed={handlePreviewProceed}
+              onCancel={handlePreviewCancel}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

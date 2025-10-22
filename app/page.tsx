@@ -76,7 +76,7 @@ export default async function Home() {
     description: 'Aplicación de gestión financiera personal con categorización automática mediante IA, compatible con extractos de BBVA, Scotia e Itaú Uruguay.',
     featureList: [
       'Asistente financiero con IA conversacional',
-      'Importación de extractos bancarios PDF/Excel',
+      'Importación de extractos bancarios CSV/Excel',
       'Categorización automática con IA',
       'Dashboard en tiempo real',
       'Gráficas y reportes personalizados',
@@ -130,7 +130,7 @@ export default async function Home() {
         name: '¿Qué bancos uruguayos están soportados?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Soportamos los principales bancos uruguayos: ITAÚ, BBVA, Scotiabank, BROU, Santander y Heritage. Puedes subir extractos en formato PDF, Excel o CSV de cualquiera de estos bancos, y Gasty los procesará automáticamente.'
+          text: 'Soportamos todos los bancos uruguayos: ITAÚ, BBVA, Scotiabank, BROU, Santander, Heritage y más. Puedes subir extractos en formato CSV o Excel de cualquier banco, y Gasty los procesará automáticamente.'
         }
       },
       {
@@ -146,7 +146,7 @@ export default async function Home() {
         name: '¿Puedo importar mis datos históricos?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Sí, puedes subir extractos históricos de tus bancos en formato PDF, Excel o CSV. Gasty los procesará y aplicará tus reglas automáticamente, permitiéndote ver tendencias desde el primer día.'
+          text: 'Sí, puedes subir extractos históricos de tus bancos en formato CSV o Excel. Gasty los procesará y aplicará tus reglas automáticamente, permitiéndote ver tendencias desde el primer día.'
         }
       },
       {
@@ -194,7 +194,7 @@ export default async function Home() {
         '@type': 'HowToStep',
         position: 1,
         name: 'Descarga tu extracto bancario',
-        text: 'Ingresa a tu home banking (BBVA, Scotia, Itaú, BROU, etc.) y descarga el extracto en formato PDF, Excel o CSV'
+        text: 'Ingresa a tu home banking (cualquier banco uruguayo) y descarga el extracto en formato CSV o Excel'
       },
       {
         '@type': 'HowToStep',

@@ -28,7 +28,7 @@ export function FeaturesGrid() {
       icon: Upload,
       title: 'Sube tus Extractos Bancarios',
       description:
-        'Descarga el extracto de tu banco (el PDF o Excel que te da el banco) y súbelo aquí. Funciona con BROU, Santander, Itaú, BBVA, Scotiabank, y todos los bancos uruguayos. Acepta extractos de cuenta y tarjetas.',
+        'Descarga el extracto de tu banco (el CSV o Excel que te da el banco) y súbelo aquí. Funciona con todos los bancos uruguayos.',
       gradient: 'from-accent-cyan to-accent-cyan/50',
       size: 'medium',
     },

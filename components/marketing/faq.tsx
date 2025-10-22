@@ -21,7 +21,7 @@ export function FAQ() {
     {
       question: '¿Qué bancos uruguayos están soportados?',
       answer:
-        'Soportamos los principales bancos uruguayos incluyendo ITAÚ, BBVA, Scotiabank, BROU, Santander, y Heritage. Puedes subir extractos en formato PDF o Excel de cualquiera de estos bancos, y nuestro sistema los procesará automáticamente.',
+        'Soportamos todos los bancos uruguayos: ITAÚ, BBVA, Scotiabank, BROU, Santander, Heritage y más. Puedes subir extractos en formato CSV o Excel de cualquier banco, y nuestro sistema los procesará automáticamente.',
     },
     {
       question: '¿Mis datos están seguros?',
@@ -31,7 +31,7 @@ export function FAQ() {
     {
       question: '¿Puedo importar mis datos históricos?',
       answer:
-        'Sí, puedes subir extractos históricos de tus bancos en formato PDF o Excel. El sistema los procesará automáticamente y aplicará tus reglas de categorización a todas las transacciones, permitiéndote ver tendencias y análisis desde el primer día.',
+        'Sí, puedes subir extractos históricos de tus bancos en formato CSV o Excel. El sistema los procesará automáticamente y aplicará tus reglas de categorización a todas las transacciones, permitiéndote ver tendencias desde el primer día.',
     },
     {
       question: '¿Funciona en móvil?',

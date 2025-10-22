@@ -10,10 +10,10 @@ export function ProductShowcase() {
       number: '01',
       title: 'Sube el extracto de tu banco',
       description:
-        'Entra a tu homebanking, descarga tu extracto (ese archivo PDF o Excel con tus movimientos), y súbelo aquí. Funciona con extractos de cuenta corriente, tarjetas de crédito, tarjetas de débito, de cualquier banco uruguayo.',
+        'Descarga tu extracto (CSV o Excel con tus movimientos) desde tu homebanking y súbelo acá. Funciona con todos los bancos uruguayos.',
       features: [
-        'Acepta PDF, Excel (XLS/XLSX), CSV e imágenes',
-        'BROU, Santander, Itaú, BBVA, Heritage, Scotiabank',
+        'Acepta CSV y Excel (XLS/XLSX)',
+        'Todos los bancos uruguayos',
         'Sube varios meses a la vez',
       ],
     },
@@ -143,11 +143,11 @@ export function ProductShowcase() {
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm ">
                           <CheckCircle2 className="w-4 h-4 text-success" />
-                          Soporta archivos PDF, Excel y CSV
+                          Soporta archivos CSV y Excel
                         </div>
                         <div className="flex items-center gap-2 text-sm ">
                           <CheckCircle2 className="w-4 h-4 text-success" />
-                          También acepta capturas de extractos
+                          Multi-moneda (UYU, USD)
                         </div>
                         <div className="flex items-center gap-2 text-sm ">
                           <CheckCircle2 className="w-4 h-4 text-success" />

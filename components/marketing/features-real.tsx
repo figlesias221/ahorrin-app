@@ -34,7 +34,7 @@ export function FeaturesReal() {
       icon: Upload,
       title: 'Sube Extractos de tu Banco',
       description:
-        'Descarga el extracto desde tu homebanking (ese PDF o Excel con tus movimientos) y súbelo acá. Funciona con ITAÚ, BBVA, BROU, Scotiabank, Heritage y todos los bancos uruguayos. Acepta extractos de cuenta y tarjetas.',
+        'Descarga el extracto desde tu homebanking (CSV o Excel con tus movimientos) y súbelo acá. Funciona con todos los bancos uruguayos: ITAÚ, BBVA, BROU, Scotiabank, Heritage y más.',
       gradient: 'from-success to-success/50',
       size: 'medium',
     },

@@ -34,7 +34,7 @@ export function IngestionShowcase() {
   const steps = [
     {
       title: '1. Subí tu extracto',
-      description: 'Arrastrás tu archivo PDF, CSV o Excel de BBVA, Scotia o Itaú',
+      description: 'Arrastra tu archivo CSV o Excel de cualquier banco uruguayo',
       icon: Upload,
       color: 'blue',
     },
@@ -127,7 +127,7 @@ export function IngestionShowcase() {
                   <Upload className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-2">Subí tu extracto bancario</h3>
-                <p className="text-sm sm:text-base">Formato PDF, CSV o Excel</p>
+                <p className="text-sm sm:text-base">Formato CSV o Excel</p>
               </div>
 
               <div className="border-2 border-dashed border-border rounded-xl p-6 sm:p-8 md:p-12 bg-card/20 hover:border-primary/50 transition-colors">
@@ -144,15 +144,15 @@ export function IngestionShowcase() {
               <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
                 <div className="p-3 sm:p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-colors">
                   <div className="font-semibold mb-1">✓ BBVA Visa</div>
-                  <div className="text-xs ">Extracto PDF</div>
+                  <div className="text-xs ">Extracto CSV</div>
                 </div>
                 <div className="p-3 sm:p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-colors">
                   <div className="font-semibold mb-1">✓ Scotiabank</div>
-                  <div className="text-xs ">Extracto PDF</div>
+                  <div className="text-xs ">Extracto CSV</div>
                 </div>
                 <div className="p-3 sm:p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-colors">
                   <div className="font-semibold mb-1">✓ Itaú</div>
-                  <div className="text-xs ">Excel/CSV</div>
+                  <div className="text-xs ">Extracto CSV/Excel</div>
                 </div>
               </div>
             </div>

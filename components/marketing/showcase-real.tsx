@@ -11,7 +11,7 @@ export function ShowcaseReal() {
       title: 'Subí tu extracto',
       subtitle: 'En 10 segundos',
       description:
-        'Descargá tu extracto desde el homebanking (PDF, Excel o CSV) y subilo acá. Funciona con ITAÚ, BBVA, BROU, Scotiabank y todos los bancos uruguayos.',
+        'Descargá tu extracto desde el homebanking (CSV o Excel con tus movimientos) y subilo acá. Funciona con todos los bancos uruguayos.',
       visual: (
         <div className="space-y-4">
           <div className="border-2 border-dashed border-primary/30 rounded-2xl p-8 text-center space-y-3 bg-primary/5">
@@ -19,7 +19,7 @@ export function ShowcaseReal() {
               <Upload className="w-8 h-8 text-primary" />
             </div>
             <div>
-              <p className="font-semibold text-sm">Extracto_ITAU_Enero.pdf</p>
+              <p className="font-semibold text-sm">Extracto_ITAU_Enero.csv</p>
               <p className="text-xs  mt-1">
                 ✓ 145 transacciones detectadas
               </p>
@@ -27,16 +27,16 @@ export function ShowcaseReal() {
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="p-2 bg-card rounded-lg text-center">
-              <div className="font-semibold">PDF</div>
+              <div className="font-semibold">CSV</div>
             </div>
             <div className="p-2 bg-card rounded-lg text-center">
               <div className="font-semibold">Excel</div>
             </div>
             <div className="p-2 bg-card rounded-lg text-center">
-              <div className="font-semibold">CSV</div>
+              <div className="font-semibold">Todos los bancos</div>
             </div>
             <div className="p-2 bg-card rounded-lg text-center">
-              <div className="font-semibold">Todos los bancos</div>
+              <div className="font-semibold">Multi-moneda</div>
             </div>
           </div>
         </div>

@@ -258,6 +258,45 @@ export async function parseItauXLS(file: File): Promise<ParserResult> {
 }
 
 /**
+ * Parse generic XLS/XLSX file by converting to CSV
+ * Works with any Excel format with columns for Date, Vendor, Amount
+ */
+export async function parseGenericXLS(file: File): Promise<ParserResult> {
+  try {
+    // Dynamic import to avoid bundling XLSX in server
+    const XLSX = await import('xlsx');
+
+    const arrayBuffer = await file.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+    // Get first sheet
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+
+    // Convert to CSV
+    const csv = XLSX.utils.sheet_to_csv(worksheet, {
+      blankrows: false,
+      strip: true
+    });
+
+    // Create a temporary File object with CSV content
+    const csvBlob = new Blob([csv], { type: 'text/csv' });
+    const csvFile = new File([csvBlob], file.name.replace(/\.xlsx?$/i, '.csv'), {
+      type: 'text/csv'
+    });
+
+    // Use existing CSV parser
+    return parseCSV(csvFile);
+  } catch (error) {
+    return {
+      success: false,
+      transactions: [],
+      errors: [`Error al procesar archivo Excel: ${error}`],
+    };
+  }
+}
+
+/**
  * Auto-detect file type and parse accordingly
  */
 export async function parseStatement(file: File): Promise<ParserResult> {
@@ -272,14 +311,22 @@ export async function parseStatement(file: File): Promise<ParserResult> {
       return parseItauXLS(file);
     }
 
-    // Try parsing as Itaú format (most common)
+    // Try generic parser first (works with any Excel format)
+    const genericResult = await parseGenericXLS(file);
+
+    // If generic parser succeeds with at least one transaction, use it
+    if (genericResult.success && genericResult.transactions.length > 0) {
+      return genericResult;
+    }
+
+    // Otherwise, try Itaú format as fallback
     return parseItauXLS(file);
   }
 
   return {
     success: false,
     transactions: [],
-    errors: ['Formato de archivo no soportado. Use CSV o XLS de Itaú.'],
+    errors: ['Formato de archivo no soportado. Use CSV, XLS o XLSX.'],
   };
 }
 
@@ -322,6 +369,17 @@ export function deduplicateTransactions(transactions: ParsedTransaction[]): {
   const duplicates: ParsedTransaction[] = [];
 
   transactions.forEach(tx => {
+    // Skip if required fields are invalid
+    if (!tx.amount || typeof tx.amount !== 'number' || isNaN(tx.amount)) {
+      return;
+    }
+    if (!tx.vendor || typeof tx.vendor !== 'string') {
+      return;
+    }
+    if (!tx.date || !tx.currency) {
+      return;
+    }
+
     // Create a unique key based on date, vendor, amount, and currency
     const exactKey = `${tx.date}|${tx.vendor.trim().toLowerCase()}|${tx.amount.toFixed(2)}|${tx.currency}`;
 
