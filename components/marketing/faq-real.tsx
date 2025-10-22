@@ -14,9 +14,9 @@ export function FAQReal() {
         'Creas reglas basadas en el nombre del vendor o el monto. Por ejemplo: "DISCO" → Supermercado, "ANTEL" → Internet. También puedes usar montos: "SISTERBANC $487" → ANTEL Fijo. Las reglas se aplican automáticamente a todas las transacciones. Gasty también normaliza nombres: "DISCO MONTEV" y "DISCO 123" se convierten en "DISCO" para que la regla funcione siempre.',
     },
     {
-      question: '¿Es realmente gratis? ¿Hay costos ocultos?',
+      question: '¿Por qué Gasty no acepta PDFs de extractos bancarios?',
       answer:
-        'Sí, es completamente gratis. No hay costos ocultos, no pedimos tarjeta de crédito, y no hay límites en transacciones, cuentas o reglas. Nuestro objetivo es hacer la gestión financiera accesible para todos los uruguayos.',
+        'Por tu seguridad, Gasty NO acepta PDFs de extractos bancarios completos. Estos archivos contienen información sensible innecesaria: número de cuenta, saldo, dirección, etc. Alternativas seguras: CSV/XLS (exportá desde tu banco - solo transacciones, sin datos de cuenta) o Entrada manual (agregá transacciones individuales con el formulario).',
     },
     {
       question: '¿Qué bancos uruguayos están soportados?',
