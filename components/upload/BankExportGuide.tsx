@@ -183,14 +183,14 @@ export function BankExportGuide() {
   };
 
   return (
-    <Card className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-900/20 border-purple-200 dark:border-purple-800">
+    <Card className="p-4 bg-purple-50 dark:bg-purple-950/40 border-purple-300 dark:border-purple-700">
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 mt-0.5">
           <HelpCircle className="h-5 w-5 text-purple-600 dark:text-purple-400" />
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-purple-900 dark:text-purple-100 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <FileSpreadsheet className="h-4 w-4" />
               ¿Cómo exportar desde mi banco?
             </h3>
@@ -198,7 +198,7 @@ export function BankExportGuide() {
               variant="ghost"
               size="sm"
               onClick={() => setExpanded(!expanded)}
-              className="h-6 px-2 text-purple-700 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-900/40"
+              className="h-6 px-2 text-gray-700 dark:text-gray-300 hover:bg-purple-100 dark:hover:bg-purple-900/60"
             >
               {expanded ? (
                 <>
@@ -215,22 +215,22 @@ export function BankExportGuide() {
           </div>
 
           {!expanded && (
-            <p className="text-xs text-purple-800 dark:text-purple-200 mt-1">
+            <p className="text-xs text-gray-700 dark:text-gray-300 mt-1">
               Guías paso a paso para exportar CSV/XLS de todos los bancos uruguayos
             </p>
           )}
 
           {expanded && (
             <div className="mt-4 space-y-2">
-              <p className="text-xs text-purple-800 dark:text-purple-200 mb-3">
+              <p className="text-xs text-gray-700 dark:text-gray-300 mb-3">
                 Seleccioná tu banco para ver instrucciones detalladas:
               </p>
 
               {BANK_GUIDES.map((bank) => (
-                <div key={bank.id} className="border border-purple-200 dark:border-purple-700 rounded-lg overflow-hidden bg-white dark:bg-gray-900">
+                <div key={bank.id} className="border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
                   <button
                     onClick={() => toggleBank(bank.id)}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -254,7 +254,7 @@ export function BankExportGuide() {
                   </button>
 
                   {selectedBank === bank.id && (
-                    <div className="px-4 pb-4 pt-2 bg-purple-50/50 dark:bg-purple-950/20 border-t border-purple-200 dark:border-purple-700">
+                    <div className="px-4 pb-4 pt-2 bg-gray-50 dark:bg-gray-900 border-t border-gray-300 dark:border-gray-700">
                       <div className="space-y-3">
                         <div>
                           <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2">
@@ -270,7 +270,7 @@ export function BankExportGuide() {
                         </div>
 
                         {bank.tips && bank.tips.length > 0 && (
-                          <div className="pt-2 border-t border-purple-200 dark:border-purple-700">
+                          <div className="pt-2 border-t border-gray-300 dark:border-gray-700">
                             <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2">
                               💡 Tips:
                             </p>
@@ -285,7 +285,7 @@ export function BankExportGuide() {
                         )}
 
                         {bank.helpLink && (
-                          <div className="pt-2 border-t border-purple-200 dark:border-purple-700">
+                          <div className="pt-2 border-t border-gray-300 dark:border-gray-700">
                             <a
                               href={bank.helpLink}
                               target="_blank"
@@ -303,8 +303,8 @@ export function BankExportGuide() {
                 </div>
               ))}
 
-              <div className="mt-4 pt-3 border-t border-purple-300 dark:border-purple-700">
-                <p className="text-xs text-purple-700 dark:text-purple-300">
+              <div className="mt-4 pt-3 border-t border-gray-400 dark:border-gray-600">
+                <p className="text-xs text-gray-700 dark:text-gray-300">
                   <strong>¿No encontrás opción de exportación en tu banco?</strong>
                   <br />
                   Usá la <strong>entrada manual rápida</strong> en Gasty para agregar tus transacciones de forma ágil.

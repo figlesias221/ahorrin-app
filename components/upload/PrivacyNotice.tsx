@@ -9,21 +9,21 @@ export function PrivacyNotice() {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20 border-blue-200 dark:border-blue-800">
+    <Card className="p-4 bg-blue-50 dark:bg-blue-950/40 border-blue-300 dark:border-blue-700">
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 mt-0.5">
           <Shield className="h-5 w-5 text-blue-600 dark:text-blue-400" />
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
               🔒 Privacidad Primero
             </h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setExpanded(!expanded)}
-              className="h-6 px-2 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/40"
+              className="h-6 px-2 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900/60"
             >
               {expanded ? (
                 <>
@@ -42,7 +42,7 @@ export function PrivacyNotice() {
           <div className="mt-2 space-y-2">
             <div className="flex items-start gap-2">
               <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-blue-800 dark:text-blue-200">
+              <p className="text-xs text-gray-700 dark:text-gray-300">
                 <strong>Por tu seguridad, Gasty NO acepta PDFs de extractos bancarios completos.</strong>
                 <br />
                 Estos archivos contienen información sensible innecesaria: número de cuenta, saldo, dirección, etc.
@@ -50,10 +50,10 @@ export function PrivacyNotice() {
             </div>
 
             <div className="mt-3 pt-3 border-t border-blue-300 dark:border-blue-700">
-              <p className="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-2">
+              <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 ✅ Alternativas seguras:
               </p>
-              <ul className="space-y-1.5 text-xs text-blue-800 dark:text-blue-200">
+              <ul className="space-y-1.5 text-xs text-gray-700 dark:text-gray-300">
                 <li className="flex items-start gap-2">
                   <FileCheck className="h-3.5 w-3.5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                   <span><strong>CSV/XLS:</strong> Exportá desde tu banco (solo transacciones, sin datos de cuenta)</span>
@@ -68,11 +68,11 @@ export function PrivacyNotice() {
             {expanded && (
               <div className="mt-3 pt-3 border-t border-blue-300 dark:border-blue-700 space-y-3">
                 <div>
-                  <p className="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-1.5">
+                  <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-1.5">
                     <Database className="h-4 w-4" />
                     ¿Qué datos guardamos?
                   </p>
-                  <ul className="space-y-1 text-xs text-blue-800 dark:text-blue-200 ml-5">
+                  <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300 ml-5">
                     <li className="list-disc">✅ <strong>Transacciones:</strong> Fecha, concepto, monto, categoría</li>
                     <li className="list-disc">✅ <strong>Configuración:</strong> Categorías, reglas, preferencias</li>
                     <li className="list-disc">❌ <strong>NO guardamos:</strong> Archivos originales (CSV/XLS)</li>
@@ -81,11 +81,11 @@ export function PrivacyNotice() {
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-1.5">
+                  <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-1.5">
                     <Lock className="h-4 w-4" />
                     Seguridad de tus datos
                   </p>
-                  <ul className="space-y-1 text-xs text-blue-800 dark:text-blue-200 ml-5">
+                  <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300 ml-5">
                     <li className="list-disc"><strong>Encriptación AES-256</strong> en la base de datos</li>
                     <li className="list-disc"><strong>Row-Level Security (RLS)</strong> en PostgreSQL</li>
                     <li className="list-disc"><strong>Solo vos</strong> podés acceder a tus datos</li>
@@ -94,7 +94,7 @@ export function PrivacyNotice() {
                 </div>
 
                 <div className="mt-3 pt-2 border-t border-blue-300 dark:border-blue-700">
-                  <p className="text-xs text-blue-700 dark:text-blue-300">
+                  <p className="text-xs text-gray-700 dark:text-gray-300">
                     💡 <strong>Tip:</strong> Si tu banco no permite exportar CSV/XLS, contactanos y te ayudamos a encontrar una solución segura.
                   </p>
                 </div>
