@@ -63,7 +63,6 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
           user_id: user.id,
           name: newCategoryName.trim(),
           color: newCategoryColor,
-          type: formData.type,
           is_active: true,
         })
         .select()
@@ -71,7 +70,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
 
       if (error) {
         if (error.code === '23505') {
-          throw new Error('Ya existe una categoría con ese nombre y tipo');
+          throw new Error('Ya existe una categoría con ese nombre');
         }
         throw error;
       }
@@ -82,7 +81,6 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
         userId: newCategory.user_id,
         name: newCategory.name,
         color: newCategory.color,
-        type: newCategory.type,
         isActive: newCategory.is_active,
         createdAt: new Date(newCategory.created_at),
         updatedAt: new Date(newCategory.updated_at),
@@ -147,8 +145,8 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
     }
   };
 
-  // Filter categories by type
-  const filteredCategories = localCategories.filter(cat => cat.type === formData.type);
+  // Show all active categories (type is no longer a category property)
+  const filteredCategories = localCategories.filter(cat => cat.isActive !== false);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4">
@@ -187,9 +185,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                   value="expense"
                   checked={formData.type === 'expense'}
                   onChange={(e) => {
-                    setFormData({ ...formData, type: e.target.value as 'expense' | 'income', categoryId: null });
-                    setShowNewCategory(false);
-                    setError('');
+                    setFormData({ ...formData, type: e.target.value as 'expense' | 'income' });
                   }}
                   className="h-4 w-4"
                 />
@@ -202,9 +198,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                   value="income"
                   checked={formData.type === 'income'}
                   onChange={(e) => {
-                    setFormData({ ...formData, type: e.target.value as 'expense' | 'income', categoryId: null });
-                    setShowNewCategory(false);
-                    setError('');
+                    setFormData({ ...formData, type: e.target.value as 'expense' | 'income' });
                   }}
                   className="h-4 w-4"
                 />
@@ -301,22 +295,20 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
               <label htmlFor="category" className="block text-sm font-medium text-foreground">
                 Categoría *
               </label>
-              {filteredCategories.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowNewCategory(!showNewCategory);
-                    setError('');
-                  }}
-                  className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  {showNewCategory ? 'Seleccionar existente' : 'Nueva Categoría'}
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowNewCategory(!showNewCategory);
+                  setError('');
+                }}
+                className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                {showNewCategory ? 'Seleccionar existente' : 'Nueva Categoría'}
+              </button>
             </div>
 
-            {(showNewCategory || filteredCategories.length === 0) ? (
+            {showNewCategory ? (
               <div className="space-y-3 p-4 rounded-lg border border-border bg-muted/30">
                 <div>
                   <label className="block text-xs font-medium text-foreground mb-1">
@@ -457,8 +449,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
         categories={localCategories.map(cat => ({
           id: cat.id,
           name: cat.name,
-          color: cat.color,
-          type: cat.type
+          color: cat.color
         }))}
         selectedCategoryId={formData.categoryId}
       />

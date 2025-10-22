@@ -12,8 +12,8 @@ interface QuickRuleModalProps {
   onClose: () => void;
   onRuleCreated: () => void;
   vendor: string;
-  categories: Array<{ id: string; name: string; color: string; type: 'income' | 'expense'; parentId?: string | null }>;
-  selectedCategoryId?: string;
+  categories: Array<{ id: string; name: string; color: string; parentId?: string | null }>;
+  selectedCategoryId?: string | null;
 }
 
 export function QuickRuleModal({
