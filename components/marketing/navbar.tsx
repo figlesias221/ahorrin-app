@@ -50,7 +50,9 @@ export function Navbar() {
                 height={40}
                 className="transition-transform duration-300 group-hover:scale-105"
               />
-              <span className="text-2xl font-bold transition-colors duration-300">
+              <span className={`text-2xl font-bold transition-colors duration-300 ${
+                isScrolled ? 'text-foreground' : 'text-white'
+              }`}>
                 Ahorrín
               </span>
             </Link>
@@ -66,10 +68,14 @@ export function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    className="px-4 py-2 text-sm font-medium transition-colors rounded-lg relative group"
+                    className={`px-4 py-2 text-sm font-medium transition-colors rounded-lg relative group ${
+                      isScrolled ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/90'
+                    }`}
                   >
                     {link.name}
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-3/4 transition-all duration-300" />
+                    <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 ${
+                      isScrolled ? 'bg-primary' : 'bg-white'
+                    } group-hover:w-3/4 transition-all duration-300`} />
                   </Link>
                 </motion.div>
               ))}
@@ -115,7 +121,9 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-xl transition-colors absolute right-0 z-10"
+              className={`md:hidden p-2.5 rounded-xl transition-colors absolute right-0 z-10 ${
+                isScrolled ? 'text-foreground' : 'text-white'
+              }`}
               aria-label="Toggle menu"
             >
               <AnimatePresence mode="wait">
