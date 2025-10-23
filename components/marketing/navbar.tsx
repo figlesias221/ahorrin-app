@@ -6,10 +6,15 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { usePathname } from 'next/navigation';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Only use white text on blog pages when not scrolled
+  const isBlogPage = pathname?.startsWith('/blog');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,7 +56,7 @@ export function Navbar() {
                 className="transition-transform duration-300 group-hover:scale-105"
               />
               <span className={`text-2xl font-bold transition-colors duration-300 ${
-                isScrolled ? 'text-foreground' : 'text-white'
+                isScrolled ? 'text-foreground' : isBlogPage ? 'text-white' : 'text-foreground'
               }`}>
                 Ahorrín
               </span>
@@ -69,12 +74,12 @@ export function Navbar() {
                   <Link
                     href={link.href}
                     className={`px-4 py-2 text-sm font-medium transition-colors rounded-lg relative group ${
-                      isScrolled ? 'text-foreground hover:text-primary' : 'text-white hover:text-white/90'
+                      isScrolled ? 'text-foreground hover:text-primary' : isBlogPage ? 'text-white hover:text-white/90' : 'text-foreground hover:text-primary'
                     }`}
                   >
                     {link.name}
                     <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 ${
-                      isScrolled ? 'bg-primary' : 'bg-white'
+                      isScrolled ? 'bg-primary' : isBlogPage ? 'bg-white' : 'bg-primary'
                     } group-hover:w-3/4 transition-all duration-300`} />
                   </Link>
                 </motion.div>
@@ -122,7 +127,7 @@ export function Navbar() {
               transition={{ delay: 0.3 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={`md:hidden p-2.5 rounded-xl transition-colors absolute right-0 z-10 ${
-                isScrolled ? 'text-foreground' : 'text-white'
+                isScrolled ? 'text-foreground' : isBlogPage ? 'text-white' : 'text-foreground'
               }`}
               aria-label="Toggle menu"
             >
