@@ -7,6 +7,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Blog posts
   const blogPosts = [
     {
+      slug: 'calendario-vencimientos-impuestos-uruguay-2025',
+      date: '2025-01-23',
+    },
+    {
       slug: 'analisis-tarjetas-que-mas-rinden-uruguay-2025',
       date: '2025-01-22',
     },
