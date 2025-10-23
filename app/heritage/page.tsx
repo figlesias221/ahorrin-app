@@ -89,7 +89,7 @@ export default function HeritagePage() {
                     </div>
                     <div>
                       <div className="font-bold text-lg">1. Descargá de e-Heritage</div>
-                      <div className="text-white/70 text-sm">Extracto PDF o Excel</div>
+                      <div className="text-white/70 text-sm">Extracto CSV/Excel</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -141,7 +141,7 @@ export default function HeritagePage() {
                   <li>Ingresá a www.heritage.com.uy</li>
                   <li>Andá a "Extracto" o "Movimientos"</li>
                   <li>Seleccioná el período a analizar</li>
-                  <li>Descargá en PDF o Excel</li>
+                  <li>Descargá en CSV/Excel</li>
                 </ol>
               </div>
             </div>
@@ -224,7 +224,7 @@ export default function HeritagePage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Formato Heritage Nativo</h3>
               <p className="text-muted-foreground">
-                Detectamos y procesamos extractos de Heritage Uruguay automáticamente. PDF y Excel completamente soportados desde e-Heritage.
+                Detectamos y procesamos extractos de Heritage Uruguay automáticamente. CSV/Excel completamente soportados desde e-Heritage.
               </p>
             </div>
 
@@ -295,7 +295,7 @@ export default function HeritagePage() {
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Ingresá a www.heritage.com.uy → e-Heritage → Seleccioná tu cuenta → Andá a "Extracto" o "Movimientos" → Elegí el período → Descargá en PDF o Excel. El archivo se guarda en tu carpeta de Descargas.
+                Ingresá a www.heritage.com.uy → e-Heritage → Seleccioná tu cuenta → Andá a "Extracto" o "Movimientos" → Elegí el período → Descargá en CSV/Excel. El archivo se guarda en tu carpeta de Descargas.
               </p>
             </details>
 

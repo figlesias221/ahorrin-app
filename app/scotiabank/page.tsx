@@ -87,7 +87,7 @@ export default function ScotiabankPage() {
                     </div>
                     <div>
                       <div className="font-bold text-lg">1. Descargá desde Scotia Online</div>
-                      <div className="text-white/70 text-sm">PDF o Excel</div>
+                      <div className="text-white/70 text-sm">CSV/Excel</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">

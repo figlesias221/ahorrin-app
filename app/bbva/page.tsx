@@ -5,7 +5,7 @@ import { Check, FileUp, Sparkles, TrendingUp, Shield, Zap } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'BBVA Uruguay - Importá y Categorizá tus Extractos Automáticamente',
   description:
-    'Importá tus extractos bancarios de BBVA Uruguay a Ahorrin. Categorización automática, análisis de gastos en tiempo real. Compatible con extractos PDF y Excel del BBVA.',
+    'Importá tus extractos bancarios de BBVA Uruguay a Ahorrin. Categorización automática, análisis de gastos en tiempo real. Compatible con extractos CSV/Excel del BBVA.',
   keywords: [
     'extracto bancario bbva uruguay',
     'bbva uruguay',
@@ -88,7 +88,7 @@ export default function BBVAPage() {
                     </div>
                     <div>
                       <div className="font-bold text-lg">1. Subí tu extracto</div>
-                      <div className="text-white/70 text-sm">PDF o Excel de BBVA</div>
+                      <div className="text-white/70 text-sm">CSV/Excel de BBVA</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -142,7 +142,7 @@ export default function BBVAPage() {
                   <li>Ingresá a tu Home Banking de BBVA</li>
                   <li>Seleccioná "Consultas" → "Extractos"</li>
                   <li>Elegí el período (último mes, trimestre, etc.)</li>
-                  <li>Descargá en formato PDF o Excel</li>
+                  <li>Descargá en formato CSV/Excel</li>
                 </ol>
               </div>
             </div>
@@ -229,7 +229,7 @@ export default function BBVAPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Reconocimiento Automático</h3>
               <p className="text-muted-foreground">
-                Detectamos automáticamente el formato de BBVA Uruguay (PDF y Excel). Solo subís el
+                Detectamos automáticamente el formato de BBVA Uruguay (CSV/Excel). Solo subís el
                 archivo y listo.
               </p>
             </div>
@@ -306,7 +306,7 @@ export default function BBVAPage() {
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Ahorrin acepta extractos de BBVA Uruguay en formato PDF y Excel (.xlsx). Ambos
+                Ahorrin acepta extractos de BBVA Uruguay en formato CSV/Excel (.xlsx). Ambos
                 formatos son descargables desde el Home Banking de BBVA Net Cash.
               </p>
             </details>
@@ -406,7 +406,7 @@ export default function BBVAPage() {
                 priceCurrency: 'UYU',
               },
               featureList: [
-                'Importación de extractos BBVA PDF y Excel',
+                'Importación de extractos BBVA CSV/Excel',
                 'Categorización automática con IA',
                 'Dashboard en tiempo real',
                 'Multi-moneda (UYU, USD)',

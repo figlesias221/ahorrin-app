@@ -87,7 +87,7 @@ export default function ItauPage() {
                     </div>
                     <div>
                       <div className="font-bold text-lg">1. Descargá de Mi Banco Digital</div>
-                      <div className="text-white/70 text-sm">Extracto PDF o Excel</div>
+                      <div className="text-white/70 text-sm">Extracto CSV/Excel</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -139,7 +139,7 @@ export default function ItauPage() {
                   <li>Ingresá a www.itau.com.uy</li>
                   <li>Andá a "Extracto" o "Movimientos"</li>
                   <li>Seleccioná el período a analizar</li>
-                  <li>Descargá en PDF o Excel</li>
+                  <li>Descargá en CSV/Excel</li>
                 </ol>
               </div>
             </div>
@@ -222,7 +222,7 @@ export default function ItauPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Formato Itaú Nativo</h3>
               <p className="text-muted-foreground">
-                Detectamos y procesamos extractos de Itaú Uruguay automáticamente. PDF y Excel completamente soportados desde Mi Banco Digital.
+                Detectamos y procesamos extractos de Itaú Uruguay automáticamente. CSV/Excel completamente soportados desde Mi Banco Digital.
               </p>
             </div>
 
@@ -293,7 +293,7 @@ export default function ItauPage() {
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Ingresá a www.itau.com.uy → Mi Banco Digital → Seleccioná tu cuenta → Andá a "Extracto" o "Movimientos" → Elegí el período → Descargá en PDF o Excel. El archivo se guarda en tu carpeta de Descargas.
+                Ingresá a www.itau.com.uy → Mi Banco Digital → Seleccioná tu cuenta → Andá a "Extracto" o "Movimientos" → Elegí el período → Descargá en CSV/Excel. El archivo se guarda en tu carpeta de Descargas.
               </p>
             </details>
 
