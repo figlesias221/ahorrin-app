@@ -11,7 +11,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-1">
             <Link href="/" className="inline-block mb-4 group">
-              <span className="text-2xl font-bold">Ahorrín</span>
+              <span className="text-2xl font-bold">Ahorrin</span>
             </Link>
             <p className="text-sm  max-w-xs leading-relaxed">
               Organizá tus finanzas automáticamente. Hecho para 🇺🇾
@@ -85,7 +85,7 @@ export function Footer() {
         <div className="py-6 border-t border-border">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm ">
-              © {new Date().getFullYear()} Ahorrín. Hecho en 🇺🇾
+              © {new Date().getFullYear()} Ahorrin. Hecho en 🇺🇾
             </p>
             <p className="text-sm ">
               Control financiero simple y automático

@@ -17,7 +17,7 @@ const testimonials = [
     role: 'Punta del Este',
     location: 'Usuario verificado',
     rating: 5,
-    text: 'Como freelancer con cuentas en BBVA y Scotia, necesitaba algo que me diera una vista unificada. Ahorrín lo hace perfecto. Subo los extractos y las reglas automáticas me salvan.',
+    text: 'Como freelancer con cuentas en BBVA y Scotia, necesitaba algo que me diera una vista unificada. Ahorrin lo hace perfecto. Subo los extractos y las reglas automáticas me salvan.',
     highlight: 'Perfecto para múltiples bancos'
   },
   {
@@ -25,7 +25,7 @@ const testimonials = [
     role: 'Montevideo',
     location: 'Usuario verificado',
     rating: 5,
-    text: 'Probé varias apps pero todas querían acceso a mi banco. Ahorrín es la única que me deja mantener el control. Solo subo extractos CSV y listo. Me dio paz mental.',
+    text: 'Probé varias apps pero todas querían acceso a mi banco. Ahorrin es la única que me deja mantener el control. Solo subo extractos CSV y listo. Me dio paz mental.',
     highlight: 'Privacidad y control'
   },
   {
@@ -111,7 +111,7 @@ export function Testimonials() {
             Lo que dicen nuestros usuarios
           </h2>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Feedback real de uruguayos que ya están usando Ahorrín
+            Feedback real de uruguayos que ya están usando Ahorrin
           </p>
         </motion.div>
 

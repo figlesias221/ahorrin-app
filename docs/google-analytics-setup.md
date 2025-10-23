@@ -1,11 +1,11 @@
 # Google Analytics 4 - Setup Guide
 
-Guía completa para configurar Google Analytics 4 en Ahorrín y comenzar a trackear métricas.
+Guía completa para configurar Google Analytics 4 en Ahorrin y comenzar a trackear métricas.
 
 ## 📋 Pre-requisitos
 
 - Cuenta de Google (Gmail)
-- Acceso al proyecto en Vercel o donde esté deployado Ahorrín
+- Acceso al proyecto en Vercel o donde esté deployado Ahorrin
 
 ---
 
@@ -19,13 +19,13 @@ Guía completa para configurar Google Analytics 4 en Ahorrín y comenzar a track
 
 ### 1.2. Crear Cuenta de Analytics
 
-1. **Nombre de la cuenta**: "Ahorrín" (o el nombre que prefieras)
+1. **Nombre de la cuenta**: "Ahorrin" (o el nombre que prefieras)
 2. Desmarcá las opciones de compartir datos si querés (opcional)
 3. Clickeá "Siguiente"
 
 ### 1.3. Crear Propiedad
 
-1. **Nombre de la propiedad**: "Ahorrín App"
+1. **Nombre de la propiedad**: "Ahorrin App"
 2. **Zona horaria**: Seleccioná "(UTC-03:00) Montevideo"
 3. **Moneda**: Peso Uruguayo (UYU)
 4. Clickeá "Siguiente"
@@ -51,7 +51,7 @@ Guía completa para configurar Google Analytics 4 en Ahorrín y comenzar a track
 
 1. Seleccioná "Web" como plataforma
 2. **URL del sitio web**: `https://www.ahorrin.app`
-3. **Nombre del flujo**: "Ahorrín Web"
+3. **Nombre del flujo**: "Ahorrin Web"
 4. **Enhanced measurement**: Dejá TODAS las opciones activadas:
    - ✅ Scrolls
    - ✅ Outbound clicks
@@ -68,7 +68,7 @@ Guía completa para configurar Google Analytics 4 en Ahorrín y comenzar a track
 
 ---
 
-## Paso 3: Agregar Measurement ID a Ahorrín
+## Paso 3: Agregar Measurement ID a Ahorrin
 
 ### 3.1. En Desarrollo Local
 
@@ -121,7 +121,7 @@ Reemplazá `G-XXXXXXXXXX` con tu Measurement ID real.
 
 ### 5.1. Eventos Automáticos Ya Configurados
 
-Ahorrín ya tiene estos eventos listos para trackear:
+Ahorrin ya tiene estos eventos listos para trackear:
 
 | Evento | Descripción | Cuándo se Dispara |
 |--------|-------------|-------------------|
@@ -184,7 +184,7 @@ Ahorrín ya tiene estos eventos listos para trackear:
 ### 7.1. Reporte de Conversiones
 
 1. "Reports" → "Library" → "Create new report"
-2. Nombre: "Funnel de Conversión Ahorrín"
+2. Nombre: "Funnel de Conversión Ahorrin"
 3. Métricas:
    - Total Users
    - New Users

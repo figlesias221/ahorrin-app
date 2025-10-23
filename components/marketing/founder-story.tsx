@@ -20,7 +20,7 @@ export function FounderStory() {
               <User className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">¿Por qué existe Ahorrín?</h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">¿Por qué existe Ahorrin?</h2>
               <p className="text-sm sm:text-base text-muted-foreground">Simple y uruguayo</p>
             </div>
           </div>
@@ -36,7 +36,7 @@ export function FounderStory() {
             </p>
 
             <p className="text-foreground/90">
-              Entonces hice Ahorrín. Una app que entiende nuestros bancos y comercios. Sin conectar tu cuenta. Simple y rápida. Y con poco trabajo tenés una visualización de datos muy amplia y clara.
+              Entonces hice Ahorrin. Una app que entiende nuestros bancos y comercios. Sin conectar tu cuenta. Simple y rápida. Y con poco trabajo tenés una visualización de datos muy amplia y clara.
             </p>
 
             <div className="pt-4 sm:pt-6 border-t border-border">

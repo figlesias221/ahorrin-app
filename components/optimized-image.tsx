@@ -28,7 +28,7 @@ type OptimizedImageProps = ComponentProps<typeof Image> & {
  * ```tsx
  * <OptimizedImage
  *   src="/screenshots/dashboard.png"
- *   alt="Ahorrín Dashboard"
+ *   alt="Ahorrin Dashboard"
  *   width={1200}
  *   height={800}
  * />

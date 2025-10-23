@@ -1,4 +1,4 @@
-# Respuestas Reddit - Ahorrín
+# Respuestas Reddit - Ahorrin
 
 ## Para brisaabader16 (Falta Santander 😔)
 
@@ -52,7 +52,7 @@ Gracias por el feedback che! 🙌
 ```markdown
 Te re entiendo lo del extracto bancario, a mí tampoco me copa subir eso.
 
-Por eso justo **saqué el soporte de PDFs** - ahora Ahorrín NO acepta PDFs de extractos por tema privacidad (tienen cuenta, saldo, dirección, un montón de data al pedo).
+Por eso justo **saqué el soporte de PDFs** - ahora Ahorrin NO acepta PDFs de extractos por tema privacidad (tienen cuenta, saldo, dirección, un montón de data al pedo).
 
 Para lo tuyo del gasto hormiga tenés dos opciones:
 

@@ -1,4 +1,4 @@
-# Blog Structure - Ahorrín
+# Blog Structure - Ahorrin
 
 Sistema de blog optimizado para SEO con soporte para markdown/MDX.
 
@@ -80,7 +80,7 @@ En `app/sitemap.ts`, agregar el post al array `blogPosts`:
 - [ ] **Categoría**: Asignada correctamente
 - [ ] **Contenido**: Mínimo 1,500 palabras para SEO óptimo
 - [ ] **Headings**: Estructura H2/H3 lógica con keywords
-- [ ] **Internal links**: Enlaces a otras páginas de Ahorrín
+- [ ] **Internal links**: Enlaces a otras páginas de Ahorrin
 - [ ] **CTA**: Call-to-action claro al final
 - [ ] **Imagen destacada**: Optimizada (WebP, <100KB)
 - [ ] **Alt text**: Descriptivo para imágenes
@@ -135,7 +135,7 @@ Contenido con:
 ## Conclusión
 
 - Resumen de puntos clave
-- CTA claro (probar Ahorrín, crear cuenta)
+- CTA claro (probar Ahorrin, crear cuenta)
 ```
 
 ### Keywords en Contenido

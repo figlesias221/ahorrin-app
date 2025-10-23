@@ -1,6 +1,6 @@
 # Configuración de Variables de Entorno en Cloudflare Pages
 
-Este documento explica cómo configurar las variables de entorno necesarias para el deploy de Ahorrín en Cloudflare Pages.
+Este documento explica cómo configurar las variables de entorno necesarias para el deploy de Ahorrin en Cloudflare Pages.
 
 ## Variables Requeridas
 

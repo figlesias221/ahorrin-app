@@ -1,6 +1,6 @@
 # Setup Guide - Google Analytics & Search Console
 
-Complete this setup to activate analytics and SEO tracking for Ahorrín.
+Complete this setup to activate analytics and SEO tracking for Ahorrin.
 
 ---
 
@@ -16,7 +16,7 @@ Complete this setup to activate analytics and SEO tracking for Ahorrín.
 2. Click "Admin" (bottom left)
 3. Click "Create Property"
 4. Fill in:
-   - **Property name**: "Ahorrín App"
+   - **Property name**: "Ahorrin App"
    - **Timezone**: "(UTC-03:00) Montevideo"
    - **Currency**: "Peso Uruguayo (UYU)"
 5. Click "Next" → Complete business info → "Create"
@@ -26,7 +26,7 @@ Complete this setup to activate analytics and SEO tracking for Ahorrín.
 1. In Property setup, select "Web"
 2. Fill in:
    - **Website URL**: `https://www.ahorrin.app`
-   - **Stream name**: "Ahorrín Web"
+   - **Stream name**: "Ahorrin Web"
 3. **Important**: Enable ALL "Enhanced measurement" options:
    - ✅ Page views
    - ✅ Scrolls

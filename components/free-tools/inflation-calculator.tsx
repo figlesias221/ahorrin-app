@@ -383,18 +383,18 @@ export function InflationCalculator() {
               </div>
             )}
 
-            {/* CTA to Ahorrín */}
+            {/* CTA to Ahorrin */}
             <div className="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-2xl border-2 border-primary/30 p-6 sm:p-8">
               <div className="text-center">
                 <h3 className="text-2xl font-bold mb-3">Controlá Tus Gastos Mes a Mes</h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  Con Ahorrín, importás tus extractos bancarios y ves exactamente en qué categorías gastás más.
+                  Con Ahorrin, importás tus extractos bancarios y ves exactamente en qué categorías gastás más.
                   Así podés combatir la inflación donde más te pega.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Link href="/signup">
                     <Button size="lg" className="h-12">
-                      Probar Ahorrín Gratis
+                      Probar Ahorrin Gratis
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                   </Link>

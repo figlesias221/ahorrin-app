@@ -199,7 +199,7 @@ En vez de categorizar manualmente cada gasto, creá reglas:
 ```
 
 **Apps con esta función**:
-- Ahorrín (categorización con IA)
+- Ahorrin (categorización con IA)
 - MiDinero
 - Fintonic (España, pero funciona en UY)
 
@@ -354,7 +354,7 @@ Si las tasas de TC te están matando (50%+), considerá:
 
 ### 7.1. Apps de Control de Gastos
 
-**Ahorrín** (Uruguay) 🇺🇾
+**Ahorrin** (Uruguay) 🇺🇾
 - ✅ Importa extractos BBVA, Scotia, Itaú, BROU
 - ✅ Categorización automática con IA
 - ✅ Gráficas en tiempo real
@@ -374,7 +374,7 @@ Si las tasas de TC te están matando (50%+), considerá:
 
 Si preferís el control manual:
 
-**Template Ahorrín** (descarga gratis):
+**Template Ahorrin** (descarga gratis):
 - Control mensual de ingresos/gastos
 - Presupuesto por categorías
 - Gráficos automáticos
@@ -464,7 +464,7 @@ La diferencia entre estar "a las corridas" con la plata y tener tranquilidad fin
 
 ## ¿Listo para tomar control de tus finanzas?
 
-**Ahorrín** te ayuda a importar tus extractos bancarios automáticamente, categorizar gastos con inteligencia artificial y ver tus finanzas en tiempo real. Todo gratis y sin conectar tu banco.
+**Ahorrin** te ayuda a importar tus extractos bancarios automáticamente, categorizar gastos con inteligencia artificial y ver tus finanzas en tiempo real. Todo gratis y sin conectar tu banco.
 
 👉 [Empezá gratis ahora](https://www.ahorrin.app/signup) - No requiere tarjeta de crédito
 
@@ -474,4 +474,4 @@ La diferencia entre estar "a las corridas" con la plata y tener tranquilidad fin
 
 ---
 
-*Última actualización: Octubre 2025 | Autor: Equipo Ahorrín*
+*Última actualización: Octubre 2025 | Autor: Equipo Ahorrin*

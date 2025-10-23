@@ -18,7 +18,7 @@ export function ExportDialog({ isOpen, onClose, messages, conversationTitle }: E
   const [copied, setCopied] = useState(false);
 
   const generateMarkdown = () => {
-    let markdown = `# ${conversationTitle || 'Conversación con Ahorrín AI'}\n\n`;
+    let markdown = `# ${conversationTitle || 'Conversación con Ahorrin AI'}\n\n`;
     markdown += `Exportado el: ${new Date().toLocaleDateString('es-ES', {
       year: 'numeric',
       month: 'long',
@@ -37,7 +37,7 @@ export function ExportDialog({ isOpen, onClose, messages, conversationTitle }: E
 
   const generateJSON = () => {
     return JSON.stringify({
-      title: conversationTitle || 'Conversación con Ahorrín AI',
+      title: conversationTitle || 'Conversación con Ahorrin AI',
       exportDate: new Date().toISOString(),
       messagesCount: messages.length,
       messages: messages.map(msg => ({
@@ -49,7 +49,7 @@ export function ExportDialog({ isOpen, onClose, messages, conversationTitle }: E
   };
 
   const generateText = () => {
-    let text = `${conversationTitle || 'Conversación con Ahorrín AI'}\n`;
+    let text = `${conversationTitle || 'Conversación con Ahorrin AI'}\n`;
     text += `Exportado el: ${new Date().toLocaleDateString('es-ES')}\n`;
     text += `${'='.repeat(60)}\n\n`;
 

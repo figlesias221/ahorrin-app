@@ -1,4 +1,4 @@
-# 💰 Ahorrín - Tu Coach de Finanzas Personales con AI
+# 💰 Ahorrin - Tu Coach de Finanzas Personales con AI
 
 Aplicación web moderna para crear tu hábito de ahorro y gestionar tus finanzas personales en Uruguay con categorización automática mediante Inteligencia Artificial.
 

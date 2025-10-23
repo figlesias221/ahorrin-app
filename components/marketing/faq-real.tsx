@@ -16,7 +16,7 @@ export function FAQReal() {
     {
       question: '¿Qué bancos uruguayos están soportados?',
       answer:
-        'Todos. BBVA, Itaú, Scotiabank, BROU, Santander, Heritage, y cualquier otro banco uruguayo. Si tu banco te permite exportar extractos en CSV o Excel, Ahorrín lo puede procesar automáticamente.',
+        'Todos. BBVA, Itaú, Scotiabank, BROU, Santander, Heritage, y cualquier otro banco uruguayo. Si tu banco te permite exportar extractos en CSV o Excel, Ahorrin lo puede procesar automáticamente.',
     },
     {
       question: '¿Mis datos están seguros?',
@@ -26,32 +26,32 @@ export function FAQReal() {
     {
       question: '¿Cómo funcionan las reglas de categorización automática?',
       answer:
-        'Creás reglas una vez, y Ahorrín las aplica automáticamente. Por ejemplo: "DISCO" → Supermercado. La próxima vez que aparezca DISCO en un extracto, se categoriza solo. También podés combinar vendor + monto: "SISTERBANC $487" → ANTEL Fijo. Ahorrín normaliza nombres para que "DISCO MONTEV" y "DISCO 123" se reconozcan como "DISCO".',
+        'Creás reglas una vez, y Ahorrin las aplica automáticamente. Por ejemplo: "DISCO" → Supermercado. La próxima vez que aparezca DISCO en un extracto, se categoriza solo. También podés combinar vendor + monto: "SISTERBANC $487" → ANTEL Fijo. Ahorrin normaliza nombres para que "DISCO MONTEV" y "DISCO 123" se reconozcan como "DISCO".',
     },
     {
-      question: '¿Cuánto tiempo me lleva empezar a usar Ahorrín?',
+      question: '¿Cuánto tiempo me lleva empezar a usar Ahorrin?',
       answer:
         '2 minutos. Literalmente. Creás tu cuenta, subís un extracto (o ingresás algunos gastos manualmente), creás 2-3 reglas básicas, y ya estás viendo gráficas de tus gastos. No hay configuración compleja ni tutoriales largos.',
     },
     {
-      question: '¿Puedo usar Ahorrín en mi celular?',
+      question: '¿Puedo usar Ahorrin en mi celular?',
       answer:
-        'Sí, Ahorrín es una aplicación web responsive que funciona perfectamente en celulares, tablets y computadoras. No necesitás instalar nada, solo abrís www.ahorrin.app en tu navegador favorito.',
+        'Sí, Ahorrin es una aplicación web responsive que funciona perfectamente en celulares, tablets y computadoras. No necesitás instalar nada, solo abrís www.ahorrin.app en tu navegador favorito.',
     },
     {
-      question: '¿Qué formatos de archivo acepta Ahorrín?',
+      question: '¿Qué formatos de archivo acepta Ahorrin?',
       answer:
         'CSV y Excel (.xlsx, .xls). Estos son los formatos que todos los bancos uruguayos permiten exportar. Por seguridad, NO aceptamos PDFs de extractos completos ya que contienen información sensible innecesaria (número de cuenta, saldo, dirección).',
     },
     {
       question: '¿Puedo importar mis gastos históricos?',
       answer:
-        'Sí, podés subir extractos de meses o años anteriores. Ahorrín los procesa todos y aplica tus reglas automáticamente, permitiéndote ver tendencias y patrones desde el primer día. Ideal para entender tus hábitos financieros a largo plazo.',
+        'Sí, podés subir extractos de meses o años anteriores. Ahorrin los procesa todos y aplica tus reglas automáticamente, permitiéndote ver tendencias y patrones desde el primer día. Ideal para entender tus hábitos financieros a largo plazo.',
     },
     {
       question: '¿Cómo funciona el asistente con IA?',
       answer:
-        'Ahorrín tiene un asistente conversacional con IA que puede responder preguntas sobre tus finanzas. Por ejemplo: "¿Cuánto gasté en supermercado este mes?" o "¿Cuáles son mis gastos recurrentes?". El asistente analiza tus datos y te da respuestas claras con gráficas cuando es necesario.',
+        'Ahorrin tiene un asistente conversacional con IA que puede responder preguntas sobre tus finanzas. Por ejemplo: "¿Cuánto gasté en supermercado este mes?" o "¿Cuáles son mis gastos recurrentes?". El asistente analiza tus datos y te da respuestas claras con gráficas cuando es necesario.',
     },
     {
       question: '¿Qué tipo de reportes puedo generar?',
@@ -59,9 +59,9 @@ export function FAQReal() {
         'Podés filtrar por categoría, periodo, cuenta, banco, vendor, o combinar filtros. Exportá todo a Excel para análisis más profundos. Por ejemplo: "Gastos en Entretenimiento del último trimestre" o "Detalle de Supermercado por mes en mi cuenta Itaú".',
     },
     {
-      question: '¿Ahorrín funciona con múltiples bancos y cuentas?',
+      question: '¿Ahorrin funciona con múltiples bancos y cuentas?',
       answer:
-        'Sí. Podés tener múltiples cuentas de diferentes bancos y Ahorrín te da una vista unificada de todo. Subís extractos de BBVA, Itaú, Scotia, BROU, etc., y ves todo junto en un solo lugar. Perfecto si tenés cuentas en varios bancos.',
+        'Sí. Podés tener múltiples cuentas de diferentes bancos y Ahorrin te da una vista unificada de todo. Subís extractos de BBVA, Itaú, Scotia, BROU, etc., y ves todo junto en un solo lugar. Perfecto si tenés cuentas en varios bancos.',
     },
   ];
 
@@ -88,7 +88,7 @@ export function FAQReal() {
             </span>
           </h2>
           <p className="text-base sm:text-lg  max-w-2xl mx-auto px-4">
-            Todo lo que necesitas saber sobre Ahorrín
+            Todo lo que necesitas saber sobre Ahorrin
           </p>
         </motion.div>
 

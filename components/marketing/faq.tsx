@@ -36,7 +36,7 @@ export function FAQ() {
     {
       question: '¿Funciona en móvil?',
       answer:
-        'Sí, Ahorrín es completamente responsive y funciona perfectamente en cualquier dispositivo móvil. Puedes acceder desde tu navegador móvil con la misma experiencia que en desktop.',
+        'Sí, Ahorrin es completamente responsive y funciona perfectamente en cualquier dispositivo móvil. Puedes acceder desde tu navegador móvil con la misma experiencia que en desktop.',
     },
     {
       question: '¿Puedo corregir categorizaciones incorrectas?',
@@ -51,12 +51,12 @@ export function FAQ() {
     {
       question: '¿Necesito instalar algo?',
       answer:
-        'No, Ahorrín es una aplicación web que funciona directamente en tu navegador. No necesitas instalar ningún software. Solo crea tu cuenta y comienza a usarla inmediatamente.',
+        'No, Ahorrin es una aplicación web que funciona directamente en tu navegador. No necesitas instalar ningún software. Solo crea tu cuenta y comienza a usarla inmediatamente.',
     },
     {
       question: '¿Ofrecen soporte si tengo problemas?',
       answer:
-        'Sí, ofrecemos soporte por email para todos los usuarios. Los usuarios Pro tienen acceso a soporte prioritario 24/7. También tenemos una extensa documentación y guías para ayudarte a sacar el máximo provecho de Ahorrín.',
+        'Sí, ofrecemos soporte por email para todos los usuarios. Los usuarios Pro tienen acceso a soporte prioritario 24/7. También tenemos una extensa documentación y guías para ayudarte a sacar el máximo provecho de Ahorrin.',
     },
   ];
 
@@ -83,7 +83,7 @@ export function FAQ() {
             </span>
           </h2>
           <p className="text-lg  max-w-2xl mx-auto">
-            Todo lo que necesitas saber sobre Ahorrín
+            Todo lo que necesitas saber sobre Ahorrin
           </p>
         </motion.div>
 

@@ -1,4 +1,4 @@
-# Content Calendar 2025 - Ahorrín Blog
+# Content Calendar 2025 - Ahorrin Blog
 
 Plan de contenido para los próximos 6 meses optimizado para SEO y crecimiento orgánico.
 
@@ -100,7 +100,7 @@ Plan de contenido para los próximos 6 meses optimizado para SEO y crecimiento o
 2. Apps de cashback (MiDinero, Gelt)
 3. Comparadores de precios automáticos
 4. Alertas de ofertas
-5. Apps de control de gastos (Ahorrín)
+5. Apps de control de gastos (Ahorrin)
 6. Automatización de ahorros
 7. Negociación de servicios online
 8. Redondeo automático
@@ -147,7 +147,7 @@ Plan de contenido para los próximos 6 meses optimizado para SEO y crecimiento o
 6. Formatos soportados (PDF, Excel, CSV)
 7. Qué hacer con el archivo descargado
 8. Troubleshooting errores comunes
-9. Conclusión + demo Ahorrín
+9. Conclusión + demo Ahorrin
 
 **Visual**: Screenshots paso a paso de cada banco
 
@@ -194,7 +194,7 @@ Plan de contenido para los próximos 6 meses optimizado para SEO y crecimiento o
 5. Scotia Online - Cómo usar
 6. Pros y contras vs otros bancos
 7. Para quién es ideal Scotiabank
-8. Cómo usar Ahorrín con Scotia
+8. Cómo usar Ahorrin con Scotia
 9. Conclusión
 
 **Internal Links**: Landing /scotiabank, comparativa bancos
@@ -232,7 +232,7 @@ Plan de contenido para los próximos 6 meses optimizado para SEO y crecimiento o
 1. Intro - El debate eterno
 2. Ventajas de Excel
 3. Desventajas de Excel
-4. Ventajas de Apps (Ahorrín)
+4. Ventajas de Apps (Ahorrin)
 5. Desventajas de Apps
 6. Comparativa lado a lado (tabla)
 7. ¿Cuándo usar cada uno?
@@ -279,7 +279,7 @@ Plan de contenido para los próximos 6 meses optimizado para SEO y crecimiento o
 2. Categorización automática con IA
 3. Predicción de gastos futuros
 4. Detección de anomalías
-5. Asistentes financieros IA (Ahorrín AI)
+5. Asistentes financieros IA (Ahorrin AI)
 6. Pros y contras de IA en finanzas
 7. Privacidad y seguridad
 8. El futuro de IA financiera
@@ -432,7 +432,7 @@ Antes de publicar, verificar:
 Para cada artículo:
 
 ### Día 1: Launch
-- [ ] Publicar en Ahorrín blog
+- [ ] Publicar en Ahorrin blog
 - [ ] Share en LinkedIn personal
 - [ ] Share en Twitter
 - [ ] Email a subscribers (si hay lista)
@@ -476,5 +476,5 @@ Para cada artículo:
 ---
 
 **Última actualización**: Octubre 2025
-**Owner**: Equipo Marketing Ahorrín
+**Owner**: Equipo Marketing Ahorrin
 **Review**: Mensual

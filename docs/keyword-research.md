@@ -1,4 +1,4 @@
-# Keyword Research - Ahorrín Uruguay
+# Keyword Research - Ahorrin Uruguay
 
 Research completo de keywords para SEO orgánico enfocado en el mercado uruguayo.
 

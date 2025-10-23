@@ -71,7 +71,7 @@ export function HeroReal() {
 
             {/* Subtitle */}
             <p className="max-w-3xl mx-auto text-xl sm:text-2xl  leading-relaxed font-light">
-              Crea reglas una sola vez y Ahorrín categoriza todo automáticamente.
+              Crea reglas una sola vez y Ahorrin categoriza todo automáticamente.
               <br className="hidden sm:block" />
               DISCO → Supermercado. ANTEL → Internet. UTE → Electricidad.{' '}
               <span className="text-foreground font-medium">Así de simple.</span>

@@ -1,10 +1,10 @@
-# Tweets - Ahorrín
+# Tweets - Ahorrin
 
 ## 🧵 THREAD PRINCIPAL
 
 ### Tweet 1 - Intro
 ```
-Ahorrín: app para controlar gastos enfocada en Uruguay 🇺🇾
+Ahorrin: app para controlar gastos enfocada en Uruguay 🇺🇾
 
 • Importás extractos de cualquier banco
 • Categorización automática
@@ -31,7 +31,7 @@ Necesitábamos algo local y seguro.
 
 ### Tweet 3 - La Solución
 ```
-Ahorrín funciona con CSV/Excel de cualquier banco uruguayo.
+Ahorrin funciona con CSV/Excel de cualquier banco uruguayo.
 
 Subís el extracto → preview interactivo → asignás columnas → listo.
 
@@ -119,7 +119,7 @@ Los bancos escriben mal los nombres:
 "DISCO MVD"
 "DISCO 123"
 
-Ahorrín normaliza todo a "DISCO".
+Ahorrin normaliza todo a "DISCO".
 
 Tus reglas funcionan siempre, sin importar cómo escribió el banco.
 
@@ -177,7 +177,7 @@ Probalo en ahorrin.app
 
 ### F2 - Privacy First
 ```
-Ahorrín NO acepta PDFs de extractos.
+Ahorrin NO acepta PDFs de extractos.
 
 ¿Por qué?
 
@@ -204,7 +204,7 @@ BROU ✓
 Santander ✓
 Heritage ✓
 
-Exportás CSV/Excel desde tu banco → lo subís a Ahorrín → listo.
+Exportás CSV/Excel desde tu banco → lo subís a Ahorrin → listo.
 
 Sin APIs, sin credenciales, sin conexión directa.
 
@@ -218,7 +218,7 @@ ahorrin.app
 ```
 Categorizar 200 transacciones a mano = 😴
 
-Ahorrín lo hace automático:
+Ahorrin lo hace automático:
 
 1. Creás reglas ("ANTEL" → Servicios)
 2. La IA categoriza lo que no matchea
@@ -252,7 +252,7 @@ ahorrin.app
 
 ### F6 - Gratis
 ```
-Ahorrín es 100% gratis:
+Ahorrin es 100% gratis:
 
 ✓ Sin límite de transacciones
 ✓ Sin límite de cuentas
@@ -274,7 +274,7 @@ ahorrin.app
 ```
 Problema: Apps extranjeras no entienden bancos uruguayos
 
-Solución: Ahorrín está hecha específicamente para UY
+Solución: Ahorrin está hecha específicamente para UY
 
 Compatible con extractos de ITAÚ, BBVA, Scotia, BROU, Santander, Heritage...
 
@@ -307,7 +307,7 @@ ahorrin.app
 ```
 Problema: Subir PDFs de extractos al internet = regalar todos tus datos 🚨
 
-Solución: Ahorrín NO acepta PDFs
+Solución: Ahorrin NO acepta PDFs
 
 Solo CSV/Excel con transacciones (sin número de cuenta, sin saldo).
 
@@ -370,7 +370,7 @@ ahorrin.app
 
 ### TC3
 ```
-Ahorrín NO acepta PDFs de extractos.
+Ahorrin NO acepta PDFs de extractos.
 
 ¿Por qué? Tienen tu número de cuenta, saldo, dirección...
 
@@ -392,7 +392,7 @@ Compatible con todos los bancos uruguayos:
 
 ITAÚ, BBVA, Scotia, BROU, Santander, Heritage...
 
-Exportás CSV/Excel → importás en Ahorrín → listo.
+Exportás CSV/Excel → importás en Ahorrin → listo.
 
 Sin APIs, sin credenciales.
 
@@ -406,7 +406,7 @@ ahorrin.app 🇺🇾
 
 ### U1 - Recent Update
 ```
-Ahorrín v1.1 - Nuevo CSV Preview
+Ahorrin v1.1 - Nuevo CSV Preview
 
 Agregado:
 • Preview interactivo antes de importar
@@ -463,7 +463,7 @@ ahorrin.app
 
 ### S2 - Dashboard Screenshot
 ```
-Dashboard de Ahorrín 👇
+Dashboard de Ahorrin 👇
 
 [screenshot]
 
@@ -502,10 +502,10 @@ ahorrin.app
 
 ### T1
 ```
-Cómo funciona Ahorrín:
+Cómo funciona Ahorrin:
 
 1. Exportás CSV/Excel de tu banco
-2. Lo subís a Ahorrín
+2. Lo subís a Ahorrin
 3. Asignás qué columna es qué
 4. Creás 3-5 reglas de categorización
 5. Importás
@@ -520,7 +520,7 @@ ahorrin.app
 
 ### T2
 ```
-Stack de Ahorrín:
+Stack de Ahorrin:
 
 Frontend: Next.js + TypeScript
 Backend: Supabase (PostgreSQL)
@@ -537,7 +537,7 @@ ahorrin.app
 
 ### T3
 ```
-Seguridad en Ahorrín:
+Seguridad en Ahorrin:
 
 • NO acepta PDFs (tienen info sensible)
 • Solo procesa: fecha, comercio, monto
@@ -579,7 +579,7 @@ La mayoría de bancos tienen "Exportar movimientos" en la sección de cuenta.
 
 Formato: CSV o Excel
 
-Una vez que tenés el archivo, lo subís a Ahorrín y listo.
+Una vez que tenés el archivo, lo subís a Ahorrin y listo.
 
 ahorrin.app/upload
 ```
@@ -591,7 +591,7 @@ ahorrin.app/upload
 
 ### TIP1
 ```
-Tip de Ahorrín:
+Tip de Ahorrin:
 
 Empezá con 5-10 reglas básicas:
 • Supermercados
@@ -613,7 +613,7 @@ ahorrin.app
 ```
 Tip: Importá histórico
 
-Ahorrín funciona mejor con más datos.
+Ahorrin funciona mejor con más datos.
 
 Bajá extractos de los últimos 3-6 meses → importalos → configurá reglas.
 
@@ -628,7 +628,7 @@ ahorrin.app
 ## 🎯 HASHTAGS
 
 **Principales:**
-#Ahorrín #Uruguay #FinTech #ExpenseTracking #MadeInUruguay
+#Ahorrin #Uruguay #FinTech #ExpenseTracking #MadeInUruguay
 
 **Tech:**
 #NextJS #TypeScript #Supabase #SideProject #BuildInPublic

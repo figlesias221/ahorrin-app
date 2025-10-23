@@ -70,7 +70,7 @@ export function BenefitsGrid() {
           className="text-center mb-12 sm:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-            ¿Por qué elegir Ahorrín?
+            ¿Por qué elegir Ahorrin?
           </h2>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             La forma más simple y segura de tomar control total de tus finanzas en Uruguay

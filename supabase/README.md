@@ -1,6 +1,6 @@
-# 🗄️ Ahorrín Database Setup
+# 🗄️ Ahorrin Database Setup
 
-Este directorio contiene el schema y los datos de inicialización (seed) para Ahorrín.
+Este directorio contiene el schema y los datos de inicialización (seed) para Ahorrin.
 
 ## 📁 Archivos
 

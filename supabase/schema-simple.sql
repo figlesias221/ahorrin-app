@@ -1,4 +1,4 @@
--- Ahorrín Database Schema - SIMPLIFIED VERSION
+-- Ahorrin Database Schema - SIMPLIFIED VERSION
 -- Only 2 essential tables: categories + transactions
 -- Run this in your Supabase SQL Editor
 

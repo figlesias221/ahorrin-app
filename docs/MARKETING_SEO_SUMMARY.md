@@ -8,7 +8,7 @@
 
 ## 🎯 Objetivo
 
-Implementar una estrategia profesional de marketing y SEO para aumentar el tráfico orgánico de Ahorrín, enfocado en el mercado uruguayo.
+Implementar una estrategia profesional de marketing y SEO para aumentar el tráfico orgánico de Ahorrin, enfocado en el mercado uruguayo.
 
 ---
 
@@ -88,7 +88,7 @@ Implementar una estrategia profesional de marketing y SEO para aumentar el tráf
 ### 3. Content Optimization ✅
 
 #### Meta Tags Optimizados
-- ✅ **Title**: "Ahorrín - Gestión Financiera Personal Inteligente | Control de Gastos"
+- ✅ **Title**: "Ahorrin - Gestión Financiera Personal Inteligente | Control de Gastos"
 - ✅ **Description**: Actualizada con keywords de alta prioridad (160 caracteres)
 - ✅ **Keywords array**: Expandido de 15 a 27 keywords organizadas por tipo
 - ✅ **OpenGraph**: Optimizado para Facebook/LinkedIn
