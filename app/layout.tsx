@@ -18,10 +18,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.ahorrin.app'),
   title: {
-    default: "Ahorrín - Tu Coach de Finanzas Personales en Uruguay | Gratis",
-    template: "%s | Ahorrín - Finanzas Personales Uruguay"
+    default: "Ahorrin - Tu Coach de Finanzas Personales en Uruguay",
+    template: "%s | Ahorrin"
   },
-  description: "Creá tu hábito de ahorro y tomá control de tus finanzas en Uruguay. Importá extractos CSV/Excel de cualquier banco (BBVA, Itaú, Scotia, BROU, Santander, etc). Categorización automática. Gráficas en tiempo real. 100% gratis, sin conectar tu banco.",
+  description: "Tomá control total de tus finanzas en Uruguay. Importá extractos de cualquier banco (BBVA, Itaú, Scotia, BROU, Santander). Categorización automática con IA. Gráficas en tiempo real. Sin conectar tu banco.",
   keywords: [
     // Primary keywords (alto volumen) - Uruguay focused
     "control finanzas personales uruguay",
@@ -66,9 +66,9 @@ export const metadata: Metadata = {
     "finanzas personales seguro",
     "privacidad finanzas uruguay"
   ],
-  authors: [{ name: "Ahorrín" }],
-  creator: "Ahorrín",
-  publisher: "Ahorrín",
+  authors: [{ name: "Ahorrin" }],
+  creator: "Ahorrin",
+  publisher: "Ahorrin",
   formatDetection: {
     email: false,
     address: false,
@@ -78,22 +78,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_UY",
     url: "https://www.ahorrin.app",
-    title: "Ahorrín - Tu Coach de Finanzas Personales en Uruguay | 100% Gratis",
-    description: "Creá tu hábito de ahorro. Importá extractos de cualquier banco uruguayo. Categorización automática. Sin conectar tu banco. Setup en 2 minutos. Gratis para siempre.",
-    siteName: "Ahorrín",
+    title: "Ahorrin - Tu Coach de Finanzas Personales en Uruguay",
+    description: "Tomá control de tus finanzas. Importá extractos de cualquier banco uruguayo. Categorización automática con IA. Gráficas en tiempo real. Sin conectar tu banco.",
+    siteName: "Ahorrin",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Ahorrín - Tu Coach de Finanzas Personales en Uruguay",
+        alt: "Ahorrin - Tu Coach de Finanzas Personales en Uruguay",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ahorrín - Tu Coach de Finanzas en Uruguay 🇺🇾",
-    description: "Creá tu hábito de ahorro. Importá extractos de BBVA, Itaú, Scotia, BROU. Categorización automática. 100% gratis y sin conectar tu banco.",
+    title: "Ahorrin - Tu Coach de Finanzas en Uruguay 🇺🇾",
+    description: "Tomá control de tus finanzas. Importá extractos de BBVA, Itaú, Scotia, BROU. Categorización automática con IA. Sin conectar tu banco.",
     images: ["/og-image.png"],
   },
   robots: {

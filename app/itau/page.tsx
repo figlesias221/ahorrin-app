@@ -5,7 +5,7 @@ import { Check, FileUp, Sparkles, TrendingUp, Shield, Zap } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Itaú Uruguay - Importá tus Extractos y Controlá tus Gastos',
   description:
-    'Importá extractos bancarios de Itaú Uruguay a Ahorrín. Categorización automática con IA, dashboard en tiempo real y reportes completos. Compatible con Mi Banco Digital Itaú.',
+    'Importá extractos bancarios de Itaú Uruguay a Ahorrin. Categorización automática con IA, dashboard en tiempo real y reportes completos. Compatible con Mi Banco Digital Itaú.',
   keywords: [
     'itau uruguay',
     'itaú uruguay',
@@ -19,9 +19,9 @@ export const metadata: Metadata = {
     canonical: 'https://www.ahorrin.app/itau',
   },
   openGraph: {
-    title: 'Itaú Uruguay + Ahorrín - Gestión Financiera Inteligente',
+    title: 'Itaú Uruguay + Ahorrin - Gestión Financiera Inteligente',
     description:
-      'Controlá tus gastos de Itaú Uruguay con Ahorrín. Importá extractos, categorización automática y análisis completo de finanzas.',
+      'Controlá tus gastos de Itaú Uruguay con Ahorrin. Importá extractos, categorización automática y análisis completo de finanzas.',
     url: 'https://www.ahorrin.app/itau',
   },
 };
@@ -95,7 +95,7 @@ export default function ItauPage() {
                       <Sparkles className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <div className="font-bold text-lg">2. Sube a Ahorrín</div>
+                      <div className="font-bold text-lg">2. Sube a Ahorrin</div>
                       <div className="text-white/70 text-sm">IA categoriza todo</div>
                     </div>
                   </div>
@@ -120,7 +120,7 @@ export default function ItauPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-              Ahorrín + Itaú en 3 Pasos
+              Ahorrin + Itaú en 3 Pasos
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               De extracto a insights en minutos
@@ -208,7 +208,7 @@ export default function ItauPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-              Por Qué Clientes Itaú Eligen Ahorrín
+              Por Qué Clientes Itaú Eligen Ahorrin
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Optimizado para el ecosistema Itaú Uruguay
@@ -272,7 +272,7 @@ export default function ItauPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Compatibilidad Total</h3>
               <p className="text-muted-foreground">
-                Usás otros bancos también? Ahorrín soporta BBVA, Scotia, BROU, Santander. Todas tus cuentas en un solo lugar.
+                Usás otros bancos también? Ahorrin soporta BBVA, Scotia, BROU, Santander. Todas tus cuentas en un solo lugar.
               </p>
             </div>
           </div>
@@ -283,7 +283,7 @@ export default function ItauPage() {
       <section className="py-16 sm:py-24 bg-muted/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
-            Preguntas Frecuentes - Itaú + Ahorrín
+            Preguntas Frecuentes - Itaú + Ahorrin
           </h2>
 
           <div className="space-y-6">
@@ -303,7 +303,7 @@ export default function ItauPage() {
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                NO. Jamás pedimos tus credenciales de Itaú. Vos descargás el extracto manualmente desde Mi Banco Digital y lo subís a Ahorrín. No hay conexión directa con tu cuenta bancaria.
+                NO. Jamás pedimos tus credenciales de Itaú. Vos descargás el extracto manualmente desde Mi Banco Digital y lo subís a Ahorrin. No hay conexión directa con tu cuenta bancaria.
               </p>
             </details>
 
@@ -313,7 +313,7 @@ export default function ItauPage() {
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Sí! Podés importar el resumen de tu tarjeta de crédito Itaú desde Mi Banco Digital. Ahorrín categoriza automáticamente todos tus gastos de tarjeta.
+                Sí! Podés importar el resumen de tu tarjeta de crédito Itaú desde Mi Banco Digital. Ahorrin categoriza automáticamente todos tus gastos de tarjeta.
               </p>
             </details>
 
@@ -323,7 +323,7 @@ export default function ItauPage() {
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Perfecto! Ahorrín soporta múltiples bancos. Importá extractos de Itaú, BBVA, Scotia, BROU, etc. en la misma cuenta. Podés ver todas tus finanzas unificadas o por banco separado.
+                Perfecto! Ahorrin soporta múltiples bancos. Importá extractos de Itaú, BBVA, Scotia, BROU, etc. en la misma cuenta. Podés ver todas tus finanzas unificadas o por banco separado.
               </p>
             </details>
 
@@ -347,7 +347,7 @@ export default function ItauPage() {
             Organizá tus Finanzas de Itaú en Minutos
           </h2>
           <p className="text-xl mb-8 text-white/90">
-            Miles de clientes Itaú ya usan Ahorrín. Súmate gratis.
+            Miles de clientes Itaú ya usan Ahorrin. Súmate gratis.
           </p>
 
           <Link
@@ -370,9 +370,9 @@ export default function ItauPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'Itaú Uruguay - Control de Gastos con Ahorrín',
+            name: 'Itaú Uruguay - Control de Gastos con Ahorrin',
             description:
-              'Importá extractos de Itaú Uruguay a Ahorrín. Categorización automática con IA, gráficas y reportes completos.',
+              'Importá extractos de Itaú Uruguay a Ahorrin. Categorización automática con IA, gráficas y reportes completos.',
             url: 'https://www.ahorrin.app/itau',
           }),
         }}

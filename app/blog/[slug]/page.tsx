@@ -181,7 +181,7 @@ export default async function BlogPostPage({
             ¿Listo para tomar control de tus finanzas?
           </h2>
           <p className="text-lg text-blue-50 mb-8">
-            Comenzá a usar Ahorrín gratis y organiza tus gastos en minutos
+            Comenzá a usar Ahorrin gratis y organiza tus gastos en minutos
           </p>
           <Link
             href="/signup"
@@ -207,7 +207,7 @@ export default async function BlogPostPage({
             },
             publisher: {
               '@type': 'Organization',
-              name: 'Ahorrín',
+              name: 'Ahorrin',
               logo: {
                 '@type': 'ImageObject',
                 url: 'https://www.ahorrin.app/logo.png',

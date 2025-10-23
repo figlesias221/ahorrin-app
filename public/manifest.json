@@ -1,7 +1,7 @@
 {
-  "name": "Ahorrín - Tu Coach de Finanzas Personales",
-  "short_name": "Ahorrín",
-  "description": "Creá tu hábito de ahorro. Importá extractos, categorización automática con IA, gráficas en tiempo real.",
+  "name": "Ahorrin - Tu Coach de Finanzas Personales",
+  "short_name": "Ahorrin",
+  "description": "Tomá control de tus finanzas. Importá extractos, categorización automática con IA, gráficas en tiempo real.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

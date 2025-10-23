@@ -60,7 +60,7 @@ export default async function Home() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Ahorrín',
+    name: 'Ahorrin',
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
     browserRequirements: 'Requires JavaScript. Requires HTML5.',
@@ -96,7 +96,7 @@ export default async function Home() {
     screenshot: 'https://www.ahorrin.app/screenshot.png',
     author: {
       '@type': 'Organization',
-      name: 'Ahorrín',
+      name: 'Ahorrin',
       url: 'https://www.ahorrin.app'
     },
     datePublished: '2024-10-01',
@@ -109,8 +109,8 @@ export default async function Home() {
   const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Ahorrín',
-    alternateName: 'Ahorrín App',
+    name: 'Ahorrin',
+    alternateName: 'Ahorrin App',
     url: 'https://www.ahorrin.app',
     logo: {
       '@type': 'ImageObject',
@@ -138,7 +138,7 @@ export default async function Home() {
   const localBusinessJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    name: 'Ahorrín - Finanzas Personales Uruguay',
+    name: 'Ahorrin - Finanzas Personales Uruguay',
     image: 'https://www.ahorrin.app/og-image.png',
     url: 'https://www.ahorrin.app',
     priceRange: 'Gratis',
@@ -158,7 +158,7 @@ export default async function Home() {
         name: '¿Cómo funcionan las reglas de categorización?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Creas reglas basadas en el nombre del vendor o el monto. Por ejemplo: "DISCO" → Supermercado, "ANTEL" → Internet. También puedes usar montos: "SISTERBANC $487" → ANTEL Fijo. Las reglas se aplican automáticamente a todas las transacciones. Ahorrín también normaliza nombres: "DISCO MONTEV" y "DISCO 123" se convierten en "DISCO" para que la regla funcione siempre.'
+          text: 'Creas reglas basadas en el nombre del vendor o el monto. Por ejemplo: "DISCO" → Supermercado, "ANTEL" → Internet. También puedes usar montos: "SISTERBANC $487" → ANTEL Fijo. Las reglas se aplican automáticamente a todas las transacciones. Ahorrin también normaliza nombres: "DISCO MONTEV" y "DISCO 123" se convierten en "DISCO" para que la regla funcione siempre.'
         }
       },
       {
@@ -174,7 +174,7 @@ export default async function Home() {
         name: '¿Qué bancos uruguayos están soportados?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Soportamos todos los bancos uruguayos: ITAÚ, BBVA, Scotiabank, BROU, Santander, Heritage y más. Puedes subir extractos en formato CSV o Excel de cualquier banco, y Ahorrín los procesará automáticamente.'
+          text: 'Soportamos todos los bancos uruguayos: ITAÚ, BBVA, Scotiabank, BROU, Santander, Heritage y más. Puedes subir extractos en formato CSV o Excel de cualquier banco, y Ahorrin los procesará automáticamente.'
         }
       },
       {
@@ -190,7 +190,7 @@ export default async function Home() {
         name: '¿Puedo importar mis datos históricos?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Sí, puedes subir extractos históricos de tus bancos en formato CSV o Excel. Ahorrín los procesará y aplicará tus reglas automáticamente, permitiéndote ver tendencias desde el primer día.'
+          text: 'Sí, puedes subir extractos históricos de tus bancos en formato CSV o Excel. Ahorrin los procesará y aplicará tus reglas automáticamente, permitiéndote ver tendencias desde el primer día.'
         }
       },
       {
@@ -198,7 +198,7 @@ export default async function Home() {
         name: '¿Cómo funciona la normalización de vendors?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Los bancos escriben los nombres de comercios de forma diferente: "DISCO MONTEV", "DISCO MVD", "DISCO 123". Ahorrín los normaliza automáticamente a "DISCO" para que tus reglas funcionen siempre, sin importar cómo el banco escribió el nombre.'
+          text: 'Los bancos escriben los nombres de comercios de forma diferente: "DISCO MONTEV", "DISCO MVD", "DISCO 123". Ahorrin los normaliza automáticamente a "DISCO" para que tus reglas funcionen siempre, sin importar cómo el banco escribió el nombre.'
         }
       },
       {
@@ -222,7 +222,7 @@ export default async function Home() {
         name: '¿Necesito instalar algo?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'No, Ahorrín es una aplicación web que funciona directamente en tu navegador. No necesitas instalar ningún software. Solo crea tu cuenta y comienza a usarla inmediatamente desde cualquier dispositivo.'
+          text: 'No, Ahorrin es una aplicación web que funciona directamente en tu navegador. No necesitas instalar ningún software. Solo crea tu cuenta y comienza a usarla inmediatamente desde cualquier dispositivo.'
         }
       }
     ]
@@ -231,8 +231,8 @@ export default async function Home() {
   const howToJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
-    name: 'Cómo importar extractos bancarios a Ahorrín',
-    description: 'Guía paso a paso para importar tus extractos bancarios de BBVA, Scotia o Itaú a Ahorrín',
+    name: 'Cómo importar extractos bancarios a Ahorrin',
+    description: 'Guía paso a paso para importar tus extractos bancarios de BBVA, Scotia o Itaú a Ahorrin',
     step: [
       {
         '@type': 'HowToStep',
@@ -243,14 +243,14 @@ export default async function Home() {
       {
         '@type': 'HowToStep',
         position: 2,
-        name: 'Sube el archivo a Ahorrín',
-        text: 'Ve a la sección "Importar" en Ahorrín y arrastra tu archivo o haz clic para seleccionarlo'
+        name: 'Sube el archivo a Ahorrin',
+        text: 'Ve a la sección "Importar" en Ahorrin y arrastra tu archivo o haz clic para seleccionarlo'
       },
       {
         '@type': 'HowToStep',
         position: 3,
         name: 'Categoriza automáticamente',
-        text: 'Ahorrín procesará automáticamente las transacciones y aplicará tus reglas de categorización. Crea nuevas reglas según sea necesario'
+        text: 'Ahorrin procesará automáticamente las transacciones y aplicará tus reglas de categorización. Crea nuevas reglas según sea necesario'
       },
       {
         '@type': 'HowToStep',
