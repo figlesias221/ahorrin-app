@@ -22,6 +22,8 @@ export function Navbar() {
 
   const navLinks = [
     { name: 'Features', href: '#features' },
+    { name: 'Calculadora', href: '/herramientas/calculadora-presupuesto' },
+    { name: 'Blog', href: '/blog' },
     { name: 'FAQ', href: '#faq' },
   ];
 
@@ -43,7 +45,7 @@ export function Navbar() {
             <Link href="/" className="absolute left-0 group z-10 flex items-center gap-2">
               <Image
                 src="/logo.svg"
-                alt="Gasty"
+                alt="Gasty - Control de Finanzas Personales Uruguay"
                 width={40}
                 height={40}
                 className="transition-transform duration-300 group-hover:scale-105"

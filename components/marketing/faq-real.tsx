@@ -9,49 +9,59 @@ export function FAQReal() {
 
   const faqs = [
     {
-      question: '¿Cómo funcionan las reglas de categorización?',
+      question: '¿Necesito conectar mi cuenta bancaria?',
       answer:
-        'Creas reglas basadas en el nombre del vendor o el monto. Por ejemplo: "DISCO" → Supermercado, "ANTEL" → Internet. También puedes usar montos: "SISTERBANC $487" → ANTEL Fijo. Las reglas se aplican automáticamente a todas las transacciones. Gasty también normaliza nombres: "DISCO MONTEV" y "DISCO 123" se convierten en "DISCO" para que la regla funcione siempre.',
-    },
-    {
-      question: '¿Por qué Gasty no acepta PDFs de extractos bancarios?',
-      answer:
-        'Por tu seguridad, Gasty NO acepta PDFs de extractos bancarios completos. Estos archivos contienen información sensible innecesaria: número de cuenta, saldo, dirección, etc. Alternativas seguras: CSV/XLS (exportá desde tu banco - solo transacciones, sin datos de cuenta) o Entrada manual (agregá transacciones individuales con el formulario).',
+        'NO. Ese es uno de nuestros valores principales. Nunca necesitás conectar tu banco ni compartir credenciales. Solo subís extractos CSV/Excel que exportás vos mismo desde tu banco, o ingresás gastos manualmente. Tus credenciales bancarias siempre están seguras.',
     },
     {
       question: '¿Qué bancos uruguayos están soportados?',
       answer:
-        'Soportamos todos los bancos uruguayos: ITAÚ, BBVA, Scotiabank, BROU, Santander, Heritage y más. Puedes subir extractos en formato CSV o Excel de cualquier banco, y Gasty los procesará automáticamente.',
+        'Todos. BBVA, Itaú, Scotiabank, BROU, Santander, Heritage, y cualquier otro banco uruguayo. Si tu banco te permite exportar extractos en CSV o Excel, Gasty lo puede procesar automáticamente.',
     },
     {
       question: '¿Mis datos están seguros?',
       answer:
-        'Absolutamente. Todos tus datos están encriptados usando encriptación de nivel bancario (AES-256). NO necesitas conectar tus cuentas bancarias ni dar credenciales. Solo subes extractos. Cumplimos con las regulaciones de protección de datos GDPR.',
+        'Absolutamente. Usamos encriptación de nivel bancario (AES-256) para todos tus datos. Al no conectar tu banco, no tenemos acceso a tus credenciales. Cumplimos con GDPR y todas las regulaciones de protección de datos. Tus datos son solo tuyos.',
     },
     {
-      question: '¿Puedo importar mis datos históricos?',
+      question: '¿Cómo funcionan las reglas de categorización automática?',
       answer:
-        'Sí, puedes subir extractos históricos de tus bancos en formato CSV o Excel. Gasty los procesará y aplicará tus reglas automáticamente, permitiéndote ver tendencias desde el primer día.',
+        'Creás reglas una vez, y Gasty las aplica automáticamente. Por ejemplo: "DISCO" → Supermercado. La próxima vez que aparezca DISCO en un extracto, se categoriza solo. También podés combinar vendor + monto: "SISTERBANC $487" → ANTEL Fijo. Gasty normaliza nombres para que "DISCO MONTEV" y "DISCO 123" se reconozcan como "DISCO".',
     },
     {
-      question: '¿Cómo funciona la normalización de vendors?',
+      question: '¿Cuánto tiempo me lleva empezar a usar Gasty?',
       answer:
-        'Los bancos escriben los nombres de comercios de forma diferente: "DISCO MONTEV", "DISCO MVD", "DISCO 123". Gasty los normaliza automáticamente a "DISCO" para que tus reglas funcionen siempre, sin importar cómo el banco escribió el nombre.',
+        '2 minutos. Literalmente. Creás tu cuenta, subís un extracto (o ingresás algunos gastos manualmente), creás 2-3 reglas básicas, y ya estás viendo gráficas de tus gastos. No hay configuración compleja ni tutoriales largos.',
     },
     {
-      question: '¿Puedo tener reglas basadas en montos?',
+      question: '¿Puedo usar Gasty en mi celular?',
       answer:
-        'Sí. Por ejemplo, si SISTERBANC te cobra $487, sabes que es ANTEL Fijo. Si cobra $1,925, es ANTEL Internet. Puedes crear reglas que consideren tanto el vendor como el monto: "SISTERBANC + $487" → ANTEL Fijo.',
+        'Sí, Gasty es una aplicación web responsive que funciona perfectamente en celulares, tablets y computadoras. No necesitás instalar nada, solo abrís www.gasty.app en tu navegador favorito.',
+    },
+    {
+      question: '¿Qué formatos de archivo acepta Gasty?',
+      answer:
+        'CSV y Excel (.xlsx, .xls). Estos son los formatos que todos los bancos uruguayos permiten exportar. Por seguridad, NO aceptamos PDFs de extractos completos ya que contienen información sensible innecesaria (número de cuenta, saldo, dirección).',
+    },
+    {
+      question: '¿Puedo importar mis gastos históricos?',
+      answer:
+        'Sí, podés subir extractos de meses o años anteriores. Gasty los procesa todos y aplica tus reglas automáticamente, permitiéndote ver tendencias y patrones desde el primer día. Ideal para entender tus hábitos financieros a largo plazo.',
+    },
+    {
+      question: '¿Cómo funciona el asistente con IA?',
+      answer:
+        'Gasty tiene un asistente conversacional con IA que puede responder preguntas sobre tus finanzas. Por ejemplo: "¿Cuánto gasté en supermercado este mes?" o "¿Cuáles son mis gastos recurrentes?". El asistente analiza tus datos y te da respuestas claras con gráficas cuando es necesario.',
     },
     {
       question: '¿Qué tipo de reportes puedo generar?',
       answer:
-        'Puedes generar reportes por categoría, por periodo, cuenta, banco o vendor. También puedes exportar en Excel o PDF. Por ejemplo: "Todos los gastos en Servicios del último trimestre" o "Detalle de Supermercado por mes".',
+        'Podés filtrar por categoría, periodo, cuenta, banco, vendor, o combinar filtros. Exportá todo a Excel para análisis más profundos. Por ejemplo: "Gastos en Entretenimiento del último trimestre" o "Detalle de Supermercado por mes en mi cuenta Itaú".',
     },
     {
-      question: '¿Necesito instalar algo?',
+      question: '¿Gasty funciona con múltiples bancos y cuentas?',
       answer:
-        'No, Gasty es una aplicación web que funciona directamente en tu navegador. No necesitas instalar ningún software. Solo crea tu cuenta y comienza a usarla inmediatamente desde cualquier dispositivo.',
+        'Sí. Podés tener múltiples cuentas de diferentes bancos y Gasty te da una vista unificada de todo. Subís extractos de BBVA, Itaú, Scotia, BROU, etc., y ves todo junto en un solo lugar. Perfecto si tenés cuentas en varios bancos.',
     },
   ];
 

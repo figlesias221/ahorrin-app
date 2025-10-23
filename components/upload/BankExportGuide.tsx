@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, HelpCircle, ExternalLink, FileSpreadsheet, Building2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, HelpCircle, ExternalLink, FileSpreadsheet, AlertCircle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,11 +11,12 @@ interface BankGuide {
   name: string;
   displayName: string;
   color: string;
-  icon: string;
   formats: string[];
   steps: string[];
   tips?: string[];
   helpLink?: string;
+  verified?: boolean; // Indicates if instructions are verified for 2025
+  limitations?: string[]; // Known limitations for this bank
 }
 
 const BANK_GUIDES: BankGuide[] = [
@@ -24,52 +25,64 @@ const BANK_GUIDES: BankGuide[] = [
     name: 'Itaú',
     displayName: 'Itaú',
     color: '#ec7000',
-    icon: '🏦',
     formats: ['XLS', 'XLSX'],
+    verified: true,
     steps: [
-      'Ingresá a tu cuenta en iLink (www.ilink.com.uy)',
-      'En el menú principal, seleccioná "Estados de Cuenta"',
-      'Elegí la cuenta que querés exportar (Cuenta Corriente, Caja de Ahorros, o Tarjeta de Crédito)',
-      'Seleccioná el rango de fechas deseado',
-      'Hacé clic en "Exportar" o "Descargar"',
-      'Elegí el formato "Excel" o "XLS"',
-      'Guardá el archivo en tu computadora'
+      'Ingresá a Hola! Itaú (www.itau.com.uy) con tu documento y clave',
+      'Para TARJETAS DE CRÉDITO: Seleccioná "Tarjetas de Crédito" → "Ver más" → "Control de gastos"',
+      'Para CUENTAS: Andá a "Cuentas" → Elegí tu cuenta → "Movimientos"',
+      'Seleccioná el rango de fechas que querés consultar',
+      'Hacé clic en el botón "Descargar" o ícono de Excel',
+      'El archivo se descarga automáticamente en formato Excel (.xls o .xlsx)',
+      'Guardá el archivo sin modificarlo'
     ],
     tips: [
-      'El archivo de Itaú viene en formato XLS/XLSX con columnas predefinidas',
-      'Gasty reconoce automáticamente el formato de Itaú Link Statement',
-      'No necesitás modificar el archivo, súbelo tal como lo descargás'
+      'Itaú ofrece 3 formatos diferentes de descarga según la sección',
+      'Para tarjetas, la función "Control de gastos" es la más completa',
+      'NO ofrece CSV directo, solo Excel - pero Gasty acepta archivos .xls/.xlsx sin problemas',
+      'El formato de Itaú es automáticamente reconocido por Gasty',
+      'No necesitás editar ni convertir el archivo'
     ],
-    helpLink: 'https://www.itau.com.uy/ayuda'
+    limitations: [
+      'Solo ofrece formato Excel (XLS/XLSX), no CSV directo',
+      'El rango de descarga puede estar limitado según el tipo de cuenta'
+    ],
+    helpLink: 'https://www.itau.com.uy/inst/controlDeGastos.html'
   },
   {
     id: 'santander',
     name: 'Santander',
     displayName: 'Santander',
     color: '#ec0000',
-    icon: '🔴',
-    formats: ['CSV', 'XLS'],
+    formats: ['XLS', 'TXT', 'CSV'],
+    verified: true,
     steps: [
-      'Ingresá a tu cuenta en Santander Online Banking',
-      'Seleccioná "Mis Cuentas" > "Movimientos"',
-      'Elegí la cuenta o tarjeta que querés exportar',
-      'Seleccioná el período (rango de fechas)',
-      'Buscá la opción "Exportar" o "Descargar movimientos"',
-      'Seleccioná el formato CSV o Excel',
-      'Guardá el archivo'
+      'Ingresá a Santander Online Banking (www.santander.com.uy)',
+      'También podés usar la App Santander desde tu celular',
+      'Seleccioná "Mis Cuentas" → "Movimientos" o "Consulta de movimientos"',
+      'Elegí la cuenta o tarjeta que querés consultar',
+      'Definí el período (rango de fechas) que necesitás',
+      'Buscá el botón "Exportar" o ícono de descarga',
+      'Seleccioná el formato: Excel, .txt, o Multicash según tus necesidades',
+      'El archivo se descarga automáticamente'
     ],
     tips: [
-      'Santander permite exportar hasta 90 días de movimientos por vez',
-      'Si necesitás más tiempo, descargá varios archivos y súbelos juntos',
-      'El formato CSV de Santander puede variar - si tenés problemas, contactanos'
-    ]
+      'Santander ofrece 3 formatos: Excel, .txt, y Multicash - elegí Excel o CSV para Gasty',
+      'La app móvil también permite exportar estados de cuenta',
+      'Podés exportar hasta 90 días por vez - si necesitás más, descargá varios períodos',
+      'Gasty puede procesar múltiples archivos juntos',
+      'El formato de Santander es generalmente estándar y bien compatible'
+    ],
+    limitations: [
+      'Límite de 90 días por exportación (descargá múltiples períodos si necesitás más)'
+    ],
+    helpLink: 'https://www.santander.com.uy/santander-digital/app-santander-uruguay'
   },
   {
     id: 'scotia',
     name: 'Scotia',
     displayName: 'Scotiabank',
     color: '#ed1c24',
-    icon: '🏴',
     formats: ['CSV', 'XLS'],
     steps: [
       'Ingresá a ScotiaWeb (www.scotiaweb.com.uy)',
@@ -90,52 +103,67 @@ const BANK_GUIDES: BankGuide[] = [
     name: 'BBVA',
     displayName: 'BBVA',
     color: '#004481',
-    icon: '🔵',
-    formats: ['CSV', 'XLS', 'PDF'],
+    formats: ['XLS', 'CSV', 'PDF'],
+    verified: true,
     steps: [
-      'Ingresá a BBVA Net Cash (www.bbva.com.uy)',
-      'Seleccioná "Cuentas" en el menú',
-      'Hacé clic en la cuenta que querés consultar',
-      'Seleccioná "Movimientos" o "Extracto"',
-      'Elegí el período',
-      'Buscá el botón "Exportar" (puede estar como ícono de descarga)',
-      'Seleccioná formato Excel o CSV',
-      'Descargá el archivo'
+      'Ingresá a BBVA Net (www.bbva.com.uy) con tu usuario y clave',
+      'En el menú principal, seleccioná "Cuentas"',
+      'Hacé clic en "Posición Global" en el margen derecho',
+      'Buscá la opción "Estado de Cuenta Mensual"',
+      'IMPORTANTE: Los estados están disponibles entre el día 8 y 10 de cada mes',
+      'Seleccioná el mes que querés descargar',
+      'Hacé clic en "Descargar"',
+      'Elegí formato Excel o CSV (evitá PDF para mejor compatibilidad)'
     ],
     tips: [
-      'BBVA permite exportar en varios formatos',
-      'Preferí CSV o Excel antes que PDF para mejor compatibilidad',
-      'Si el banco no ofrece exportación, podés usar entrada manual en Gasty'
-    ]
+      'Los estados de cuenta se publican mensualmente entre el 8 y 10 de cada mes',
+      'BBVA ofrece múltiples formatos: preferí Excel o CSV sobre PDF',
+      'PDF tiene limitaciones de privacidad y procesamiento - mejor usar Excel/CSV',
+      'Si necesitás consultar movimientos más recientes, usá "Movimientos" en lugar de "Estados"',
+      'Para períodos no cubiertos por estados, considerá la entrada manual en Gasty'
+    ],
+    limitations: [
+      'Estados de cuenta solo disponibles mensualmente (días 8-10 de cada mes)',
+      'Descarga limitada a períodos cerrados del mes anterior',
+      'Para consultas en tiempo real, usar sección "Movimientos" (sin descarga)'
+    ],
+    helpLink: 'https://www.bbva.com.uy/personas/ayuda.html'
   },
   {
     id: 'brou',
     name: 'BROU',
     displayName: 'Banco República (BROU)',
     color: '#009639',
-    icon: '🟢',
-    formats: ['CSV', 'XLS'],
+    formats: ['CSV', 'XLS', 'Excel'],
+    verified: true,
     steps: [
-      'Ingresá a e-BROU (www.ebrou.com.uy)',
-      'Seleccioná "Consultas" > "Movimientos"',
-      'Elegí la cuenta',
-      'Definí las fechas de inicio y fin',
-      'Hacé clic en "Exportar" o ícono de descarga',
-      'Seleccioná CSV o Excel',
-      'Guardá el archivo'
+      'Ingresá a e-BROU (www.ebrou.com.uy) o usá la app eBROU desde tu celular',
+      'Seleccioná "Consultas" en el menú principal',
+      'Hacé clic en "Movimientos" o "Consulta de movimientos"',
+      'Elegí la cuenta que querés consultar',
+      'Definí el rango de fechas (fecha inicio y fecha fin)',
+      'Buscá el botón "Exportar" o el ícono de descarga',
+      'Seleccioná el formato (generalmente Excel o CSV)',
+      'El archivo se descarga automáticamente a tu dispositivo'
     ],
     tips: [
-      'e-BROU permite exportar movimientos de cuentas y tarjetas',
-      'El formato es generalmente estándar y compatible',
-      'Para tarjetas Visa/Mastercard del BROU, usá la sección de Tarjetas'
-    ]
+      'e-BROU está disponible tanto en web como en app móvil (iOS/Android)',
+      'Podés consultar y exportar movimientos de todas tus cuentas y tarjetas',
+      'Para tarjetas Visa/Mastercard del BROU, andá a la sección "Tarjetas"',
+      'El formato de exportación es estándar y compatible con Gasty',
+      'Recomendación: consultá periódicamente para mantener tus registros actualizados'
+    ],
+    limitations: [
+      'El formato exacto de exportación puede variar según el tipo de cuenta',
+      'Verificá que la descarga incluya: Fecha, Descripción/Concepto, Monto'
+    ],
+    helpLink: 'https://www.brou.com.uy/ayuda'
   },
   {
     id: 'heritage',
     name: 'Heritage',
     displayName: 'Heritage Bank',
     color: '#1e3a8a',
-    icon: '💼',
     formats: ['CSV', 'XLS'],
     steps: [
       'Ingresá a Heritage Online Banking',
@@ -152,11 +180,39 @@ const BANK_GUIDES: BankGuide[] = [
     ]
   },
   {
+    id: 'oca',
+    name: 'OCA',
+    displayName: 'OCA',
+    color: '#0066cc',
+    formats: ['CSV', 'Excel'],
+    verified: true,
+    steps: [
+      'Ingresá a Mi Cuenta OCA (micuenta.oca.com.uy) con tu usuario y clave',
+      'También podés usar la app OCA desde tu celular',
+      'Seleccioná "Mis Movimientos" o "Consulta de Movimientos"',
+      'Elegí el período que querés consultar (rango de fechas)',
+      'Buscá el botón "Exportar" o "Descargar"',
+      'Seleccioná el formato Excel o CSV',
+      'El archivo se descarga automáticamente'
+    ],
+    tips: [
+      'OCA permite ver tus movimientos en tiempo real desde la web o app',
+      'Podés consultar movimientos históricos y descargarlos',
+      'El formato de exportación es compatible con Gasty',
+      'Si usás OCA vinculada a diferentes bancos, los movimientos aparecen unificados',
+      'La app móvil también ofrece opciones de consulta y descarga'
+    ],
+    limitations: [
+      'El rango de exportación puede variar según tu tipo de cuenta',
+      'Verificá que el archivo incluya: Fecha, Comercio/Descripción, Monto'
+    ],
+    helpLink: 'https://oca.uy/ayuda'
+  },
+  {
     id: 'generic',
     name: 'Otro Banco',
     displayName: 'Otro Banco',
     color: '#6b7280',
-    icon: '🏛️',
     formats: ['CSV'],
     steps: [
       'Ingresá a tu homebanking',
@@ -240,13 +296,21 @@ export function BankExportGuide() {
                   >
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-sm"
+                        className="w-3 h-10 rounded-sm"
                         style={{ backgroundColor: bank.color }}
-                      >
-                        {bank.icon}
-                      </div>
+                      />
                       <div className="text-left">
-                        <p className="text-sm font-semibold text-foreground">{bank.displayName}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-foreground">{bank.displayName}</p>
+                          {bank.verified && (
+                            <Badge
+                              variant="default"
+                              className="text-xs px-1.5 py-0 h-4 bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20"
+                            >
+                              ✓ 2025
+                            </Badge>
+                          )}
+                        </div>
                         <div className="flex gap-1 mt-0.5">
                           {bank.formats.map((format) => (
                             <Badge
@@ -300,6 +364,23 @@ export function BankExportGuide() {
                           </div>
                         )}
 
+                        {/* Limitations */}
+                        {bank.limitations && bank.limitations.length > 0 && (
+                          <div className="pt-2 border-t border-border/50">
+                            <p className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1">
+                              <AlertCircle className="h-3 w-3 text-amber-500" />
+                              Limitaciones conocidas:
+                            </p>
+                            <ul className="space-y-1 text-xs text-muted-foreground ml-4">
+                              {bank.limitations.map((limitation, idx) => (
+                                <li key={idx} className="list-disc text-amber-700 dark:text-amber-400">
+                                  {limitation}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
                         {/* Link */}
                         {bank.helpLink && (
                           <div className="pt-2 border-t border-border/50">
@@ -320,13 +401,37 @@ export function BankExportGuide() {
                 </div>
               ))}
 
-              {/* Mensaje final */}
-              <div className="mt-4 pt-3 border-t border-border/50">
-                <p className="text-xs text-muted-foreground">
-                  <strong className="text-foreground">¿No encontrás opción de exportación en tu banco?</strong>
-                  {' '}Usá la entrada manual rápida en Gasty para agregar tus transacciones de forma ágil.
-                  También podés contactarnos y te ayudamos a encontrar una solución.
-                </p>
+              {/* Mensaje final - Alternativas */}
+              <div className="mt-4 pt-3 border-t border-border/50 space-y-3">
+                <div>
+                  <p className="text-xs font-semibold text-foreground mb-1.5">
+                    ¿No encontrás opción de exportación en tu banco?
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Usá la <strong>entrada manual rápida</strong> en Gasty para agregar tus transacciones de forma ágil y segura.
+                    Es más rápido de lo que pensás y tenés control total sobre tu información.
+                  </p>
+                </div>
+
+                <div className="bg-background border-2 border-amber-500 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-foreground mb-1 flex items-center gap-1.5">
+                    <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
+                    ¿Por qué evitamos PDF?
+                  </p>
+                  <p className="text-xs text-foreground leading-relaxed">
+                    Los extractos PDF contienen información sensible como números de cuenta completos,
+                    saldos totales, y datos personales. Subir PDFs representa una <strong>barrera de seguridad
+                    y privacidad</strong> que muchos usuarios (como vos) prefieren evitar.
+                    Por eso recomendamos CSV/Excel (solo transacciones) o entrada manual.
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-muted-foreground">
+                    <strong className="text-foreground">¿Necesitás ayuda?</strong>
+                    {' '}Contactanos y te ayudamos a encontrar la mejor solución para tu banco.
+                  </p>
+                </div>
               </div>
             </div>
           )}

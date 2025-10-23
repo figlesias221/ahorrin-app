@@ -8,14 +8,17 @@ import { Currency } from '@/lib/utils/currency';
 const CURRENCIES = [
   { value: 'UYU' as Currency, label: 'UYU', symbol: '$U', flag: '🇺🇾' },
   { value: 'USD' as Currency, label: 'USD', symbol: '$', flag: '🇺🇸' },
+  { value: 'ARS' as Currency, label: 'ARS', symbol: '$', flag: '🇦🇷' },
 ];
 
 export function CurrencySelector() {
-  const { displayCurrency, setDisplayCurrency } = useCurrency();
+  const { displayCurrency, setDisplayCurrency, enabledCurrencies } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const selectedCurrency = CURRENCIES.find(c => c.value === displayCurrency) || CURRENCIES[0];
+  // Filter to show only enabled currencies
+  const availableCurrencies = CURRENCIES.filter(c => enabledCurrencies.includes(c.value));
+  const selectedCurrency = availableCurrencies.find(c => c.value === displayCurrency) || availableCurrencies[0];
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -63,7 +66,7 @@ export function CurrencySelector() {
       {/* Dropdown Menu - Simplified */}
       {isOpen && (
         <div className="absolute top-full mt-1 right-0 min-w-[100px] bg-card border border-border rounded-md shadow-lg z-50 overflow-hidden py-1">
-          {CURRENCIES.map((currency) => {
+          {availableCurrencies.map((currency) => {
             const isSelected = currency.value === displayCurrency;
 
             return (

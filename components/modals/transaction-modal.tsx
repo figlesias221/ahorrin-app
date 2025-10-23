@@ -26,6 +26,9 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
     type: transaction?.type || 'expense',
     categoryId: transaction?.categoryId || null, // Use null instead of '' to avoid UUID errors
     notes: transaction?.notes || '',
+    isInstallment: false,
+    installmentTotal: 1,
+    installmentAmount: 0,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -107,21 +110,21 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
 
-      const transactionData = {
-        user_id: user.id,
-        date: formData.date,
-        vendor: formData.vendor,
-        description: formData.description || null,
-        amount: formData.amount,
-        type: formData.type,
-        category_id: formData.categoryId || null, // Ensure empty strings become null for UUID column
-        notes: formData.notes || null,
-        is_manually_verified: true,
-        confidence_score: 1.0,
-      };
-
       if (transaction) {
-        // Update existing transaction
+        // Update existing transaction (don't allow changing to installment mode)
+        const transactionData = {
+          user_id: user.id,
+          date: formData.date,
+          vendor: formData.vendor,
+          description: formData.description || null,
+          amount: formData.amount,
+          type: formData.type,
+          category_id: formData.categoryId || null,
+          notes: formData.notes || null,
+          is_manually_verified: true,
+          confidence_score: 1.0,
+        };
+
         const { error } = await supabase
           .from('transactions')
           .update(transactionData)
@@ -129,12 +132,66 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
 
         if (error) throw error;
       } else {
-        // Create new transaction
-        const { error } = await supabase
-          .from('transactions')
-          .insert(transactionData);
+        // Create new transaction(s)
+        if (formData.isInstallment && formData.installmentTotal && formData.installmentTotal > 1) {
+          // Create multiple installment transactions
+          const installmentGroupId = crypto.randomUUID();
+          const baseDate = new Date(formData.date);
+          const transactions = [];
 
-        if (error) throw error;
+          for (let i = 0; i < formData.installmentTotal; i++) {
+            // Calculate date for this installment (add i months)
+            const installmentDate = new Date(baseDate);
+            installmentDate.setMonth(installmentDate.getMonth() + i);
+
+            const installmentDescription = formData.description
+              ? `${formData.description} (Cuota ${i + 1}/${formData.installmentTotal})`
+              : `(Cuota ${i + 1}/${formData.installmentTotal})`;
+
+            transactions.push({
+              user_id: user.id,
+              date: installmentDate.toISOString().split('T')[0],
+              vendor: formData.vendor,
+              description: installmentDescription,
+              amount: formData.installmentAmount || 0,
+              type: formData.type,
+              category_id: formData.categoryId || null,
+              notes: formData.notes || null,
+              installment_group_id: installmentGroupId,
+              installment_number: i + 1,
+              installment_total: formData.installmentTotal,
+              original_amount: formData.amount,
+              is_manually_verified: true,
+              confidence_score: 1.0,
+            });
+          }
+
+          const { error } = await supabase
+            .from('transactions')
+            .insert(transactions);
+
+          if (error) throw error;
+        } else {
+          // Create single transaction
+          const transactionData = {
+            user_id: user.id,
+            date: formData.date,
+            vendor: formData.vendor,
+            description: formData.description || null,
+            amount: formData.amount,
+            type: formData.type,
+            category_id: formData.categoryId || null,
+            notes: formData.notes || null,
+            is_manually_verified: true,
+            confidence_score: 1.0,
+          };
+
+          const { error } = await supabase
+            .from('transactions')
+            .insert(transactionData);
+
+          if (error) throw error;
+        }
       }
 
       onSave();
@@ -207,11 +264,36 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
             </div>
           </div>
 
+          {/* Installment Mode Toggle (only for new transactions) */}
+          {!transaction && (
+            <div className="p-4 rounded-lg border border-border bg-muted/30">
+              <label className="flex items-center gap-2 cursor-pointer text-foreground">
+                <input
+                  type="checkbox"
+                  checked={formData.isInstallment}
+                  onChange={(e) => {
+                    const isInstallment = e.target.checked;
+                    setFormData({
+                      ...formData,
+                      isInstallment,
+                      installmentTotal: isInstallment ? formData.installmentTotal || 2 : 1,
+                    });
+                  }}
+                  className="h-4 w-4"
+                />
+                <span className="font-medium">En Cuotas / Suscripción Recurrente</span>
+              </label>
+              <p className="text-xs text-muted-foreground mt-1 ml-6">
+                Divide el monto total en pagos mensuales automáticos
+              </p>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-4">
             {/* Date */}
             <div>
               <label htmlFor="date" className="block text-sm font-medium text-foreground mb-2">
-                Fecha *
+                {formData.isInstallment ? 'Fecha Primera Cuota *' : 'Fecha *'}
               </label>
               <input
                 id="date"
@@ -223,22 +305,71 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
               />
             </div>
 
-            {/* Amount */}
+            {/* Amount - show different label for installments */}
             <div>
               <label htmlFor="amount" className="block text-sm font-medium text-foreground mb-2">
-                Monto * ($UYU)
+                {formData.isInstallment ? 'Monto Total * ($UYU)' : 'Monto * ($UYU)'}
               </label>
               <input
                 id="amount"
                 type="number"
                 step="0.01"
                 value={formData.amount}
-                onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
+                onChange={(e) => {
+                  const amount = parseFloat(e.target.value) || 0;
+                  const installmentAmount = formData.isInstallment && formData.installmentTotal
+                    ? amount / formData.installmentTotal
+                    : amount;
+                  setFormData({ ...formData, amount, installmentAmount });
+                }}
                 required
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
+
+          {/* Installment-specific fields */}
+          {formData.isInstallment && (
+            <div className="space-y-4 p-4 rounded-lg border border-border bg-primary/5">
+              <div className="grid grid-cols-2 gap-4">
+                {/* Number of installments */}
+                <div>
+                  <label htmlFor="installmentTotal" className="block text-sm font-medium text-foreground mb-2">
+                    Número de Cuotas *
+                  </label>
+                  <input
+                    id="installmentTotal"
+                    type="number"
+                    min="1"
+                    max="120"
+                    value={formData.installmentTotal || 1}
+                    onChange={(e) => {
+                      const installmentTotal = parseInt(e.target.value) || 1;
+                      const installmentAmount = formData.amount / installmentTotal;
+                      setFormData({ ...formData, installmentTotal, installmentAmount });
+                    }}
+                    required
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Ej: 6, 12, 24"
+                  />
+                </div>
+
+                {/* Calculated amount per installment */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Monto por Cuota
+                  </label>
+                  <div className="w-full px-4 py-2 rounded-lg border border-border bg-muted text-foreground font-medium">
+                    ${formData.installmentAmount?.toFixed(2) || '0.00'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-xs text-muted-foreground">
+                Se crearán {formData.installmentTotal || 1} transacciones de ${formData.installmentAmount?.toFixed(2) || '0.00'} cada una, una por mes durante {formData.installmentTotal || 1} meses.
+              </div>
+            </div>
+          )}
 
           {/* Vendor */}
           <div>
@@ -431,7 +562,10 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
               disabled={saving}
               className="flex-1"
             >
-              {saving ? 'Guardando...' : 'Guardar'}
+              {saving
+                ? (formData.isInstallment ? `Creando ${formData.installmentTotal} cuotas...` : 'Guardando...')
+                : (formData.isInstallment ? `Crear ${formData.installmentTotal} Cuotas` : 'Guardar')
+              }
             </Button>
           </div>
         </form>

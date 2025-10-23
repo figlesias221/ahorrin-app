@@ -5,7 +5,7 @@ import { Check, FileUp, Sparkles, TrendingUp, Shield, Zap } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'BBVA Uruguay - Importá y Categorizá tus Extractos Automáticamente',
   description:
-    'Importá tus extractos bancarios de BBVA Uruguay a Gasty. Categorización automática con IA, análisis de gastos en tiempo real. Compatible con extractos PDF y Excel del BBVA.',
+    'Importá tus extractos bancarios de BBVA Uruguay a Gasty. Categorización automática, análisis de gastos en tiempo real. Compatible con extractos PDF y Excel del BBVA.',
   keywords: [
     'extracto bancario bbva uruguay',
     'bbva uruguay',

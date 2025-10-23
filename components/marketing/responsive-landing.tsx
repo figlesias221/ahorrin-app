@@ -3,10 +3,15 @@
 import { useEffect, useState } from 'react';
 import { HeroUltimate } from './hero-ultimate';
 import { HeroMobile } from './hero-mobile';
+import { FounderStory } from './founder-story';
+import { FreeToolCTA } from './free-tool-cta';
+import { BenefitsGrid } from './benefits-grid';
 import { IngestionShowcase } from './ingestion-showcase';
 import { CategoriesShowcase } from './categories-showcase';
 import { ChartsShowcase } from './charts-showcase';
 import { AIAssistantShowcase } from './ai-assistant-showcase';
+import { StatsShowcase } from './stats-showcase';
+import { Testimonials } from './testimonials';
 import { BlogSection } from './blog-section';
 import { FAQReal } from './faq-real';
 import { FeaturesMobile } from './features-mobile';
@@ -41,8 +46,12 @@ export function ResponsiveLanding() {
     return (
       <>
         <HeroMobile />
+        <FounderStory />
         <FeaturesMobile />
         <ShowcaseMobile />
+        <FreeToolCTA />
+        <StatsShowcase />
+        <Testimonials />
         <BlogSection />
         <FAQReal />
       </>
@@ -53,10 +62,15 @@ export function ResponsiveLanding() {
   return (
     <>
       <HeroUltimate />
+      <FounderStory />
+      <BenefitsGrid />
       <IngestionShowcase />
       <CategoriesShowcase />
       <ChartsShowcase />
       <AIAssistantShowcase />
+      <FreeToolCTA />
+      <StatsShowcase />
+      <Testimonials />
       <BlogSection />
       <FAQReal />
     </>

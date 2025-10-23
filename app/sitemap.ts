@@ -7,6 +7,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Blog posts (will be dynamically loaded from content later)
   const blogPosts = [
     {
+      slug: 'mejores-tarjetas-credito-uruguay-2025',
+      date: '2025-01-20',
+    },
+    {
       slug: 'organizar-finanzas-personales-uruguay-2025',
       date: '2025-10-21',
     },
@@ -71,6 +75,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.9,
+    },
+
+    // Free tools
+    {
+      url: `${baseUrl}/herramientas/calculadora-presupuesto`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.85,
     },
   ];
 }

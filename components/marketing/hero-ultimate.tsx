@@ -20,16 +20,16 @@ export function HeroUltimate() {
             transition={{ duration: 0.5 }}
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-3 sm:mb-4 md:mb-6 px-4"
           >
-            Control de Gastos y Finanzas Personales Inteligente
+            Dejá de Perder Plata por No Saber En Qué Gastás 🇺🇾
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-sm sm:text-base md:text-lg lg:text-xl  max-w-2xl mx-auto px-6"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto px-6"
           >
-            La mejor app para controlar gastos en 🇺🇾. Importá extractos de cualquier banco o ingresá manualmente. Categorización automática.
+            Importá extractos de <strong className="text-foreground">todos los bancos uruguayos</strong> (ITAÚ, BBVA, Scotiabank, BROU, Santander, Heritage) y categorizá tus gastos automáticamente.
           </motion.p>
         </div>
 
@@ -48,8 +48,8 @@ export function HeroUltimate() {
               <div className="bg-card p-3 border-b-2 border-border flex-shrink-0">
                 <div className="flex items-center justify-between gap-2.5">
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm text-foreground">1. Ingresá tus gastos</div>
-                    <div className="text-xs ">Manual o con extracto</div>
+                    <h2 className="font-semibold text-sm text-foreground">1. Importá Extractos Bancarios</h2>
+                    <div className="text-xs text-muted-foreground">CSV, Excel o manual</div>
                   </div>
                   <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
                     <Upload className="w-5 h-5 text-primary" />
@@ -165,8 +165,8 @@ export function HeroUltimate() {
               <div className="bg-card p-3 border-b border-border flex-shrink-0">
                 <div className="flex items-center justify-between gap-2.5">
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm">2. Categorizá automático</div>
-                    <div className="text-xs ">Con reglas inteligentes</div>
+                    <h2 className="font-semibold text-sm">2. Categorización Automática</h2>
+                    <div className="text-xs text-muted-foreground">Reglas inteligentes</div>
                   </div>
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Tags className="w-5 h-5 text-primary" />
@@ -277,8 +277,8 @@ export function HeroUltimate() {
               <div className="bg-card p-3 border-b border-border flex-shrink-0">
                 <div className="flex items-center justify-between gap-2.5">
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm">3. Analizá con gráficas</div>
-                    <div className="text-xs ">Insights claros</div>
+                    <h2 className="font-semibold text-sm">3. Visualizá tus Finanzas en Tiempo Real</h2>
+                    <div className="text-xs text-muted-foreground">Gráficas y reportes</div>
                   </div>
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
                     <BarChart3 className="w-5 h-5 text-primary" />
@@ -420,14 +420,16 @@ export function HeroUltimate() {
           <div className="flex justify-center px-4">
             <Link href="/signup">
               <Button size="lg" className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-semibold">
-                Empezar gratis ahora
+                Ver mis gastos en 2 minutos
                 <ArrowRight className="ml-2 w-4 sm:w-5 h-4 sm:h-5" />
               </Button>
             </Link>
           </div>
 
-          <div className="flex items-center justify-center gap-4 text-sm ">
-            <span>✓ Setup en 2 minutos</span>
+          <div className="flex items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
+            <span>✓ No tarjeta requerida</span>
+            <span>✓ No conectás tu banco</span>
+            <span>✓ Hecho en Uruguay 🇺🇾</span>
           </div>
         </motion.div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Upload as UploadIcon, FileText, CheckCircle, AlertCircle, Calendar, Plus, Zap, Trash2, Edit2, Check, X, Trash, Clock, ChevronDown, ChevronUp, History, Building2, Search } from 'lucide-react';
+import { Upload as UploadIcon, FileText, CheckCircle, AlertCircle, Calendar, Plus, Zap, Trash2, Edit2, Check, X, Trash, Clock, ChevronDown, ChevronUp, History, Building2, Search, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,6 +25,9 @@ import { motionVariants } from '@/lib/design-tokens';
 import { SuggestedBanks } from '@/components/upload/SuggestedBanks';
 import { FilePreview } from '@/components/upload/FilePreview';
 import type { ColumnType } from '@/lib/parsers/preview-types';
+import { ImageUpload } from '@/components/receipts/image-upload';
+import { ReceiptPreviewModal } from '@/components/receipts/receipt-preview-modal';
+import type { ReceiptParseResult } from '@/types';
 
 type BankStatement = Database['public']['Tables']['bank_statements']['Row'];
 
@@ -79,7 +82,7 @@ export default function UploadPage() {
   const [deletingAll, setDeletingAll] = useState(false);
   const [activeRulesCount, setActiveRulesCount] = useState(0);
   const [showHistoryDetails, setShowHistoryDetails] = useState(false);
-  const [activeTab, setActiveTab] = useState<'upload' | 'history' | 'banks'>('upload');
+  const [activeTab, setActiveTab] = useState<'upload' | 'receipt' | 'history' | 'banks'>('upload');
 
   // Bulk selection state
   const [selectedStatements, setSelectedStatements] = useState<Set<string>>(new Set());
@@ -96,6 +99,12 @@ export default function UploadPage() {
   const [editingBank, setEditingBank] = useState<{ id: string; name: string; displayName: string; color: string } | null>(null);
   const [deleteBankTarget, setDeleteBankTarget] = useState<{ id: string; name: string } | null>(null);
   const [deletingBank, setDeletingBank] = useState(false);
+
+  // Receipt scanning state
+  const [receiptImage, setReceiptImage] = useState<{ file: File; previewUrl: string } | null>(null);
+  const [parsingReceipt, setParsingReceipt] = useState(false);
+  const [receiptParseResult, setReceiptParseResult] = useState<ReceiptParseResult | null>(null);
+  const [showReceiptPreview, setShowReceiptPreview] = useState(false);
 
   // Preview state
   const [showPreview, setShowPreview] = useState(false);
@@ -162,6 +171,23 @@ export default function UploadPage() {
       stats[bankName].transactionsCount += stmt.transactions_count;
     });
     setBankStats(stats);
+
+    // Fetch categories (needed for receipt scanning)
+    const { data: categoriesData, error: categoriesError } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .order('name');
+
+    if (categoriesError) {
+      console.error('❌ Error loading categories:', categoriesError);
+    } else if (categoriesData) {
+      console.log('📋 Loaded categories:', categoriesData.length, categoriesData);
+      setCategories(categoriesData);
+    } else {
+      console.warn('⚠️ No categories data returned');
+    }
 
     setLoadingStatements(false);
   };
@@ -1327,6 +1353,72 @@ export default function UploadPage() {
     }
   };
 
+  // Receipt scanning handlers
+  const handleReceiptImageSelected = (file: File, previewUrl: string) => {
+    setReceiptImage({ file, previewUrl });
+  };
+
+  const handleReceiptImageClear = () => {
+    setReceiptImage(null);
+    setReceiptParseResult(null);
+  };
+
+  const handleAnalyzeReceipt = async () => {
+    if (!receiptImage) return;
+
+    setParsingReceipt(true);
+    setReceiptParseResult(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('image', receiptImage.file);
+
+      const response = await fetch('/api/receipts/parse-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result: ReceiptParseResult = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Error al procesar la imagen');
+      }
+
+      setReceiptParseResult(result);
+
+      if (result.success) {
+        setShowReceiptPreview(true);
+        toast.success(`Ticket analizado con ${(result.confidence * 100).toFixed(0)}% de confianza`);
+      } else {
+        toast.error(result.error || 'No se pudo analizar el ticket');
+      }
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('Error analyzing receipt:', error);
+      toast.error(err.message || 'Error al analizar el ticket');
+    } finally {
+      setParsingReceipt(false);
+    }
+  };
+
+  const handleReceiptSaved = () => {
+    // Refresh data (statements and categories)
+    fetchData();
+
+    // Reset receipt state
+    setReceiptImage(null);
+    setReceiptParseResult(null);
+    setShowReceiptPreview(false);
+
+    toast.success('Transacción creada exitosamente desde ticket');
+  };
+
+  const handleReceiptRetry = () => {
+    setShowReceiptPreview(false);
+    setReceiptParseResult(null);
+    // Image is still loaded, user can re-analyze
+  };
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -1352,6 +1444,22 @@ export default function UploadPage() {
             Subir Extractos
           </div>
           {activeTab === 'upload' && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab('receipt')}
+          className={`px-4 py-2 font-medium transition-colors relative ${
+            activeTab === 'receipt'
+              ? 'text-primary'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <Camera className="h-4 w-4" />
+            Escanear Ticket
+          </div>
+          {activeTab === 'receipt' && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
           )}
         </button>
@@ -1940,6 +2048,111 @@ export default function UploadPage() {
           </Card>
         </motion.div>
       )}
+        </>
+      )}
+
+      {/* Tab Content: Escanear Ticket */}
+      {activeTab === 'receipt' && (
+        <>
+          <Card className="p-6">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-foreground mb-2">Escanear Ticket de Compra</h2>
+              <p className="text-sm text-muted-foreground">
+                Sube una foto de tu ticket y la IA extraerá automáticamente los datos de la transacción
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              {/* Image Upload */}
+              <ImageUpload
+                onImageSelected={handleReceiptImageSelected}
+                onClear={handleReceiptImageClear}
+                disabled={parsingReceipt}
+              />
+
+              {/* Analyze Button */}
+              {receiptImage && !receiptParseResult && (
+                <div className="flex justify-center">
+                  <Button
+                    onClick={handleAnalyzeReceipt}
+                    disabled={parsingReceipt}
+                    size="lg"
+                    className="min-w-[200px]"
+                  >
+                    {parsingReceipt ? (
+                      <>
+                        <span className="mr-2">Analizando...</span>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        >
+                          <Camera className="h-5 w-5" />
+                        </motion.div>
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="h-5 w-5 mr-2" />
+                        Analizar Ticket con IA
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+
+              {/* Info cards */}
+              <div className="grid md:grid-cols-3 gap-4 pt-4 border-t">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Camera className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm">Captura clara</h4>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Asegúrate que el ticket esté bien iluminado y enfocado
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Zap className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm">IA precisa</h4>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      GPT-5-mini extrae fecha, comercio, monto y categoría
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm">Revisión final</h4>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Siempre podrás editar los datos antes de guardar
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Tips */}
+          <Card className="p-4 bg-muted/30">
+            <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 text-primary" />
+              Consejos para mejores resultados
+            </h3>
+            <ul className="text-xs text-muted-foreground space-y-1 ml-6 list-disc">
+              <li>Fotografía el ticket completo, incluyendo el encabezado y total</li>
+              <li>Evita sombras y reflejos que dificulten la lectura</li>
+              <li>Si el ticket está arrugado, estíralo antes de fotografiar</li>
+              <li>Funciona con tickets de supermercados, farmacias, restaurantes, etc.</li>
+            </ul>
+          </Card>
         </>
       )}
 
@@ -2717,6 +2930,18 @@ export default function UploadPage() {
             />
           </div>
         </div>
+      )}
+
+      {/* Receipt Preview Modal */}
+      {showReceiptPreview && receiptParseResult && receiptImage && (
+        <ReceiptPreviewModal
+          result={receiptParseResult}
+          imageUrl={receiptImage.previewUrl}
+          categories={categories}
+          onClose={() => setShowReceiptPreview(false)}
+          onSave={handleReceiptSaved}
+          onRetry={handleReceiptRetry}
+        />
       )}
     </div>
   );

@@ -19,6 +19,10 @@ export interface Transaction {
   isManuallyVerified: boolean;
   confidenceScore?: number; // 0-1 para categorización AI
   notes?: string;
+  installmentGroupId?: string;
+  installmentNumber?: number;
+  installmentTotal?: number;
+  originalAmount?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -129,6 +133,9 @@ export interface TransactionFormData {
   categoryId: string;
   accountId?: string;
   notes?: string;
+  isInstallment?: boolean;
+  installmentTotal?: number;
+  installmentAmount?: number; // amount per installment (calculated)
 }
 
 export interface CategoryFormData {
@@ -201,4 +208,28 @@ export interface TrendChartData {
   income: number;
   expenses: number;
   net: number;
+}
+
+// Receipt parsing types
+export interface ReceiptItem {
+  name: string;
+  amount: number;
+}
+
+export interface ReceiptTransactionData {
+  date: string; // YYYY-MM-DD
+  vendor: string;
+  amount: number;
+  currency: string;
+  description?: string;
+  suggestedCategory?: string;
+  items?: ReceiptItem[];
+}
+
+export interface ReceiptParseResult {
+  success: boolean;
+  transaction?: ReceiptTransactionData;
+  confidence: number; // 0-1
+  error?: string;
+  rawImage?: string; // base64 for preview
 }

@@ -2,9 +2,13 @@
 export const EXCHANGE_RATES = {
   USD_TO_UYU: 40,
   UYU_TO_USD: 1 / 40,
+  USD_TO_ARS: 1000, // Approximate rate - update as needed
+  ARS_TO_USD: 1 / 1000,
+  ARS_TO_UYU: 0.04, // Approximate rate - update as needed
+  UYU_TO_ARS: 25, // Approximate rate - update as needed
 } as const;
 
-export type Currency = 'USD' | 'UYU';
+export type Currency = 'USD' | 'UYU' | 'ARS';
 
 export interface ConvertedAmount {
   amount: number;
@@ -15,16 +19,32 @@ export interface ConvertedAmount {
 
 /**
  * Convert an amount from one currency to another
+ * @param customRates Optional custom exchange rates to use instead of defaults
  */
 export function convertCurrency(
   amount: number,
   fromCurrency: string,
-  toCurrency: Currency
+  toCurrency: Currency,
+  customRates?: {
+    USD_TO_UYU?: number;
+    USD_TO_ARS?: number;
+    UYU_TO_ARS?: number;
+  }
 ): number {
   // If same currency or no conversion needed
   if (fromCurrency === toCurrency) {
     return amount;
   }
+
+  // Use custom rates if provided, otherwise use defaults
+  const rates = {
+    USD_TO_UYU: customRates?.USD_TO_UYU ?? EXCHANGE_RATES.USD_TO_UYU,
+    UYU_TO_USD: customRates?.USD_TO_UYU ? 1 / customRates.USD_TO_UYU : EXCHANGE_RATES.UYU_TO_USD,
+    USD_TO_ARS: customRates?.USD_TO_ARS ?? EXCHANGE_RATES.USD_TO_ARS,
+    ARS_TO_USD: customRates?.USD_TO_ARS ? 1 / customRates.USD_TO_ARS : EXCHANGE_RATES.ARS_TO_USD,
+    UYU_TO_ARS: customRates?.UYU_TO_ARS ?? EXCHANGE_RATES.UYU_TO_ARS,
+    ARS_TO_UYU: customRates?.UYU_TO_ARS ? 1 / customRates.UYU_TO_ARS : EXCHANGE_RATES.ARS_TO_UYU,
+  };
 
   // Normalize currency codes
   const from = fromCurrency.toUpperCase();
@@ -33,7 +53,9 @@ export function convertCurrency(
   // Convert to UYU first (base currency)
   let amountInUYU = amount;
   if (from === 'USD') {
-    amountInUYU = amount * EXCHANGE_RATES.USD_TO_UYU;
+    amountInUYU = amount * rates.USD_TO_UYU;
+  } else if (from === 'ARS') {
+    amountInUYU = amount * rates.ARS_TO_UYU;
   } else if (from !== 'UYU') {
     // For other currencies, assume UYU for now
     amountInUYU = amount;
@@ -41,7 +63,9 @@ export function convertCurrency(
 
   // Convert from UYU to target currency
   if (to === 'USD') {
-    return amountInUYU * EXCHANGE_RATES.UYU_TO_USD;
+    return amountInUYU * rates.UYU_TO_USD;
+  } else if (to === 'ARS') {
+    return amountInUYU * rates.UYU_TO_ARS;
   }
 
   return amountInUYU;
@@ -53,9 +77,14 @@ export function convertCurrency(
 export function convertTransactionAmount(
   amount: number,
   currency: string,
-  targetCurrency: Currency
+  targetCurrency: Currency,
+  customRates?: {
+    USD_TO_UYU?: number;
+    USD_TO_ARS?: number;
+    UYU_TO_ARS?: number;
+  }
 ): ConvertedAmount {
-  const convertedAmount = convertCurrency(amount, currency, targetCurrency);
+  const convertedAmount = convertCurrency(amount, currency, targetCurrency, customRates);
 
   return {
     amount: convertedAmount,
@@ -69,8 +98,9 @@ export function convertTransactionAmount(
  * Format currency with symbol
  */
 export function formatCurrencyWithSymbol(amount: number, currency: Currency): string {
-  const symbol = currency === 'USD' ? '$' : '$U';
-  return `${symbol} ${amount.toLocaleString('es-UY', {
+  const symbol = getCurrencySymbol(currency);
+  const locale = currency === 'ARS' ? 'es-AR' : 'es-UY';
+  return `${symbol} ${amount.toLocaleString(locale, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   })}`;
@@ -80,5 +110,14 @@ export function formatCurrencyWithSymbol(amount: number, currency: Currency): st
  * Get currency symbol
  */
 export function getCurrencySymbol(currency: Currency): string {
-  return currency === 'USD' ? '$' : '$U';
+  switch (currency) {
+    case 'USD':
+      return '$';
+    case 'ARS':
+      return '$';
+    case 'UYU':
+      return '$U';
+    default:
+      return '$';
+  }
 }

@@ -14,9 +14,19 @@ export function formatCurrency(amount: number, currency: string = 'UYU'): string
 
 /**
  * Format date in friendly format
+ * Handles YYYY-MM-DD strings correctly without timezone issues
  */
 export function formatDate(date: Date | string, formatStr: string = 'dd/MM/yyyy'): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  let dateObj: Date;
+
+  if (typeof date === 'string') {
+    // Parse YYYY-MM-DD as local date to avoid timezone issues
+    const [year, month, day] = date.split('T')[0].split('-').map(Number);
+    dateObj = new Date(year, month - 1, day);
+  } else {
+    dateObj = date;
+  }
+
   return format(dateObj, formatStr);
 }
 

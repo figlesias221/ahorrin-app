@@ -18,7 +18,7 @@ export function FeaturesGrid() {
   const features = [
     {
       icon: Sparkles,
-      title: 'Categorización Automática con IA',
+      title: 'Categorización Automática',
       description:
         'Nuestra IA aprende de tus patrones y categoriza automáticamente tus transacciones con 98% de precisión.',
       gradient: 'from-accent-purple to-accent-purple/50',

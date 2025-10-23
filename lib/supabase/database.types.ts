@@ -126,6 +126,10 @@ export interface Database {
           is_manually_verified: boolean
           is_ignored: boolean
           notes: string | null
+          installment_group_id: string | null
+          installment_number: number | null
+          installment_total: number | null
+          original_amount: number | null
           created_at: string
           updated_at: string
         }
@@ -145,6 +149,10 @@ export interface Database {
           is_manually_verified?: boolean
           is_ignored?: boolean
           notes?: string | null
+          installment_group_id?: string | null
+          installment_number?: number | null
+          installment_total?: number | null
+          original_amount?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -164,6 +172,10 @@ export interface Database {
           is_manually_verified?: boolean
           is_ignored?: boolean
           notes?: string | null
+          installment_group_id?: string | null
+          installment_number?: number | null
+          installment_total?: number | null
+          original_amount?: number | null
           created_at?: string
           updated_at?: string
         }

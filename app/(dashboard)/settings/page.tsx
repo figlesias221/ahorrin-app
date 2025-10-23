@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/contexts/toast-context';
-import { User, Lock, Trash2, Save, Building2, Edit, AlertCircle } from 'lucide-react';
+import { User, Lock, Trash2, Save, Building2, Edit, AlertCircle, DollarSign, TrendingUp } from 'lucide-react';
+import { useCurrency, ExchangeRates } from '@/contexts/currency-context';
+import { Currency } from '@/lib/utils/currency';
 
 interface UserProfile {
   id: string;
@@ -54,11 +56,33 @@ export default function SettingsPage() {
 
   const supabase = createClient();
   const toast = useToast();
+  const { enabledCurrencies, setEnabledCurrencies, exchangeRates, setExchangeRates } = useCurrency();
+
+  const [ratesFormData, setRatesFormData] = useState({
+    USD_TO_UYU: exchangeRates.USD_TO_UYU.toString(),
+    USD_TO_ARS: exchangeRates.USD_TO_ARS.toString(),
+    UYU_TO_ARS: exchangeRates.UYU_TO_ARS.toString(),
+  });
+
+  const AVAILABLE_CURRENCIES = [
+    { code: 'UYU' as Currency, name: 'Peso Uruguayo', flag: '🇺🇾', symbol: '$U' },
+    { code: 'USD' as Currency, name: 'Dólar Estadounidense', flag: '🇺🇸', symbol: '$' },
+    { code: 'ARS' as Currency, name: 'Peso Argentino', flag: '🇦🇷', symbol: '$' },
+  ];
 
   useEffect(() => {
     fetchUserData();
     loadCustomBanks();
   }, []);
+
+  // Update rates form when exchangeRates change
+  useEffect(() => {
+    setRatesFormData({
+      USD_TO_UYU: exchangeRates.USD_TO_UYU.toString(),
+      USD_TO_ARS: exchangeRates.USD_TO_ARS.toString(),
+      UYU_TO_ARS: exchangeRates.UYU_TO_ARS.toString(),
+    });
+  }, [exchangeRates]);
 
   const fetchUserData = async () => {
     try {
@@ -316,6 +340,56 @@ export default function SettingsPage() {
     setBankFormData({ name: '', displayName: '', color: '#004481' });
   };
 
+  const handleToggleCurrency = async (currency: Currency) => {
+    const isEnabled = enabledCurrencies.includes(currency);
+    let newEnabledCurrencies: Currency[];
+
+    if (isEnabled) {
+      // Disable currency
+      if (enabledCurrencies.length <= 1) {
+        toast.error('Debes tener al menos una moneda activa', 'Error');
+        return;
+      }
+      newEnabledCurrencies = enabledCurrencies.filter(c => c !== currency);
+    } else {
+      // Enable currency
+      newEnabledCurrencies = [...enabledCurrencies, currency];
+    }
+
+    await setEnabledCurrencies(newEnabledCurrencies);
+    toast.success(
+      isEnabled ? `${currency} desactivada` : `${currency} activada`,
+      'Preferencias actualizadas'
+    );
+  };
+
+  const handleSaveExchangeRates = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+
+    try {
+      const newRates: ExchangeRates = {
+        USD_TO_UYU: parseFloat(ratesFormData.USD_TO_UYU),
+        USD_TO_ARS: parseFloat(ratesFormData.USD_TO_ARS),
+        UYU_TO_ARS: parseFloat(ratesFormData.UYU_TO_ARS),
+      };
+
+      // Validate all rates are positive numbers
+      if (newRates.USD_TO_UYU <= 0 || newRates.USD_TO_ARS <= 0 || newRates.UYU_TO_ARS <= 0) {
+        toast.error('Las tasas deben ser números positivos', 'Error de validación');
+        return;
+      }
+
+      await setExchangeRates(newRates);
+      toast.success('Tasas de cambio actualizadas correctamente', 'Tasas actualizadas');
+    } catch (error) {
+      console.error('Error saving exchange rates:', error);
+      toast.error('Error al guardar las tasas de cambio', 'Error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -402,6 +476,169 @@ export default function SettingsPage() {
           <Button type="submit" variant="primary" disabled={saving}>
             <Save className="h-4 w-4 mr-2" />
             {saving ? 'Guardando...' : 'Guardar Cambios'}
+          </Button>
+        </form>
+      </Card>
+
+      {/* Currency Preferences */}
+      <Card className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
+            <DollarSign className="h-5 w-5 text-success" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Monedas</h2>
+            <p className="text-sm text-muted-foreground">
+              Activa o desactiva las monedas que quieres ver en el selector
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {AVAILABLE_CURRENCIES.map((currency) => {
+            const isEnabled = enabledCurrencies.includes(currency.code);
+            const isOnlyEnabled = enabledCurrencies.length === 1 && isEnabled;
+
+            return (
+              <div
+                key={currency.code}
+                className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
+                  isEnabled
+                    ? 'border-primary/30 bg-primary/5'
+                    : 'border-border bg-muted/30'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{currency.flag}</span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {currency.name} ({currency.code})
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Símbolo: {currency.symbol}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleToggleCurrency(currency.code)}
+                  disabled={isOnlyEnabled}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                    isEnabled ? 'bg-primary' : 'bg-muted'
+                  } ${isOnlyEnabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      isEnabled ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 p-3 bg-info/10 border border-info/30 rounded-lg flex items-start gap-2">
+          <AlertCircle className="h-4 w-4 text-info mt-0.5 flex-shrink-0" />
+          <p className="text-xs text-info">
+            Las monedas activas aparecerán en el selector del header. Debes tener al menos una moneda activa.
+          </p>
+        </div>
+      </Card>
+
+      {/* Exchange Rates Configuration */}
+      <Card className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+            <TrendingUp className="h-5 w-5 text-warning" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Tasas de Cambio</h2>
+            <p className="text-sm text-muted-foreground">
+              Configura las tasas de conversión entre monedas
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSaveExchangeRates} className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                1 USD = ? UYU
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  value={ratesFormData.USD_TO_UYU}
+                  onChange={(e) => setRatesFormData({ ...ratesFormData, USD_TO_UYU: e.target.value })}
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="40"
+                  required
+                />
+                <span className="absolute right-3 top-2.5 text-sm text-muted-foreground">$U</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                1 UYU = ${(1 / parseFloat(ratesFormData.USD_TO_UYU || '1')).toFixed(4)} USD
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                1 USD = ? ARS
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  value={ratesFormData.USD_TO_ARS}
+                  onChange={(e) => setRatesFormData({ ...ratesFormData, USD_TO_ARS: e.target.value })}
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="1000"
+                  required
+                />
+                <span className="absolute right-3 top-2.5 text-sm text-muted-foreground">$ ARS</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                1 ARS = ${(1 / parseFloat(ratesFormData.USD_TO_ARS || '1')).toFixed(6)} USD
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                1 UYU = ? ARS
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  value={ratesFormData.UYU_TO_ARS}
+                  onChange={(e) => setRatesFormData({ ...ratesFormData, UYU_TO_ARS: e.target.value })}
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="25"
+                  required
+                />
+                <span className="absolute right-3 top-2.5 text-sm text-muted-foreground">$ ARS</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                1 ARS = $U {(1 / parseFloat(ratesFormData.UYU_TO_ARS || '1')).toFixed(4)}
+              </p>
+            </div>
+          </div>
+
+          <div className="p-3 bg-warning/10 border border-warning/30 rounded-lg flex items-start gap-2">
+            <AlertCircle className="h-4 w-4 text-warning mt-0.5 flex-shrink-0" />
+            <div className="text-xs text-warning">
+              <p className="font-medium mb-1">Actualiza estas tasas regularmente</p>
+              <p>Para Argentina, considera usar el tipo de cambio oficial o blue según tu preferencia.</p>
+            </div>
+          </div>
+
+          <Button type="submit" variant="warning" disabled={saving}>
+            <Save className="h-4 w-4 mr-2" />
+            {saving ? 'Guardando...' : 'Guardar Tasas'}
           </Button>
         </form>
       </Card>

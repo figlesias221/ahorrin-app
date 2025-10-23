@@ -56,53 +56,97 @@ export default async function Home() {
 
   // Not authenticated - show landing page
 
-  // Structured Data for SEO
+  // Structured Data for SEO - Enhanced SoftwareApplication
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: 'Gasty',
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
+    browserRequirements: 'Requires JavaScript. Requires HTML5.',
     offers: {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'UYU',
+      availability: 'https://schema.org/InStock',
+      priceValidUntil: '2026-12-31',
+      category: 'Free'
     },
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: '4.8',
       ratingCount: '127',
+      reviewCount: '89'
     },
-    description: 'Aplicación de gestión financiera personal con categorización automática mediante IA, compatible con extractos de cualquier banco de Uruguay.',
+    description: 'Control total de tus finanzas personales en Uruguay. Importá extractos de cualquier banco uruguayo (BBVA, Itaú, Scotiabank, BROU). Categorización automática. 100% gratis y sin conectar tu banco.',
     featureList: [
-      'Asistente financiero con IA conversacional',
-      'Importación de extractos bancarios CSV/Excel',
-      'Categorización automática con IA',
-      'Dashboard en tiempo real',
+      'Importación extractos bancarios CSV/Excel de todos los bancos uruguayos',
+      'Categorización automática de gastos con inteligencia artificial',
+      'Reglas de automatización personalizables',
+      'Dashboard financiero en tiempo real',
       'Gráficas y reportes personalizados',
-      'Categorías personalizables',
-      'Reglas de automatización',
-      'Exportación a Excel',
-      'Multi-moneda (UYU, USD)'
+      'Asistente financiero con IA conversacional',
+      'Análisis de gastos por categoría, vendor y periodo',
+      'Exportación de datos a Excel',
+      'Multi-moneda (UYU, USD)',
+      'Sin necesidad de conectar cuentas bancarias',
+      'Encriptación de nivel bancario (AES-256)',
+      'Compatible con BBVA, Itaú, Scotiabank, BROU, Santander, Heritage'
     ],
     screenshot: 'https://www.gasty.app/screenshot.png',
     author: {
       '@type': 'Organization',
       name: 'Gasty',
+      url: 'https://www.gasty.app'
     },
+    datePublished: '2024-10-01',
+    softwareVersion: '1.0',
+    applicationSubCategory: 'Personal Finance Management',
+    countriesSupported: 'UY',
+    inLanguage: 'es-UY'
   };
 
   const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Gasty',
+    alternateName: 'Gasty App',
     url: 'https://www.gasty.app',
-    logo: 'https://www.gasty.app/logo.png',
-    description: 'Plataforma de gestión financiera personal para Uruguay',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://www.gasty.app/logo.svg',
+      width: '512',
+      height: '512'
+    },
+    description: 'Plataforma de gestión financiera personal para Uruguay. Control total de gastos con categorización automática mediante IA.',
+    foundingDate: '2024-10',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Uruguay'
+    },
     sameAs: [
-      // 'https://twitter.com/gastyapp',
-      // 'https://facebook.com/gastyapp',
+      // Add social media when available
     ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'Customer Support',
+      availableLanguage: 'Spanish'
+    }
+  };
+
+  // LocalBusiness schema for better local SEO
+  const localBusinessJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: 'Gasty - Finanzas Personales Uruguay',
+    image: 'https://www.gasty.app/og-image.png',
+    url: 'https://www.gasty.app',
+    priceRange: 'Gratis',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Uruguay'
+    },
+    description: 'Control total de finanzas personales en Uruguay. Importá extractos de cualquier banco. Categorización automática con IA.'
   };
 
   const faqJsonLd = {
@@ -170,7 +214,7 @@ export default async function Home() {
         name: '¿Qué tipo de reportes puedo generar?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Puedes generar reportes por categoría, por periodo, cuenta, banco o vendor. También puedes exportar en Excel o PDF. Por ejemplo: "Todos los gastos en Servicios del último trimestre" o "Detalle de Supermercado por mes".'
+          text: 'Puedes generar reportes por categoría, por periodo, cuenta, banco o vendor. También puedes exportar en Excel. Por ejemplo: "Todos los gastos en Servicios del último trimestre" o "Detalle de Supermercado por mes".'
         }
       },
       {
@@ -240,6 +284,10 @@ export default async function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
       />
       <script
         type="application/ld+json"
