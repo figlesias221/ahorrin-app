@@ -2,7 +2,7 @@ import { InflationCalculator } from '@/components/free-tools/inflation-calculato
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Calculadora de Inflación Real Uruguay | Herramienta Gratuita | Gasty',
+  title: 'Calculadora de Inflación Real Uruguay | Herramienta Gratuita | Ahorrín',
   description: 'Calculá tu inflación real personalizada en Uruguay. El BCU dice 5%, pero ¿cuánto subieron TUS gastos realmente? Descubrí tu inflación real según tus categorías de consumo.',
   keywords: [
     'inflacion real uruguay',
@@ -13,13 +13,13 @@ export const metadata: Metadata = {
     'costo de vida uruguay'
   ],
   openGraph: {
-    title: 'Calculadora de Inflación Real Uruguay | Gasty',
+    title: 'Calculadora de Inflación Real Uruguay | Ahorrín',
     description: 'El BCU dice una cosa, tu bolsillo dice otra. Calculá tu inflación real según tus gastos.',
     type: 'website',
-    url: 'https://www.gasty.app/herramientas/inflacion-real',
+    url: 'https://www.ahorrin.app/herramientas/inflacion-real',
   },
   alternates: {
-    canonical: 'https://www.gasty.app/herramientas/inflacion-real',
+    canonical: 'https://www.ahorrin.app/herramientas/inflacion-real',
   },
 };
 

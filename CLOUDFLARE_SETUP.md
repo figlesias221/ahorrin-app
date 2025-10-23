@@ -1,6 +1,6 @@
 # Configuración de Variables de Entorno en Cloudflare Pages
 
-Este documento explica cómo configurar las variables de entorno necesarias para el deploy de Gasty en Cloudflare Pages.
+Este documento explica cómo configurar las variables de entorno necesarias para el deploy de Ahorrín en Cloudflare Pages.
 
 ## Variables Requeridas
 
@@ -19,7 +19,7 @@ Este documento explica cómo configurar las variables de entorno necesarias para
 
 1. **Accede a tu proyecto en Cloudflare Pages**:
    ```
-   https://dash.cloudflare.com/ → Workers & Pages → gasty-app
+   https://dash.cloudflare.com/ → Workers & Pages → ahorrin-app
    ```
 
 2. **Ve a Settings → Environment Variables**
@@ -39,13 +39,13 @@ Este documento explica cómo configurar las variables de entorno necesarias para
 
 ```bash
 # Configurar variable para producción
-npx wrangler pages secret put OPENAI_API_KEY --project-name=gasty-app
+npx wrangler pages secret put OPENAI_API_KEY --project-name=ahorrin-app
 
 # Cuando te lo pida, pega tu API key
 # sk-proj-8pbf...
 
 # Verificar que se configuró correctamente
-npx wrangler pages deployment list --project-name=gasty-app
+npx wrangler pages deployment list --project-name=ahorrin-app
 ```
 
 ### Opción 3: Archivo wrangler.toml (NO RECOMENDADO para secrets)
@@ -64,7 +64,7 @@ NEXT_PUBLIC_SUPABASE_URL = "https://fugfefskstsdpiiitkjt.supabase.co"
 
 1. **Después del deploy**, verifica los logs:
    ```bash
-   npx wrangler pages deployment tail --project-name=gasty-app
+   npx wrangler pages deployment tail --project-name=ahorrin-app
    ```
 
 2. **Prueba el endpoint** de parseo de PDF:

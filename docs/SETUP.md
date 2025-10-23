@@ -1,6 +1,6 @@
 # Setup Guide - Google Analytics & Search Console
 
-Complete this setup to activate analytics and SEO tracking for Gasty.
+Complete this setup to activate analytics and SEO tracking for Ahorrín.
 
 ---
 
@@ -16,7 +16,7 @@ Complete this setup to activate analytics and SEO tracking for Gasty.
 2. Click "Admin" (bottom left)
 3. Click "Create Property"
 4. Fill in:
-   - **Property name**: "Gasty App"
+   - **Property name**: "Ahorrín App"
    - **Timezone**: "(UTC-03:00) Montevideo"
    - **Currency**: "Peso Uruguayo (UYU)"
 5. Click "Next" → Complete business info → "Create"
@@ -25,8 +25,8 @@ Complete this setup to activate analytics and SEO tracking for Gasty.
 
 1. In Property setup, select "Web"
 2. Fill in:
-   - **Website URL**: `https://www.gasty.app`
-   - **Stream name**: "Gasty Web"
+   - **Website URL**: `https://www.ahorrin.app`
+   - **Stream name**: "Ahorrín Web"
 3. **Important**: Enable ALL "Enhanced measurement" options:
    - ✅ Page views
    - ✅ Scrolls
@@ -68,7 +68,7 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX  # Replace with your actual ID
 ### Step 5: Verify Installation
 
 1. In Google Analytics, go to "Reports" → "Realtime"
-2. Open your site: `https://www.gasty.app`
+2. Open your site: `https://www.ahorrin.app`
 3. You should see your visit appear in real-time
 4. Navigate to different pages to verify tracking
 
@@ -98,7 +98,7 @@ After 24-48 hours, events will appear in GA4:
 1. Go to [Google Search Console](https://search.google.com/search-console)
 2. Click "Add property"
 3. Choose **"URL prefix"**
-4. Enter: `https://www.gasty.app`
+4. Enter: `https://www.ahorrin.app`
 5. Click "Continue"
 
 ### Step 2: Verify Ownership
@@ -134,12 +134,12 @@ Manually request indexing for important pages:
 
 1. Click "URL Inspection" (top bar)
 2. Enter each URL and click "Request Indexing":
-   - `https://www.gasty.app`
-   - `https://www.gasty.app/bbva`
-   - `https://www.gasty.app/scotiabank`
-   - `https://www.gasty.app/itau`
-   - `https://www.gasty.app/blog`
-   - `https://www.gasty.app/blog/organizar-finanzas-personales-uruguay-2025`
+   - `https://www.ahorrin.app`
+   - `https://www.ahorrin.app/bbva`
+   - `https://www.ahorrin.app/scotiabank`
+   - `https://www.ahorrin.app/itau`
+   - `https://www.ahorrin.app/blog`
+   - `https://www.ahorrin.app/blog/organizar-finanzas-personales-uruguay-2025`
 
 **Limit**: ~10-12 URLs per day.
 
@@ -217,7 +217,7 @@ After completing setup, verify:
 4. Try verification again
 
 ### Sitemap not found
-1. Visit `https://www.gasty.app/sitemap.xml` in browser
+1. Visit `https://www.ahorrin.app/sitemap.xml` in browser
 2. Should show XML with all URLs
 3. If 404, redeploy application
 4. Wait 10 minutes, resubmit in GSC

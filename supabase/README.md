@@ -1,6 +1,6 @@
-# 🗄️ Gasty Database Setup
+# 🗄️ Ahorrín Database Setup
 
-Este directorio contiene el schema y los datos de inicialización (seed) para Gasty.
+Este directorio contiene el schema y los datos de inicialización (seed) para Ahorrín.
 
 ## 📁 Archivos
 
@@ -157,7 +157,7 @@ source .venv/bin/activate
 python3 generate_seed.py
 ```
 
-Esto regenera `gasty-app/supabase/seed.sql` con los últimos datos.
+Esto regenera `ahorrin-app/supabase/seed.sql` con los últimos datos.
 
 ## 🧹 Limpiar Datos
 

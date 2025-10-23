@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public.template_packages (
 -- 3. Insert package definitions
 INSERT INTO public.template_packages (id, name, description, icon, author, sort_order)
 VALUES
-  ('default', 'Paquete Base Uruguay', 'Reglas predefinidas para lugares comunes en Uruguay (supermercados, restaurantes, transporte)', '🇺🇾', 'Gasty', 1),
+  ('default', 'Paquete Base Uruguay', 'Reglas predefinidas para lugares comunes en Uruguay (supermercados, restaurantes, transporte)', '🇺🇾', 'Ahorrín', 1),
   ('figlesias221', 'Mis Reglas Personales', 'Reglas personalizadas basadas en tus hábitos de consumo', '⭐', 'figlesias221', 2)
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,

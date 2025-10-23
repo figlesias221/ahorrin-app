@@ -102,7 +102,7 @@ export function Header() {
           <div className="flex items-center gap-4">
             <Link href="/dashboard" className="flex items-center gap-2">
               <Logo />
-              <h1 className="text-xl font-bold text-primary">Gasty</h1>
+              <h1 className="text-xl font-bold text-primary">Ahorrín</h1>
             </Link>
 
             {/* Navegación Desktop */}

@@ -1,8 +1,8 @@
-# 💰 Gasty - Gestor de Gastos Personal con AI
+# 💰 Ahorrín - Tu Coach de Finanzas Personales con AI
 
-Aplicación web moderna para gestionar tus finanzas personales en Uruguay con categorización automática mediante Inteligencia Artificial.
+Aplicación web moderna para crear tu hábito de ahorro y gestionar tus finanzas personales en Uruguay con categorización automática mediante Inteligencia Artificial.
 
-🌐 **Live**: [www.gasty.app](https://www.gasty.app)
+🌐 **Live**: [www.ahorrin.app](https://www.ahorrin.app)
 
 ## 🚀 Estado del Proyecto
 
@@ -59,7 +59,7 @@ Aplicación web moderna para gestionar tus finanzas personales en Uruguay con ca
 
 ```bash
 # Clonar el repositorio
-cd gasty-app
+cd ahorrin-app
 
 # Instalar dependencias
 npm install
@@ -83,7 +83,7 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 ## 📁 Estructura del Proyecto
 
 ```
-gasty-app/
+ahorrin-app/
 ├── app/
 │   ├── (auth)/              # Rutas de autenticación (login, signup)
 │   ├── (dashboard)/         # Rutas del dashboard (transacciones, categorías, etc.)
@@ -188,7 +188,7 @@ gasty-app/
 
 La aplicación está deployada en Vercel con las siguientes configuraciones:
 
-- **Domain**: www.gasty.app
+- **Domain**: www.ahorrin.app
 - **SSL**: Automático via Vercel
 - **Environment Variables**: Configuradas en Vercel Dashboard
 - **Auto-deploy**: Push a `main` → deploy automático
@@ -199,6 +199,8 @@ La aplicación está deployada en Vercel con las siguientes configuraciones:
 # Vercel CLI
 npm i -g vercel
 vercel --prod
+
+# Domain: www.ahorrin.app
 ```
 
 ## 📚 Documentación

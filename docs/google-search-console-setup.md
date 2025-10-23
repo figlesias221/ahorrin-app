@@ -27,12 +27,12 @@ Tenés 2 opciones. **Recomendamos Prefijo de URL** para empezar:
 
 #### Opción A: Prefijo de URL (Más Fácil)
 1. Seleccioná "Prefijo de URL"
-2. Ingresá: `https://www.gasty.app`
+2. Ingresá: `https://www.ahorrin.app`
 3. Clickeá "Continuar"
 
 #### Opción B: Dominio (Más Completo - Opcional)
 1. Seleccioná "Dominio"
-2. Ingresá: `gasty.app`
+2. Ingresá: `ahorrin.app`
 3. Vas a necesitar acceso al DNS (más complejo)
 
 ### 1.3. Verificar Propiedad
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
 2. En "Agregar un nuevo sitemap" ingresá: `sitemap.xml`
 3. Clickeá "Enviar"
 
-**Tu sitemap está en**: `https://www.gasty.app/sitemap.xml`
+**Tu sitemap está en**: `https://www.ahorrin.app/sitemap.xml`
 
 ### 2.2. Verificar Sitemap
 
@@ -94,22 +94,22 @@ export const metadata: Metadata = {
 ### 3.1. Indexar Página Principal
 
 1. Andá a "Inspección de URLs" (barra superior)
-2. Ingresá: `https://www.gasty.app`
+2. Ingresá: `https://www.ahorrin.app`
 3. Clickeá "Solicitar indexación"
 4. Esperá la confirmación
 
 ### 3.2. Indexar Landing Pages de Bancos
 
 Repetí el proceso para:
-- `https://www.gasty.app/bbva`
-- `https://www.gasty.app/scotiabank`
-- `https://www.gasty.app/itau`
+- `https://www.ahorrin.app/bbva`
+- `https://www.ahorrin.app/scotiabank`
+- `https://www.ahorrin.app/itau`
 
 ### 3.3. Indexar Blog Posts
 
 Una vez publicados, indexá:
-- `https://www.gasty.app/blog`
-- `https://www.gasty.app/blog/organizar-finanzas-personales-uruguay-2025`
+- `https://www.ahorrin.app/blog`
+- `https://www.ahorrin.app/blog/organizar-finanzas-personales-uruguay-2025`
 
 **Nota**: Podés solicitar hasta ~10-12 URLs por día.
 
@@ -336,7 +336,7 @@ Featured snippets: 3-5
 
 ### "Sitemap no encontrado"
 
-1. Verificá que `https://www.gasty.app/sitemap.xml` funcione en el navegador
+1. Verificá que `https://www.ahorrin.app/sitemap.xml` funcione en el navegador
 2. Chequeá que Next.js esté generando el sitemap
 3. Redeploy la app
 

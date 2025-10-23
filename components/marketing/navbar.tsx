@@ -45,13 +45,13 @@ export function Navbar() {
             <Link href="/" className="absolute left-0 group z-10 flex items-center gap-2">
               <Image
                 src="/logo.svg"
-                alt="Gasty - Control de Finanzas Personales Uruguay"
+                alt="Ahorrín - Tu Coach de Finanzas Personales Uruguay"
                 width={40}
                 height={40}
                 className="transition-transform duration-300 group-hover:scale-105"
               />
               <span className="text-2xl font-bold transition-colors duration-300">
-                Gasty
+                Ahorrín
               </span>
             </Link>
 

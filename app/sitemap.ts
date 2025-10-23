@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://www.gasty.app';
+  const baseUrl = 'https://www.ahorrin.app';
   const currentDate = new Date();
 
   // Blog posts (will be dynamically loaded from content later)

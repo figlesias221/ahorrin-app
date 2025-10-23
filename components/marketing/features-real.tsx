@@ -42,7 +42,7 @@ export function FeaturesReal() {
       icon: WandSparkles,
       title: 'Limpia los Nombres Automáticamente',
       description:
-        'Los bancos escriben los comercios de cualquier forma: "DISCO MONTEVIDEO", "DISCO MVD 123", "DISCO LA BLANQUEADA". Gasty los normaliza a "DISCO" para que sea más fácil crear reglas y ver totales.',
+        'Los bancos escriben los comercios de cualquier forma: "DISCO MONTEVIDEO", "DISCO MVD 123", "DISCO LA BLANQUEADA". Ahorrín los normaliza a "DISCO" para que sea más fácil crear reglas y ver totales.',
       gradient: 'from-warning to-warning/50',
       size: 'medium',
     },

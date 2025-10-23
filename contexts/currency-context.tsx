@@ -22,7 +22,7 @@ interface CurrencyContextType {
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
-const CURRENCY_STORAGE_KEY = 'gasty_display_currency';
+const CURRENCY_STORAGE_KEY = 'ahorrin_display_currency';
 const DEFAULT_ENABLED_CURRENCIES: Currency[] = ['UYU', 'USD', 'ARS'];
 const DEFAULT_EXCHANGE_RATES: ExchangeRates = {
   USD_TO_UYU: EXCHANGE_RATES.USD_TO_UYU,

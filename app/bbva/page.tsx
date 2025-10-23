@@ -5,7 +5,7 @@ import { Check, FileUp, Sparkles, TrendingUp, Shield, Zap } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'BBVA Uruguay - Importá y Categorizá tus Extractos Automáticamente',
   description:
-    'Importá tus extractos bancarios de BBVA Uruguay a Gasty. Categorización automática, análisis de gastos en tiempo real. Compatible con extractos PDF y Excel del BBVA.',
+    'Importá tus extractos bancarios de BBVA Uruguay a Ahorrín. Categorización automática, análisis de gastos en tiempo real. Compatible con extractos PDF y Excel del BBVA.',
   keywords: [
     'extracto bancario bbva uruguay',
     'bbva uruguay',
@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     'bbva home banking',
   ],
   alternates: {
-    canonical: 'https://www.gasty.app/bbva',
+    canonical: 'https://www.ahorrin.app/bbva',
   },
   openGraph: {
-    title: 'BBVA Uruguay + Gasty - Control de Gastos Automático',
+    title: 'BBVA Uruguay + Ahorrín - Control de Gastos Automático',
     description:
-      'Importá tus extractos de BBVA Uruguay a Gasty en segundos. Categorización inteligente, gráficas y reportes automáticos.',
-    url: 'https://www.gasty.app/bbva',
+      'Importá tus extractos de BBVA Uruguay a Ahorrín en segundos. Categorización inteligente, gráficas y reportes automáticos.',
+    url: 'https://www.ahorrin.app/bbva',
   },
 };
 
@@ -121,7 +121,7 @@ export default function BBVAPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-              Cómo Usar Gasty con BBVA Uruguay
+              Cómo Usar Ahorrín con BBVA Uruguay
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               En 3 pasos simples, pasás de extracto bancario a análisis completo de tus finanzas
@@ -151,7 +151,7 @@ export default function BBVAPage() {
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6">
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-4">2. Importá a Gasty</h3>
+              <h3 className="text-2xl font-bold mb-4">2. Importá a Ahorrín</h3>
               <div className="space-y-3 text-muted-foreground">
                 <p>
                   <strong className="text-foreground">Procesamiento Inteligente</strong>:
@@ -215,7 +215,7 @@ export default function BBVAPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-              Por Qué Gasty es Perfecto para Clientes BBVA
+              Por Qué Ahorrín es Perfecto para Clientes BBVA
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Diseñado específicamente para extractos bancarios uruguayos
@@ -296,28 +296,28 @@ export default function BBVAPage() {
       <section className="py-16 sm:py-24 bg-muted/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
-            Preguntas Frecuentes - BBVA + Gasty
+            Preguntas Frecuentes - BBVA + Ahorrín
           </h2>
 
           <div className="space-y-6">
             <details className="bg-card border border-border rounded-xl p-6 group">
               <summary className="font-bold text-lg cursor-pointer list-none flex items-center justify-between">
-                ¿Qué formatos de extracto de BBVA acepta Gasty?
+                ¿Qué formatos de extracto de BBVA acepta Ahorrín?
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Gasty acepta extractos de BBVA Uruguay en formato PDF y Excel (.xlsx). Ambos
+                Ahorrín acepta extractos de BBVA Uruguay en formato PDF y Excel (.xlsx). Ambos
                 formatos son descargables desde el Home Banking de BBVA Net Cash.
               </p>
             </details>
 
             <details className="bg-card border border-border rounded-xl p-6 group">
               <summary className="font-bold text-lg cursor-pointer list-none flex items-center justify-between">
-                ¿Es seguro subir mi extracto de BBVA a Gasty?
+                ¿Es seguro subir mi extracto de BBVA a Ahorrín?
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Sí, es 100% seguro. Gasty NO requiere que conectes tu cuenta bancaria ni
+                Sí, es 100% seguro. Ahorrín NO requiere que conectes tu cuenta bancaria ni
                 proporciones tus credenciales de BBVA. Solo subís el extracto que ya descargaste.
                 Todos los datos se procesan con encriptación de nivel bancario (AES-256).
               </p>
@@ -349,11 +349,11 @@ export default function BBVAPage() {
 
             <details className="bg-card border border-border rounded-xl p-6 group">
               <summary className="font-bold text-lg cursor-pointer list-none flex items-center justify-between">
-                ¿Gasty funciona con otras cuentas además de BBVA?
+                ¿Ahorrín funciona con otras cuentas además de BBVA?
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Sí! Gasty es compatible con todos los principales bancos uruguayos: BBVA,
+                Sí! Ahorrín es compatible con todos los principales bancos uruguayos: BBVA,
                 Scotiabank, Itaú, BROU, Santander y Heritage. Podés importar extractos de múltiples
                 bancos en la misma cuenta.
               </p>
@@ -369,7 +369,7 @@ export default function BBVAPage() {
             Empezá a Controlar tus Gastos de BBVA Hoy
           </h2>
           <p className="text-xl mb-8 text-white/90">
-            Únete a miles de usuarios que ya organizaron sus finanzas con Gasty
+            Únete a miles de usuarios que ya organizaron sus finanzas con Ahorrín
           </p>
 
           <Link
@@ -392,13 +392,13 @@ export default function BBVAPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'BBVA Uruguay - Importar Extractos a Gasty',
+            name: 'BBVA Uruguay - Importar Extractos a Ahorrín',
             description:
-              'Importá tus extractos bancarios de BBVA Uruguay a Gasty para categorización automática y análisis de gastos.',
-            url: 'https://www.gasty.app/bbva',
+              'Importá tus extractos bancarios de BBVA Uruguay a Ahorrín para categorización automática y análisis de gastos.',
+            url: 'https://www.ahorrin.app/bbva',
             mainEntity: {
               '@type': 'SoftwareApplication',
-              name: 'Gasty para BBVA Uruguay',
+              name: 'Ahorrín para BBVA Uruguay',
               applicationCategory: 'FinanceApplication',
               offers: {
                 '@type': 'Offer',

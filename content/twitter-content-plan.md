@@ -1,6 +1,6 @@
 # Plan de Contenido X/Twitter - Federico Iglesias (@figlesias221)
 
-**Objetivo**: Posicionarte como AI Software Engineer usando Gasty como caso de estudio real.
+**Objetivo**: Posicionarte como AI Software Engineer usando Ahorrín como caso de estudio real.
 
 **Meta**: 1-2 tweets/día | Balance 50/50 técnico-producto | Tono casual/auténtico
 
@@ -12,7 +12,7 @@
 |-----|------------------|----------|
 | **Lunes** | Building in Public | Compartir progreso, métricas, decisiones |
 | **Martes** | Tutorial Técnico | Mostrar código/arquitectura real |
-| **Miércoles** | Product Update | Nueva feature o mejora de Gasty |
+| **Miércoles** | Product Update | Nueva feature o mejora de Ahorrín |
 | **Jueves** | Building in Public | Challenges, aprendizajes, reflexiones |
 | **Viernes** | Tutorial/Código | Tips rápidos, snippets útiles |
 | **Sábado** | Product/Feedback | Mostrar uso real, testimonios |
@@ -1245,7 +1245,7 @@ Antes de postear, verificá:
 - [ ] ¿Suena como yo en una conversación? (no como documentación)
 - [ ] ¿Tiene un learning/insight? (no solo descripción)
 - [ ] ¿Evité emojis excesivos? (max 1-2)
-- [ ] ¿Agregué contexto de Gasty si es relevante? (usar como ejemplo)
+- [ ] ¿Agregué contexto de Ahorrín si es relevante? (usar como ejemplo)
 - [ ] ¿Es útil para otros devs/founders? (no solo autopromoción)
 
 ---
@@ -1259,21 +1259,21 @@ Antes de postear, verificá:
 2. **Engagement**: Responder todos los comments (especialmente primeros 30min)
 3. **Threads**: 1 thread técnico por semana (domingo AI insights)
 4. **Timing**: Postear 9-10am o 7-9pm Uruguay (cuando más actividad)
-5. **Cross-promote**: Mencionar Gasty naturalmente (no spam)
+5. **Cross-promote**: Mencionar Ahorrín naturalmente (no spam)
 6. **Networking**: Retweet y comentar en builders similares
 7. **Authenticity**: Compartir fails, no solo wins
 
 **KPIs a trackear**:
 - Seguidores (meta: +30/semana)
 - Engagement rate (meta: >5%)
-- Clicks a Gasty desde bio (meta: 20/semana)
+- Clicks a Ahorrín desde bio (meta: 20/semana)
 - Signups de Twitter (meta: 5/semana)
 
 ---
 
 ## 🔥 BONUS: IDEAS ESPECÍFICAS USANDO GASTY
 
-### Código Real de Gasty
+### Código Real de Ahorrín
 
 ```
 thread idea: "como construi el parser de extractos bancarios de gasty"

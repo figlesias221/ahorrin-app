@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Términos y Condiciones | Gasty',
-  description: 'Términos y condiciones de uso de Gasty - Plataforma de gestión de finanzas personales',
+  title: 'Términos y Condiciones | Ahorrín',
+  description: 'Términos y condiciones de uso de Ahorrín - Plataforma de gestión de finanzas personales',
   robots: 'noindex, nofollow',
 };
 
@@ -29,7 +29,7 @@ export default function TermsPage() {
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <div className="bg-card border border-border rounded-lg p-6 mb-8">
             <p className="text-base leading-relaxed mb-0">
-              Bienvenido a Gasty. Al usar nuestra plataforma, aceptás los siguientes términos y condiciones.
+              Bienvenido a Ahorrín. Al usar nuestra plataforma, aceptás los siguientes términos y condiciones.
               Por favor, leélos cuidadosamente antes de crear una cuenta.
             </p>
           </div>
@@ -38,7 +38,7 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-foreground mb-4">1. Aceptación de Términos</h2>
             <p className="text-muted-foreground mb-4">
-              Al acceder y usar Gasty, confirmás que:
+              Al acceder y usar Ahorrín, confirmás que:
             </p>
             <ul className="space-y-2 text-muted-foreground ml-6">
               <li>Sos mayor de 18 años o tenés el consentimiento de un tutor legal</li>
@@ -54,10 +54,10 @@ export default function TermsPage() {
             </h2>
             <div className="space-y-3 text-muted-foreground">
               <p className="font-semibold text-foreground">
-                ⚠️ IMPORTANTE: Gasty NO es una plataforma de asesoramiento financiero, inversiones ni servicios bancarios.
+                ⚠️ IMPORTANTE: Ahorrín NO es una plataforma de asesoramiento financiero, inversiones ni servicios bancarios.
               </p>
               <p>
-                <strong>Gasty es una herramienta de organización personal.</strong> Toda la información, análisis,
+                <strong>Ahorrín es una herramienta de organización personal.</strong> Toda la información, análisis,
                 gráficos, reportes y sugerencias generados por la plataforma tienen únicamente fines informativos
                 y educativos.
               </p>
@@ -73,7 +73,7 @@ export default function TermsPage() {
               </ul>
               <p>
                 <strong>Antes de tomar cualquier decisión financiera importante, consultá con un asesor financiero
-                profesional licenciado.</strong> Gasty no se hace responsable por decisiones de inversión,
+                profesional licenciado.</strong> Ahorrín no se hace responsable por decisiones de inversión,
                 pérdidas financieras o consecuencias derivadas del uso de la información provista en la plataforma.
               </p>
             </div>
@@ -89,7 +89,7 @@ export default function TermsPage() {
                 <strong>3.1 Responsabilidad del Usuario</strong>
               </p>
               <p>
-                Al subir extractos bancarios o ingresar datos financieros en Gasty, vos sos el único responsable de:
+                Al subir extractos bancarios o ingresar datos financieros en Ahorrín, vos sos el único responsable de:
               </p>
               <ul className="ml-6 space-y-1">
                 <li>La veracidad y exactitud de los datos ingresados</li>
@@ -123,7 +123,7 @@ export default function TermsPage() {
                 <strong>3.4 No Somos un Banco</strong>
               </p>
               <p>
-                Gasty no es una institución financiera. No tenemos acceso directo a tus cuentas bancarias,
+                Ahorrín no es una institución financiera. No tenemos acceso directo a tus cuentas bancarias,
                 no podemos realizar transacciones en tu nombre, ni almacenamos tus credenciales bancarias.
               </p>
             </div>
@@ -175,7 +175,7 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-foreground mb-4">5. Uso Aceptable de la Plataforma</h2>
             <p className="text-muted-foreground mb-4">
-              Al usar Gasty, te comprometés a NO:
+              Al usar Ahorrín, te comprometés a NO:
             </p>
             <ul className="space-y-2 text-muted-foreground ml-6">
               <li>Usar la plataforma para actividades ilegales o fraudulentas</li>
@@ -192,7 +192,7 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold text-foreground mb-4">6. Disponibilidad y Mantenimiento</h2>
             <div className="space-y-3 text-muted-foreground">
               <p>
-                Nos esforzamos por mantener Gasty disponible 24/7, pero no garantizamos disponibilidad ininterrumpida.
+                Nos esforzamos por mantener Ahorrín disponible 24/7, pero no garantizamos disponibilidad ininterrumpida.
                 Podemos realizar mantenimiento, actualizaciones o suspender temporalmente el servicio sin previo aviso.
               </p>
               <p>
@@ -206,10 +206,10 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold text-foreground mb-4">7. Limitación de Responsabilidad</h2>
             <div className="space-y-3 text-muted-foreground">
               <p>
-                <strong>Gasty se provee "TAL CUAL" sin garantías de ningún tipo.</strong>
+                <strong>Ahorrín se provee "TAL CUAL" sin garantías de ningún tipo.</strong>
               </p>
               <p>
-                En la medida máxima permitida por la ley, Gasty no será responsable por:
+                En la medida máxima permitida por la ley, Ahorrín no será responsable por:
               </p>
               <ul className="ml-6 space-y-1">
                 <li>Pérdidas financieras directas o indirectas</li>
@@ -226,7 +226,7 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-foreground mb-4">8. Propiedad Intelectual</h2>
             <p className="text-muted-foreground">
-              Todo el contenido de Gasty (diseño, código, logos, textos) es propiedad de Gasty o sus licenciantes.
+              Todo el contenido de Ahorrín (diseño, código, logos, textos) es propiedad de Ahorrín o sus licenciantes.
               Tus datos personales y transacciones te pertenecen a vos, y podés exportarlos o eliminarlos cuando quieras.
             </p>
           </section>
@@ -237,7 +237,7 @@ export default function TermsPage() {
             <p className="text-muted-foreground">
               Nos reservamos el derecho de modificar estos términos en cualquier momento.
               Los cambios importantes serán notificados por email o mediante un aviso en la plataforma.
-              El uso continuo de Gasty después de los cambios constituye tu aceptación de los nuevos términos.
+              El uso continuo de Ahorrín después de los cambios constituye tu aceptación de los nuevos términos.
             </p>
           </section>
 
@@ -255,8 +255,8 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold text-foreground mb-4">11. Contacto</h2>
             <p className="text-muted-foreground">
               Si tenés preguntas sobre estos términos, podés contactarnos en:{' '}
-              <a href="mailto:soporte@gasty.app" className="text-primary hover:underline">
-                soporte@gasty.app
+              <a href="mailto:soporte@ahorrin.app" className="text-primary hover:underline">
+                soporte@ahorrin.app
               </a>
             </p>
           </section>

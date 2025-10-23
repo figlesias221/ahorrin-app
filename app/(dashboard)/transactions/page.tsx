@@ -280,7 +280,7 @@ export default function TransactionsPage() {
 
   const handleExport = () => {
     try {
-      exportTransactionsToExcel(transactions, 'transacciones_gasty');
+      exportTransactionsToExcel(transactions, 'transacciones_ahorrin');
       showAlert('Exportación exitosa', 'Las transacciones se han exportado correctamente', 'success');
     } catch (error) {
       console.error('Error exporting transactions:', error);

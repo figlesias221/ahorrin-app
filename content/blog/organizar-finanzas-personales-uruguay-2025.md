@@ -199,7 +199,7 @@ En vez de categorizar manualmente cada gasto, creá reglas:
 ```
 
 **Apps con esta función**:
-- Gasty (categorización con IA)
+- Ahorrín (categorización con IA)
 - MiDinero
 - Fintonic (España, pero funciona en UY)
 
@@ -354,7 +354,7 @@ Si las tasas de TC te están matando (50%+), considerá:
 
 ### 7.1. Apps de Control de Gastos
 
-**Gasty** (Uruguay) 🇺🇾
+**Ahorrín** (Uruguay) 🇺🇾
 - ✅ Importa extractos BBVA, Scotia, Itaú, BROU
 - ✅ Categorización automática con IA
 - ✅ Gráficas en tiempo real
@@ -374,7 +374,7 @@ Si las tasas de TC te están matando (50%+), considerá:
 
 Si preferís el control manual:
 
-**Template Gasty** (descarga gratis):
+**Template Ahorrín** (descarga gratis):
 - Control mensual de ingresos/gastos
 - Presupuesto por categorías
 - Gráficos automáticos
@@ -464,9 +464,9 @@ La diferencia entre estar "a las corridas" con la plata y tener tranquilidad fin
 
 ## ¿Listo para tomar control de tus finanzas?
 
-**Gasty** te ayuda a importar tus extractos bancarios automáticamente, categorizar gastos con inteligencia artificial y ver tus finanzas en tiempo real. Todo gratis y sin conectar tu banco.
+**Ahorrín** te ayuda a importar tus extractos bancarios automáticamente, categorizar gastos con inteligencia artificial y ver tus finanzas en tiempo real. Todo gratis y sin conectar tu banco.
 
-👉 [Empezá gratis ahora](https://www.gasty.app/signup) - No requiere tarjeta de crédito
+👉 [Empezá gratis ahora](https://www.ahorrin.app/signup) - No requiere tarjeta de crédito
 
 ---
 
@@ -474,4 +474,4 @@ La diferencia entre estar "a las corridas" con la plata y tener tranquilidad fin
 
 ---
 
-*Última actualización: Octubre 2025 | Autor: Equipo Gasty*
+*Última actualización: Octubre 2025 | Autor: Equipo Ahorrín*

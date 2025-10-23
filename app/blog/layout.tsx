@@ -3,7 +3,7 @@ import { Footer } from '@/components/marketing/footer';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Blog de Finanzas Personales Uruguay | Gasty',
+  title: 'Blog de Finanzas Personales Uruguay | Ahorrín',
   description: 'Guías, consejos y comparativas sobre finanzas personales en Uruguay. Aprende a controlar tus gastos, elegir tarjetas y mejorar tu presupuesto.',
 };
 

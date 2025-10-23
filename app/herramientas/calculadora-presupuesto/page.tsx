@@ -2,7 +2,7 @@ import { BudgetCalculator } from '@/components/free-tools/budget-calculator';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Calculadora de Presupuesto Uruguay | Herramienta Gratuita | Gasty',
+  title: 'Calculadora de Presupuesto Uruguay | Herramienta Gratuita | Ahorrín',
   description: 'Calculá tu presupuesto mensual en Uruguay. Ingresá tus ingresos y gastos, y obtené recomendaciones personalizadas para controlar tus finanzas. 100% gratis.',
   keywords: [
     'calculadora presupuesto uruguay',
@@ -13,13 +13,13 @@ export const metadata: Metadata = {
     'control gastos uruguay'
   ],
   openGraph: {
-    title: 'Calculadora de Presupuesto Uruguay | Gasty',
+    title: 'Calculadora de Presupuesto Uruguay | Ahorrín',
     description: 'Calculá tu presupuesto mensual en Uruguay. Ingresá tus ingresos y gastos, y obtené recomendaciones personalizadas.',
     type: 'website',
-    url: 'https://www.gasty.app/herramientas/calculadora-presupuesto',
+    url: 'https://www.ahorrin.app/herramientas/calculadora-presupuesto',
   },
   alternates: {
-    canonical: 'https://www.gasty.app/herramientas/calculadora-presupuesto',
+    canonical: 'https://www.ahorrin.app/herramientas/calculadora-presupuesto',
   },
 };
 

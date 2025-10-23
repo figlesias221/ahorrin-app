@@ -46,7 +46,7 @@ export function PrivacyNotice() {
             <div className="flex items-start gap-2">
               <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-500 flex-shrink-0 mt-0.5" />
               <p className="text-xs text-foreground">
-                <strong>Por tu seguridad, Gasty NO acepta PDFs de extractos bancarios completos.</strong>
+                <strong>Por tu seguridad, Ahorrín NO acepta PDFs de extractos bancarios completos.</strong>
                 {' '}Estos archivos contienen información sensible innecesaria: número de cuenta, saldo, dirección, etc.
               </p>
             </div>

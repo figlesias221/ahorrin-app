@@ -71,7 +71,7 @@ export function HeroReal() {
 
             {/* Subtitle */}
             <p className="max-w-3xl mx-auto text-xl sm:text-2xl  leading-relaxed font-light">
-              Crea reglas una sola vez y Gasty categoriza todo automáticamente.
+              Crea reglas una sola vez y Ahorrín categoriza todo automáticamente.
               <br className="hidden sm:block" />
               DISCO → Supermercado. ANTEL → Internet. UTE → Electricidad.{' '}
               <span className="text-foreground font-medium">Así de simple.</span>
@@ -166,7 +166,7 @@ export function HeroReal() {
                   <div className="flex-1 mx-4">
                     <div className="bg-card/80 rounded-md px-3 py-1 text-xs  flex items-center gap-2 max-w-md">
                       <Shield className="w-3 h-3 text-success" />
-                      <span>gasty.app/transactions</span>
+                      <span>ahorrin.app/transactions</span>
                     </div>
                   </div>
                 </div>

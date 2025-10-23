@@ -39,8 +39,8 @@ const BANK_GUIDES: BankGuide[] = [
     tips: [
       'Itaú ofrece 3 formatos diferentes de descarga según la sección',
       'Para tarjetas, la función "Control de gastos" es la más completa',
-      'NO ofrece CSV directo, solo Excel - pero Gasty acepta archivos .xls/.xlsx sin problemas',
-      'El formato de Itaú es automáticamente reconocido por Gasty',
+      'NO ofrece CSV directo, solo Excel - pero Ahorrín acepta archivos .xls/.xlsx sin problemas',
+      'El formato de Itaú es automáticamente reconocido por Ahorrín',
       'No necesitás editar ni convertir el archivo'
     ],
     limitations: [
@@ -67,10 +67,10 @@ const BANK_GUIDES: BankGuide[] = [
       'El archivo se descarga automáticamente'
     ],
     tips: [
-      'Santander ofrece 3 formatos: Excel, .txt, y Multicash - elegí Excel o CSV para Gasty',
+      'Santander ofrece 3 formatos: Excel, .txt, y Multicash - elegí Excel o CSV para Ahorrín',
       'La app móvil también permite exportar estados de cuenta',
       'Podés exportar hasta 90 días por vez - si necesitás más, descargá varios períodos',
-      'Gasty puede procesar múltiples archivos juntos',
+      'Ahorrín puede procesar múltiples archivos juntos',
       'El formato de Santander es generalmente estándar y bien compatible'
     ],
     limitations: [
@@ -120,7 +120,7 @@ const BANK_GUIDES: BankGuide[] = [
       'BBVA ofrece múltiples formatos: preferí Excel o CSV sobre PDF',
       'PDF tiene limitaciones de privacidad y procesamiento - mejor usar Excel/CSV',
       'Si necesitás consultar movimientos más recientes, usá "Movimientos" en lugar de "Estados"',
-      'Para períodos no cubiertos por estados, considerá la entrada manual en Gasty'
+      'Para períodos no cubiertos por estados, considerá la entrada manual en Ahorrín'
     ],
     limitations: [
       'Estados de cuenta solo disponibles mensualmente (días 8-10 de cada mes)',
@@ -150,7 +150,7 @@ const BANK_GUIDES: BankGuide[] = [
       'e-BROU está disponible tanto en web como en app móvil (iOS/Android)',
       'Podés consultar y exportar movimientos de todas tus cuentas y tarjetas',
       'Para tarjetas Visa/Mastercard del BROU, andá a la sección "Tarjetas"',
-      'El formato de exportación es estándar y compatible con Gasty',
+      'El formato de exportación es estándar y compatible con Ahorrín',
       'Recomendación: consultá periódicamente para mantener tus registros actualizados'
     ],
     limitations: [
@@ -198,7 +198,7 @@ const BANK_GUIDES: BankGuide[] = [
     tips: [
       'OCA permite ver tus movimientos en tiempo real desde la web o app',
       'Podés consultar movimientos históricos y descargarlos',
-      'El formato de exportación es compatible con Gasty',
+      'El formato de exportación es compatible con Ahorrín',
       'Si usás OCA vinculada a diferentes bancos, los movimientos aparecen unificados',
       'La app móvil también ofrece opciones de consulta y descarga'
     ],
@@ -221,12 +221,12 @@ const BANK_GUIDES: BankGuide[] = [
       'Elegí el período que querés exportar',
       'Buscá opciones como "Exportar", "Descargar", o ícono de Excel/CSV',
       'Seleccioná CSV o Excel si está disponible',
-      'Si no hay opción de exportación, considerá la entrada manual en Gasty'
+      'Si no hay opción de exportación, considerá la entrada manual en Ahorrín'
     ],
     tips: [
       'La mayoría de los bancos modernos permiten exportar a CSV/Excel',
       'Si tu banco solo ofrece PDF, contactanos para buscar una solución',
-      'Alternativamente, podés usar la entrada manual rápida en Gasty'
+      'Alternativamente, podés usar la entrada manual rápida en Ahorrín'
     ]
   }
 ];
@@ -408,7 +408,7 @@ export function BankExportGuide() {
                     ¿No encontrás opción de exportación en tu banco?
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Usá la <strong>entrada manual rápida</strong> en Gasty para agregar tus transacciones de forma ágil y segura.
+                    Usá la <strong>entrada manual rápida</strong> en Ahorrín para agregar tus transacciones de forma ágil y segura.
                     Es más rápido de lo que pensás y tenés control total sobre tu información.
                   </p>
                 </div>

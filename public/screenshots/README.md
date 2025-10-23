@@ -114,7 +114,7 @@ import { OptimizedImage } from '@/components/optimized-image';
 
 <OptimizedImage
   src="/screenshots/dashboard.webp"
-  alt="Gasty Dashboard - Vista General Financiera"
+  alt="Ahorrín Dashboard - Vista General Financiera"
   width={1200}
   height={800}
   loading="lazy"

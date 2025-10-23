@@ -1,7 +1,7 @@
 {
-  "name": "Gasty - Gestión Financiera Personal Inteligente",
-  "short_name": "Gasty",
-  "description": "Control total de tus finanzas. Importa extractos, categorización automática con IA, gráficas en tiempo real.",
+  "name": "Ahorrín - Tu Coach de Finanzas Personales",
+  "short_name": "Ahorrín",
+  "description": "Creá tu hábito de ahorro. Importá extractos, categorización automática con IA, gráficas en tiempo real.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

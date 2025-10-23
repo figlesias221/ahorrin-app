@@ -163,7 +163,7 @@ export function HeroEnhanced() {
                   <div className="flex-1 mx-4">
                     <div className="bg-card/80 rounded-md px-3 py-1 text-xs  flex items-center gap-2 max-w-md">
                       <Shield className="w-3 h-3 text-success" />
-                      <span>gasty.app/dashboard</span>
+                      <span>ahorrin.app/dashboard</span>
                     </div>
                   </div>
                 </div>

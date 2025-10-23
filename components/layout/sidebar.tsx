@@ -33,7 +33,7 @@ export function Sidebar() {
   return (
     <div className="flex h-full w-64 flex-col border-r border-border/50 bg-card">
       <div className={cn('flex items-center border-b border-border/50 px-6', heights.header)}>
-        <h1 className={cn('text-foreground font-semibold tracking-tight', typography.h3)}>Gasty</h1>
+        <h1 className={cn('text-foreground font-semibold tracking-tight', typography.h3)}>Ahorrín</h1>
       </div>
 
       <nav className={cn('flex-1 px-3 py-6', 'flex flex-col space-y-1')}>
@@ -61,7 +61,7 @@ export function Sidebar() {
       </nav>
 
       <div className={cn('border-t border-border/50', `p-${spacing.lg}`)}>
-        <p className={typography.caption + ' text-muted-foreground'}>Gasty v1.0.0</p>
+        <p className={typography.caption + ' text-muted-foreground'}>Ahorrín v1.0.0</p>
       </div>
     </div>
   );

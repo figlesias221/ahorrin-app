@@ -1,11 +1,11 @@
 # Google Analytics 4 - Setup Guide
 
-Guía completa para configurar Google Analytics 4 en Gasty y comenzar a trackear métricas.
+Guía completa para configurar Google Analytics 4 en Ahorrín y comenzar a trackear métricas.
 
 ## 📋 Pre-requisitos
 
 - Cuenta de Google (Gmail)
-- Acceso al proyecto en Vercel o donde esté deployado Gasty
+- Acceso al proyecto en Vercel o donde esté deployado Ahorrín
 
 ---
 
@@ -19,13 +19,13 @@ Guía completa para configurar Google Analytics 4 en Gasty y comenzar a trackear
 
 ### 1.2. Crear Cuenta de Analytics
 
-1. **Nombre de la cuenta**: "Gasty" (o el nombre que prefieras)
+1. **Nombre de la cuenta**: "Ahorrín" (o el nombre que prefieras)
 2. Desmarcá las opciones de compartir datos si querés (opcional)
 3. Clickeá "Siguiente"
 
 ### 1.3. Crear Propiedad
 
-1. **Nombre de la propiedad**: "Gasty App"
+1. **Nombre de la propiedad**: "Ahorrín App"
 2. **Zona horaria**: Seleccioná "(UTC-03:00) Montevideo"
 3. **Moneda**: Peso Uruguayo (UYU)
 4. Clickeá "Siguiente"
@@ -50,8 +50,8 @@ Guía completa para configurar Google Analytics 4 en Gasty y comenzar a trackear
 ### 2.1. Crear Flujo de Datos Web
 
 1. Seleccioná "Web" como plataforma
-2. **URL del sitio web**: `https://www.gasty.app`
-3. **Nombre del flujo**: "Gasty Web"
+2. **URL del sitio web**: `https://www.ahorrin.app`
+3. **Nombre del flujo**: "Ahorrín Web"
 4. **Enhanced measurement**: Dejá TODAS las opciones activadas:
    - ✅ Scrolls
    - ✅ Outbound clicks
@@ -68,7 +68,7 @@ Guía completa para configurar Google Analytics 4 en Gasty y comenzar a trackear
 
 ---
 
-## Paso 3: Agregar Measurement ID a Gasty
+## Paso 3: Agregar Measurement ID a Ahorrín
 
 ### 3.1. En Desarrollo Local
 
@@ -104,7 +104,7 @@ Reemplazá `G-XXXXXXXXXX` con tu Measurement ID real.
 ### 4.1. Verificación en Tiempo Real
 
 1. En Google Analytics, andá a "Reports" → "Realtime"
-2. Abrí tu sitio en una pestaña nueva: `https://www.gasty.app`
+2. Abrí tu sitio en una pestaña nueva: `https://www.ahorrin.app`
 3. Deberías ver tu visita aparecer en el reporte en tiempo real
 4. Navegá por diferentes páginas y verificá que se trackeen
 
@@ -121,7 +121,7 @@ Reemplazá `G-XXXXXXXXXX` con tu Measurement ID real.
 
 ### 5.1. Eventos Automáticos Ya Configurados
 
-Gasty ya tiene estos eventos listos para trackear:
+Ahorrín ya tiene estos eventos listos para trackear:
 
 | Evento | Descripción | Cuándo se Dispara |
 |--------|-------------|-------------------|
@@ -184,7 +184,7 @@ Gasty ya tiene estos eventos listos para trackear:
 ### 7.1. Reporte de Conversiones
 
 1. "Reports" → "Library" → "Create new report"
-2. Nombre: "Funnel de Conversión Gasty"
+2. Nombre: "Funnel de Conversión Ahorrín"
 3. Métricas:
    - Total Users
    - New Users

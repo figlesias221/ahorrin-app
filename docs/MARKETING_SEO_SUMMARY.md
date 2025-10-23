@@ -8,7 +8,7 @@
 
 ## 🎯 Objetivo
 
-Implementar una estrategia profesional de marketing y SEO para aumentar el tráfico orgánico de Gasty, enfocado en el mercado uruguayo.
+Implementar una estrategia profesional de marketing y SEO para aumentar el tráfico orgánico de Ahorrín, enfocado en el mercado uruguayo.
 
 ---
 
@@ -17,7 +17,7 @@ Implementar una estrategia profesional de marketing y SEO para aumentar el tráf
 ### 1. SEO Técnico - Fundación ✅
 
 #### URLs Actualizadas
-- ✅ Migración completa de `workers.dev` a `www.gasty.app`
+- ✅ Migración completa de `workers.dev` a `www.ahorrin.app`
 - ✅ Archivos actualizados: layout.tsx, page.tsx, sitemap.ts, robots.ts
 - ✅ Canonical URLs configurados correctamente
 
@@ -88,7 +88,7 @@ Implementar una estrategia profesional de marketing y SEO para aumentar el tráf
 ### 3. Content Optimization ✅
 
 #### Meta Tags Optimizados
-- ✅ **Title**: "Gasty - Gestión Financiera Personal Inteligente | Control de Gastos"
+- ✅ **Title**: "Ahorrín - Gestión Financiera Personal Inteligente | Control de Gastos"
 - ✅ **Description**: Actualizada con keywords de alta prioridad (160 caracteres)
 - ✅ **Keywords array**: Expandido de 15 a 27 keywords organizadas por tipo
 - ✅ **OpenGraph**: Optimizado para Facebook/LinkedIn
@@ -218,7 +218,7 @@ app/blog/
 - Goals y conversiones configurados
 
 #### 11. Google Search Console ⏳
-- Verificación de dominio www.gasty.app
+- Verificación de dominio www.ahorrin.app
 - Submit sitemap.xml
 - Configurar alertas de errores
 

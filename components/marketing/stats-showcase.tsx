@@ -33,7 +33,7 @@ const stats = [
     value: 150,
     suffix: '+',
     label: 'Usuarios activos',
-    description: 'Confían en Gasty para sus finanzas',
+    description: 'Confían en Ahorrín para sus finanzas',
     color: 'text-blue-500',
     bgColor: 'bg-blue-500/10'
   },
@@ -134,7 +134,7 @@ export function StatsShowcase() {
             Números que hablan por sí solos
           </h2>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Gasty está ayudando a uruguayos a tomar control de sus finanzas
+            Ahorrín está ayudando a uruguayos a tomar control de sus finanzas
           </p>
         </motion.div>
 

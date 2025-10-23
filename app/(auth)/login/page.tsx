@@ -97,14 +97,14 @@ export default function LoginPage() {
             <div className="flex justify-center mb-4">
               <Image
                 src="/logo.svg"
-                alt="Gasty Logo"
+                alt="Ahorrín Logo"
                 width={60}
                 height={67}
                 className="dark:invert"
                 priority
               />
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Gasty</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Ahorrín</h1>
             <p className="text-muted-foreground">Inicia sesión en tu cuenta</p>
           </motion.div>
 

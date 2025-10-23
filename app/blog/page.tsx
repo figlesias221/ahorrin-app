@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Blog - Finanzas Personales y Control de Gastos',
   description: 'Guías, tutoriales y consejos sobre finanzas personales, control de gastos, bancos en Uruguay y gestión financiera inteligente.',
   alternates: {
-    canonical: 'https://www.gasty.app/blog',
+    canonical: 'https://www.ahorrin.app/blog',
   },
 };
 

@@ -187,14 +187,14 @@ export default function SignupPage() {
             <div className="flex justify-center mb-4">
               <Image
                 src="/logo.svg"
-                alt="Gasty Logo"
+                alt="Ahorrín Logo"
                 width={60}
                 height={67}
                 className="dark:invert"
                 priority
               />
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Gasty</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Ahorrín</h1>
             <p className="text-muted-foreground">Crea tu cuenta</p>
           </motion.div>
 
@@ -397,7 +397,7 @@ export default function SignupPage() {
                 >
                   términos y condiciones
                 </Link>
-                . Entiendo que Gasty no brinda asesoramiento financiero y soy responsable de mis propios datos bancarios.
+                . Entiendo que Ahorrín no brinda asesoramiento financiero y soy responsable de mis propios datos bancarios.
               </label>
             </div>
 

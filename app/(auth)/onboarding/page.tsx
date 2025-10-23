@@ -53,7 +53,7 @@ export default function OnboardingPage() {
             name: 'Paquete Base Uruguay',
             description: 'Reglas predefinidas para lugares comunes en Uruguay',
             icon: '🇺🇾',
-            author: 'Gasty',
+            author: 'Ahorrín',
             rule_count: 22
           }
         ]);
@@ -238,7 +238,7 @@ export default function OnboardingPage() {
               <Sparkles className="h-8 w-8 text-primary" />
             </motion.div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              ¡Bienvenido a Gasty! 👋
+              ¡Bienvenido a Ahorrín! 👋
             </h1>
             <p className="text-muted-foreground">
               Elige un paquete de reglas para empezar rápidamente

@@ -2,7 +2,7 @@ import { CsvConverter } from '@/components/free-tools/csv-converter';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Conversor de Extractos Bancarios Uruguay | CSV a Excel | Gasty',
+  title: 'Conversor de Extractos Bancarios Uruguay | CSV a Excel | Ahorrín',
   description: 'Convertí extractos bancarios de cualquier banco uruguayo (Itaú, BBVA, Scotiabank, BROU, Santander, Heritage) a formato Excel estandarizado. Gratis y sin registrarse.',
   keywords: [
     'convertir extracto itau excel',
@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     'csv a excel banco'
   ],
   openGraph: {
-    title: 'Conversor de Extractos Bancarios Uruguay | Gasty',
+    title: 'Conversor de Extractos Bancarios Uruguay | Ahorrín',
     description: 'Convertí extractos de cualquier banco uruguayo a Excel estandarizado. Gratis.',
     type: 'website',
-    url: 'https://www.gasty.app/herramientas/conversor-extractos',
+    url: 'https://www.ahorrin.app/herramientas/conversor-extractos',
   },
   alternates: {
-    canonical: 'https://www.gasty.app/herramientas/conversor-extractos',
+    canonical: 'https://www.ahorrin.app/herramientas/conversor-extractos',
   },
 };
 

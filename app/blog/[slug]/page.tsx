@@ -70,7 +70,7 @@ export async function generateMetadata({
     keywords: metadata.keywords,
     authors: [{ name: metadata.author.name }],
     alternates: {
-      canonical: `https://www.gasty.app/blog/${slug}`,
+      canonical: `https://www.ahorrin.app/blog/${slug}`,
     },
     openGraph: {
       title: metadata.title,
@@ -78,7 +78,7 @@ export async function generateMetadata({
       type: 'article',
       publishedTime: metadata.date,
       authors: [metadata.author.name],
-      url: `https://www.gasty.app/blog/${slug}`,
+      url: `https://www.ahorrin.app/blog/${slug}`,
     },
   };
 }
@@ -181,7 +181,7 @@ export default async function BlogPostPage({
             ¿Listo para tomar control de tus finanzas?
           </h2>
           <p className="text-lg text-blue-50 mb-8">
-            Comenzá a usar Gasty gratis y organiza tus gastos en minutos
+            Comenzá a usar Ahorrín gratis y organiza tus gastos en minutos
           </p>
           <Link
             href="/signup"
@@ -207,17 +207,17 @@ export default async function BlogPostPage({
             },
             publisher: {
               '@type': 'Organization',
-              name: 'Gasty',
+              name: 'Ahorrín',
               logo: {
                 '@type': 'ImageObject',
-                url: 'https://www.gasty.app/logo.png',
+                url: 'https://www.ahorrin.app/logo.png',
               },
             },
             datePublished: metadata.date,
             dateModified: metadata.date,
             mainEntityOfPage: {
               '@type': 'WebPage',
-              '@id': `https://www.gasty.app/blog/${slug}`,
+              '@id': `https://www.ahorrin.app/blog/${slug}`,
             },
             keywords: metadata.keywords.join(', '),
           }),

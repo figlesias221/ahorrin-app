@@ -1,10 +1,10 @@
-# Tweets - Gasty
+# Tweets - Ahorrín
 
 ## 🧵 THREAD PRINCIPAL
 
 ### Tweet 1 - Intro
 ```
-Gasty: app para controlar gastos enfocada en Uruguay 🇺🇾
+Ahorrín: app para controlar gastos enfocada en Uruguay 🇺🇾
 
 • Importás extractos de cualquier banco
 • Categorización automática
@@ -31,7 +31,7 @@ Necesitábamos algo local y seguro.
 
 ### Tweet 3 - La Solución
 ```
-Gasty funciona con CSV/Excel de cualquier banco uruguayo.
+Ahorrín funciona con CSV/Excel de cualquier banco uruguayo.
 
 Subís el extracto → preview interactivo → asignás columnas → listo.
 
@@ -119,7 +119,7 @@ Los bancos escriben mal los nombres:
 "DISCO MVD"
 "DISCO 123"
 
-Gasty normaliza todo a "DISCO".
+Ahorrín normaliza todo a "DISCO".
 
 Tus reglas funcionan siempre, sin importar cómo escribió el banco.
 
@@ -133,7 +133,7 @@ Elimina: sucursales, números, ubicaciones.
 ```
 Si te interesa:
 
-👉 gasty.app
+👉 ahorrin.app
 
 • 100% gratis, sin límites
 • No pide tarjeta
@@ -169,7 +169,7 @@ Subís extractos de cualquier banco uruguayo y el sistema te deja mapear las col
 
 Ya no tiene que entender el formato de cada banco. Vos le decís qué columna es qué.
 
-Probalo en gasty.app
+Probalo en ahorrin.app
 ```
 **Caracteres: 236** ✅
 
@@ -177,7 +177,7 @@ Probalo en gasty.app
 
 ### F2 - Privacy First
 ```
-Gasty NO acepta PDFs de extractos.
+Ahorrín NO acepta PDFs de extractos.
 
 ¿Por qué?
 
@@ -204,11 +204,11 @@ BROU ✓
 Santander ✓
 Heritage ✓
 
-Exportás CSV/Excel desde tu banco → lo subís a Gasty → listo.
+Exportás CSV/Excel desde tu banco → lo subís a Ahorrín → listo.
 
 Sin APIs, sin credenciales, sin conexión directa.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 244** ✅
 
@@ -218,7 +218,7 @@ gasty.app
 ```
 Categorizar 200 transacciones a mano = 😴
 
-Gasty lo hace automático:
+Ahorrín lo hace automático:
 
 1. Creás reglas ("ANTEL" → Servicios)
 2. La IA categoriza lo que no matchea
@@ -226,7 +226,7 @@ Gasty lo hace automático:
 
 Configurás una vez, después es 100% automático.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 258** ✅
 
@@ -244,7 +244,7 @@ Dashboard en tiempo real:
 
 Todo se actualiza al instante cuando importás transacciones.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 203** ✅
 
@@ -252,7 +252,7 @@ gasty.app
 
 ### F6 - Gratis
 ```
-Gasty es 100% gratis:
+Ahorrín es 100% gratis:
 
 ✓ Sin límite de transacciones
 ✓ Sin límite de cuentas
@@ -262,7 +262,7 @@ Gasty es 100% gratis:
 
 Objetivo: hacer control de gastos accesible para todos en Uruguay 🇺🇾
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 220** ✅
 
@@ -274,13 +274,13 @@ gasty.app
 ```
 Problema: Apps extranjeras no entienden bancos uruguayos
 
-Solución: Gasty está hecha específicamente para UY
+Solución: Ahorrín está hecha específicamente para UY
 
 Compatible con extractos de ITAÚ, BBVA, Scotia, BROU, Santander, Heritage...
 
 Importás CSV/Excel directo de tu banco.
 
-gasty.app 🇺🇾
+ahorrin.app 🇺🇾
 ```
 **Caracteres: 252** ✅
 
@@ -297,7 +297,7 @@ Solución: Reglas automáticas
 
 Configurás una vez. Después es automático para siempre.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 208** ✅
 
@@ -307,13 +307,13 @@ gasty.app
 ```
 Problema: Subir PDFs de extractos al internet = regalar todos tus datos 🚨
 
-Solución: Gasty NO acepta PDFs
+Solución: Ahorrín NO acepta PDFs
 
 Solo CSV/Excel con transacciones (sin número de cuenta, sin saldo).
 
 Tu información bancaria sensible queda en tu computadora.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 256** ✅
 
@@ -329,7 +329,7 @@ No importa cómo venga el CSV. Vos asignás qué columna es qué y listo.
 
 Funciona con cualquier formato.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 231** ✅
 
@@ -346,7 +346,7 @@ Armé una app para controlar gastos enfocada en Uruguay 🇺🇾
 ✓ Auto-categorización
 ✓ 100% gratis
 
-gasty.app
+ahorrin.app
 
 Feedback bienvenido 🙏
 ```
@@ -362,7 +362,7 @@ Importá extractos de CUALQUIER banco uruguayo.
 
 No importa el formato - vos asignás las columnas y listo.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 151** ✅
 
@@ -370,7 +370,7 @@ gasty.app
 
 ### TC3
 ```
-Gasty NO acepta PDFs de extractos.
+Ahorrín NO acepta PDFs de extractos.
 
 ¿Por qué? Tienen tu número de cuenta, saldo, dirección...
 
@@ -380,7 +380,7 @@ CSV/Excel only.
 
 Privacy-first 🔒
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 185** ✅
 
@@ -392,11 +392,11 @@ Compatible con todos los bancos uruguayos:
 
 ITAÚ, BBVA, Scotia, BROU, Santander, Heritage...
 
-Exportás CSV/Excel → importás en Gasty → listo.
+Exportás CSV/Excel → importás en Ahorrín → listo.
 
 Sin APIs, sin credenciales.
 
-gasty.app 🇺🇾
+ahorrin.app 🇺🇾
 ```
 **Caracteres: 192** ✅
 
@@ -406,7 +406,7 @@ gasty.app 🇺🇾
 
 ### U1 - Recent Update
 ```
-Gasty v1.1 - Nuevo CSV Preview
+Ahorrín v1.1 - Nuevo CSV Preview
 
 Agregado:
 • Preview interactivo antes de importar
@@ -418,7 +418,7 @@ Agregado:
 Removido:
 • Soporte de PDFs (privacy)
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 265** ✅
 
@@ -437,7 +437,7 @@ Roadmap próximo:
 
 Sugerencias bienvenidas 💬
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 199** ✅
 
@@ -455,7 +455,7 @@ Subís el archivo → ves todo antes de importar → asignás columnas → impor
 
 Funciona con cualquier banco uruguayo.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 198** ✅
 
@@ -463,7 +463,7 @@ gasty.app
 
 ### S2 - Dashboard Screenshot
 ```
-Dashboard de Gasty 👇
+Dashboard de Ahorrín 👇
 
 [screenshot]
 
@@ -474,7 +474,7 @@ Dashboard de Gasty 👇
 
 Todo en tiempo real.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 149** ✅
 
@@ -492,7 +492,7 @@ Configurás una vez:
 
 Próximas importaciones son 100% automáticas.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 170** ✅
 
@@ -502,17 +502,17 @@ gasty.app
 
 ### T1
 ```
-Cómo funciona Gasty:
+Cómo funciona Ahorrín:
 
 1. Exportás CSV/Excel de tu banco
-2. Lo subís a Gasty
+2. Lo subís a Ahorrín
 3. Asignás qué columna es qué
 4. Creás 3-5 reglas de categorización
 5. Importás
 
 Próximas veces: upload → importar → listo (automático)
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 227** ✅
 
@@ -520,7 +520,7 @@ gasty.app
 
 ### T2
 ```
-Stack de Gasty:
+Stack de Ahorrín:
 
 Frontend: Next.js + TypeScript
 Backend: Supabase (PostgreSQL)
@@ -529,7 +529,7 @@ Deploy: Vercel
 
 Open source próximamente.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 165** ✅
 
@@ -537,7 +537,7 @@ gasty.app
 
 ### T3
 ```
-Seguridad en Gasty:
+Seguridad en Ahorrín:
 
 • NO acepta PDFs (tienen info sensible)
 • Solo procesa: fecha, comercio, monto
@@ -547,7 +547,7 @@ Seguridad en Gasty:
 
 Privacy by design.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 197** ✅
 
@@ -563,7 +563,7 @@ Cómo exportar de ITAÚ Link:
 2. Seleccionar periodo
 3. Exportar Excel
 
-Después subís el archivo a gasty.app/upload y asignás las columnas.
+Después subís el archivo a ahorrin.app/upload y asignás las columnas.
 
 Simple.
 ```
@@ -579,9 +579,9 @@ La mayoría de bancos tienen "Exportar movimientos" en la sección de cuenta.
 
 Formato: CSV o Excel
 
-Una vez que tenés el archivo, lo subís a Gasty y listo.
+Una vez que tenés el archivo, lo subís a Ahorrín y listo.
 
-gasty.app/upload
+ahorrin.app/upload
 ```
 **Caracteres: 204** ✅
 
@@ -591,7 +591,7 @@ gasty.app/upload
 
 ### TIP1
 ```
-Tip de Gasty:
+Tip de Ahorrín:
 
 Empezá con 5-10 reglas básicas:
 • Supermercados
@@ -603,7 +603,7 @@ La IA cubre el resto.
 
 No necesitás categorizar TODO manualmente.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 197** ✅
 
@@ -613,13 +613,13 @@ gasty.app
 ```
 Tip: Importá histórico
 
-Gasty funciona mejor con más datos.
+Ahorrín funciona mejor con más datos.
 
 Bajá extractos de los últimos 3-6 meses → importalos → configurá reglas.
 
 Vas a ver patrones y tendencias que no notabas.
 
-gasty.app
+ahorrin.app
 ```
 **Caracteres: 197** ✅
 
@@ -628,7 +628,7 @@ gasty.app
 ## 🎯 HASHTAGS
 
 **Principales:**
-#Gasty #Uruguay #FinTech #ExpenseTracking #MadeInUruguay
+#Ahorrín #Uruguay #FinTech #ExpenseTracking #MadeInUruguay
 
 **Tech:**
 #NextJS #TypeScript #Supabase #SideProject #BuildInPublic

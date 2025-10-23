@@ -5,7 +5,7 @@ import { Check, FileUp, Sparkles, TrendingUp, Shield, Zap } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Scotiabank Uruguay - Importá y Analizá tus Extractos Automáticamente',
   description:
-    'Importá tus extractos bancarios de Scotiabank Uruguay a Gasty. Categorización automática, análisis de gastos y reportes en tiempo real. Compatible con Scotia Online.',
+    'Importá tus extractos bancarios de Scotiabank Uruguay a Ahorrín. Categorización automática, análisis de gastos y reportes en tiempo real. Compatible con Scotia Online.',
   keywords: [
     'scotiabank uruguay',
     'scotia uruguay',
@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     'importar extracto scotiabank',
   ],
   alternates: {
-    canonical: 'https://www.gasty.app/scotiabank',
+    canonical: 'https://www.ahorrin.app/scotiabank',
   },
   openGraph: {
-    title: 'Scotiabank Uruguay + Gasty - Control Total de tus Finanzas',
+    title: 'Scotiabank Uruguay + Ahorrín - Control Total de tus Finanzas',
     description:
-      'Importá extractos de Scotiabank Uruguay a Gasty. Categorización inteligente, gráficas automáticas y reportes detallados.',
-    url: 'https://www.gasty.app/scotiabank',
+      'Importá extractos de Scotiabank Uruguay a Ahorrín. Categorización inteligente, gráficas automáticas y reportes detallados.',
+    url: 'https://www.ahorrin.app/scotiabank',
   },
 };
 
@@ -95,7 +95,7 @@ export default function ScotiabankPage() {
                       <Sparkles className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <div className="font-bold text-lg">2. Importá a Gasty</div>
+                      <div className="font-bold text-lg">2. Importá a Ahorrín</div>
                       <div className="text-white/70 text-sm">Procesamiento inteligente</div>
                     </div>
                   </div>
@@ -150,7 +150,7 @@ export default function ScotiabankPage() {
               </div>
               <h3 className="text-2xl font-bold mb-4">2. Procesamiento Inteligente</h3>
               <div className="space-y-3 text-muted-foreground">
-                <p><strong className="text-foreground">Gasty hace todo</strong>:</p>
+                <p><strong className="text-foreground">Ahorrín hace todo</strong>:</p>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
@@ -283,7 +283,7 @@ export default function ScotiabankPage() {
       <section className="py-16 sm:py-24 bg-muted/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
-            Preguntas Frecuentes - Scotiabank + Gasty
+            Preguntas Frecuentes - Scotiabank + Ahorrín
           </h2>
 
           <div className="space-y-6">
@@ -299,11 +299,11 @@ export default function ScotiabankPage() {
 
             <details className="bg-card border border-border rounded-xl p-6 group">
               <summary className="font-bold text-lg cursor-pointer list-none flex items-center justify-between">
-                ¿Gasty se conecta a mi cuenta de Scotiabank?
+                ¿Ahorrín se conecta a mi cuenta de Scotiabank?
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                NO. Gasty nunca se conecta a tu cuenta bancaria ni requiere tus credenciales de Scotia Online. Vos descargás el extracto manualmente y lo subís a Gasty. Es 100% privado y seguro.
+                NO. Ahorrín nunca se conecta a tu cuenta bancaria ni requiere tus credenciales de Scotia Online. Vos descargás el extracto manualmente y lo subís a Ahorrín. Es 100% privado y seguro.
               </p>
             </details>
 
@@ -313,7 +313,7 @@ export default function ScotiabankPage() {
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Sí! Gasty detecta automáticamente las comisiones que te cobra Scotiabank (mantenimiento de cuenta, emisión de tarjeta, etc.) y las categoriza. Podés ver cuánto pagás mensualmente en comisiones.
+                Sí! Ahorrín detecta automáticamente las comisiones que te cobra Scotiabank (mantenimiento de cuenta, emisión de tarjeta, etc.) y las categoriza. Podés ver cuánto pagás mensualmente en comisiones.
               </p>
             </details>
 
@@ -323,17 +323,17 @@ export default function ScotiabankPage() {
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Sí! Podés importar el resumen de tu tarjeta Scotiabank Visa o Mastercard desde Scotia Online. Gasty categoriza automáticamente todos los gastos de tu tarjeta.
+                Sí! Podés importar el resumen de tu tarjeta Scotiabank Visa o Mastercard desde Scotia Online. Ahorrín categoriza automáticamente todos los gastos de tu tarjeta.
               </p>
             </details>
 
             <details className="bg-card border border-border rounded-xl p-6 group">
               <summary className="font-bold text-lg cursor-pointer list-none flex items-center justify-between">
-                ¿Qué otros bancos soporta Gasty?
+                ¿Qué otros bancos soporta Ahorrín?
                 <span className="group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="text-muted-foreground mt-4">
-                Gasty funciona con todos los bancos principales de Uruguay: BBVA, Itaú, BROU, Santander y Heritage. Podés tener cuentas de múltiples bancos en Gasty.
+                Ahorrín funciona con todos los bancos principales de Uruguay: BBVA, Itaú, BROU, Santander y Heritage. Podés tener cuentas de múltiples bancos en Ahorrín.
               </p>
             </details>
           </div>
@@ -370,10 +370,10 @@ export default function ScotiabankPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'Scotiabank Uruguay - Control de Gastos con Gasty',
+            name: 'Scotiabank Uruguay - Control de Gastos con Ahorrín',
             description:
-              'Importá extractos de Scotiabank Uruguay a Gasty para análisis automático de gastos y finanzas personales.',
-            url: 'https://www.gasty.app/scotiabank',
+              'Importá extractos de Scotiabank Uruguay a Ahorrín para análisis automático de gastos y finanzas personales.',
+            url: 'https://www.ahorrin.app/scotiabank',
           }),
         }}
       />

@@ -1576,7 +1576,7 @@ export default function UploadPage() {
                     <p className="text-sm font-medium mb-3">Cómo funciona</p>
                     <div className="space-y-2 text-sm text-muted-foreground">
                       <p>1. Subí tu CSV/Excel de cualquier banco</p>
-                      <p>2. Gasty detecta las columnas automáticamente</p>
+                      <p>2. Ahorrín detecta las columnas automáticamente</p>
                       <p>3. <strong className="text-foreground">Acomodá las columnas</strong> con los dropdowns si hace falta</p>
                       <p>4. Editá celdas o eliminá filas con errores</p>
                       <p>5. Importá</p>

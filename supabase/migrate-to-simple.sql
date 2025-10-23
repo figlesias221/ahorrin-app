@@ -1,4 +1,4 @@
--- Gasty Database Migration - From Complex to Simple Schema
+-- Ahorrín Database Migration - From Complex to Simple Schema
 -- This script migrates existing data to the simplified 2-table schema
 -- Run this ONLY if you have existing data you want to preserve
 

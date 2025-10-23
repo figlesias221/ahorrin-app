@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 const testimonials = [
   {
     quote:
-      'Gasty gives us the clarity that spreadsheets never could. I know exactly how every peso is working for me.',
+      'Ahorrín gives us the clarity that spreadsheets never could. I know exactly how every peso is working for me.',
     name: 'Jordan Kim',
     role: 'Product Manager & early adopter',
   },
@@ -46,7 +46,7 @@ export function SocialProof() {
               Built with trust at the core.
             </h2>
             <p className="mt-4 text-base ">
-              From bank-grade security to advisor-level insights, thousands of teams rely on Gasty to keep their finances crystal clear and future-ready.
+              From bank-grade security to advisor-level insights, thousands of teams rely on Ahorrín to keep their finances crystal clear and future-ready.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
