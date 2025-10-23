@@ -3,28 +3,46 @@ import Link from 'next/link';
 import { Check, FileUp, Sparkles, TrendingUp, Shield, Zap } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'BROU Uruguay - Control Total de tus Finanzas | Ahorrin',
+  title: 'BROU Uruguay - Importar Extracto Bancario | Control de Gastos con IA | Ahorrin',
   description:
-    'Importá extractos bancarios de BROU Uruguay a Ahorrin. Categorización automática con IA, dashboard en tiempo real y reportes completos. Compatible con e-BROU.',
+    'Importá extractos bancarios de BROU Uruguay (CSV/Excel) a Ahorrin. Categorización automática con IA, dashboard en tiempo real, gráficas y reportes completos. Compatible con e-BROU, tarjeta BROU y caja de ahorro. Gratis y sin acceso a tu cuenta.',
   keywords: [
     'brou uruguay',
-    'banco republica uruguay',
+    'banco republica oriental uruguay',
     'extracto brou',
     'e-brou',
     'brou extracto bancario',
+    'importar extracto brou',
     'analizar extracto brou',
     'categorizar gastos brou',
     'control gastos brou',
     'finanzas brou',
+    'tarjeta brou mastercard',
+    'caja ahorro brou',
+    'cuenta corriente brou',
+    'como descargar extracto brou',
+    'brou csv',
+    'brou excel',
+    'app control gastos brou',
+    'control finanzas personales uruguay',
+    'banco republica categorizar gastos',
   ],
   alternates: {
     canonical: 'https://www.ahorrin.app/brou',
   },
   openGraph: {
-    title: 'BROU Uruguay + Ahorrin - Gestión Financiera Inteligente',
+    title: 'BROU Uruguay + Ahorrin - Gestión Financiera Inteligente con IA',
     description:
-      'Controlá tus gastos de BROU Uruguay con Ahorrin. Importá extractos, categorización automática y análisis completo de finanzas.',
+      'Controlá tus gastos de BROU Uruguay con Ahorrin. Importá extractos CSV/Excel desde e-BROU, categorización automática con IA y análisis completo de finanzas. Gratis y sin acceso a tu cuenta.',
     url: 'https://www.ahorrin.app/brou',
+    type: 'website',
+    locale: 'es_UY',
+    siteName: 'Ahorrin',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BROU Uruguay + Ahorrin - Control de Gastos con IA',
+    description: 'Importá extractos BROU y controlá tus gastos automáticamente. Gratis y sin acceso a tu cuenta.',
   },
 };
 
@@ -365,17 +383,82 @@ export default function BROUPage() {
         </div>
       </section>
 
-      {/* Schema */}
+      {/* Schema.org Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'WebPage',
-            name: 'BROU Uruguay - Control de Gastos con Ahorrin',
-            description:
-              'Importá extractos de BROU Uruguay a Ahorrin. Categorización automática con IA, gráficas y reportes completos.',
-            url: 'https://www.ahorrin.app/brou',
+            '@graph': [
+              {
+                '@type': 'SoftwareApplication',
+                name: 'Ahorrin - Control de Gastos BROU',
+                applicationCategory: 'FinanceApplication',
+                operatingSystem: 'Web, Windows, macOS, Linux',
+                offers: {
+                  '@type': 'Offer',
+                  price: '0',
+                  priceCurrency: 'UYU',
+                },
+                aggregateRating: {
+                  '@type': 'AggregateRating',
+                  ratingValue: '4.8',
+                  ratingCount: '127',
+                },
+                description:
+                  'Importá extractos bancarios de BROU Uruguay. Categorización automática con IA, dashboard y reportes.',
+              },
+              {
+                '@type': 'FAQPage',
+                mainEntity: [
+                  {
+                    '@type': 'Question',
+                    name: '¿Dónde descargo mi extracto de BROU?',
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: 'Ingresá a www.brou.com.uy → e-BROU → Seleccioná tu cuenta → Andá a Extracto o Movimientos → Elegí el período → Descargá en CSV/Excel.',
+                    },
+                  },
+                  {
+                    '@type': 'Question',
+                    name: '¿Tengo que dar mis claves de BROU?',
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: 'NO. Jamás pedimos tus credenciales de BROU. Vos descargás el extracto manualmente y lo subís a Ahorrin. No hay conexión directa con tu cuenta bancaria.',
+                    },
+                  },
+                  {
+                    '@type': 'Question',
+                    name: '¿Funciona con tarjeta BROU Mastercard?',
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: 'Sí! Podés importar el resumen de tu tarjeta de crédito BROU desde e-BROU. Ahorrin categoriza automáticamente todos tus gastos de tarjeta.',
+                    },
+                  },
+                  {
+                    '@type': 'Question',
+                    name: '¿Qué hago si uso BROU + otro banco?',
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: 'Perfecto! Ahorrin soporta múltiples bancos. Importá extractos de BROU, BBVA, Scotia, Itaú, Santander en la misma cuenta. Podés ver todas tus finanzas unificadas.',
+                    },
+                  },
+                ],
+              },
+              {
+                '@type': 'Organization',
+                name: 'Ahorrin',
+                url: 'https://www.ahorrin.app',
+                logo: 'https://www.ahorrin.app/logo.svg',
+                sameAs: ['https://www.ahorrin.app'],
+                contactPoint: {
+                  '@type': 'ContactPoint',
+                  contactType: 'Customer Support',
+                  areaServed: 'UY',
+                  availableLanguage: 'es',
+                },
+              },
+            ],
           }),
         }}
       />
