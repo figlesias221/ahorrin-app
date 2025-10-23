@@ -12,7 +12,7 @@
   </g>
 
   <!-- Brand name (centered) -->
-  <text x="600" y="340" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="96" font-weight="700" fill="#000000">Ahorrín</text>
+  <text x="600" y="340" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="96" font-weight="700" fill="#000000">Ahorrin</text>
 
   <!-- Tagline (centered) -->
   <text x="600" y="435" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="500" fill="#1a1a1a">Gestión Financiera Personal Inteligente</text>

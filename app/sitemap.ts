@@ -4,11 +4,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.ahorrin.app';
   const currentDate = new Date();
 
-  // Blog posts (will be dynamically loaded from content later)
+  // Blog posts
   const blogPosts = [
     {
-      slug: 'mejores-tarjetas-credito-uruguay-2025',
-      date: '2025-01-20',
+      slug: 'analisis-tarjetas-que-mas-rinden-uruguay-2025',
+      date: '2025-01-22',
     },
     {
       slug: 'organizar-finanzas-personales-uruguay-2025',
@@ -57,7 +57,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     })),
 
-    // Bank-specific landing pages
+    // Bank-specific landing pages (high priority for SEO)
+    {
+      url: `${baseUrl}/brou`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.95, // BROU es el banco más grande de Uruguay
+    },
     {
       url: `${baseUrl}/bbva`,
       lastModified: currentDate,
@@ -76,10 +82,40 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/santander`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/heritage`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
 
-    // Free tools
+    // Free tools (high value for SEO)
+    {
+      url: `${baseUrl}/herramientas`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
     {
       url: `${baseUrl}/herramientas/calculadora-presupuesto`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/herramientas/conversor-extractos`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/herramientas/inflacion-real`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.85,
