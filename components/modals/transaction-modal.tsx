@@ -24,6 +24,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
     description: transaction?.description || '',
     amount: transaction?.amount || 0,
     type: transaction?.type || 'expense',
+    currency: transaction?.currency || 'UYU',
     categoryId: transaction?.categoryId || null, // Use null instead of '' to avoid UUID errors
     notes: transaction?.notes || '',
     isInstallment: false,
@@ -39,6 +40,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
   const [localCategories, setLocalCategories] = useState<Category[]>(categories);
   const [showQuickRuleModal, setShowQuickRuleModal] = useState(false);
   const [showAddToRuleModal, setShowAddToRuleModal] = useState(false);
+  const [showOptionalFields, setShowOptionalFields] = useState(false);
 
   const supabase = createClient();
   const toast = useToast();
@@ -119,6 +121,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
           description: formData.description || null,
           amount: formData.amount,
           type: formData.type,
+          currency: formData.currency,
           category_id: formData.categoryId || null,
           notes: formData.notes || null,
           is_manually_verified: true,
@@ -155,6 +158,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
               description: installmentDescription,
               amount: formData.installmentAmount || 0,
               type: formData.type,
+              currency: formData.currency,
               category_id: formData.categoryId || null,
               notes: formData.notes || null,
               installment_group_id: installmentGroupId,
@@ -180,6 +184,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
             description: formData.description || null,
             amount: formData.amount,
             type: formData.type,
+            currency: formData.currency,
             category_id: formData.categoryId || null,
             notes: formData.notes || null,
             is_manually_verified: true,
@@ -222,7 +227,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {error && (
             <div className="p-3 rounded-lg bg-error/10 border border-error text-error text-sm">
               {error}
@@ -266,7 +271,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
 
           {/* Installment Mode Toggle (only for new transactions) */}
           {!transaction && (
-            <div className="p-4 rounded-lg border border-border bg-muted/30">
+            <div className="p-3 rounded-lg border border-border bg-muted/30">
               <label className="flex items-center gap-2 cursor-pointer text-foreground">
                 <input
                   type="checkbox"
@@ -281,7 +286,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                   }}
                   className="h-4 w-4"
                 />
-                <span className="font-medium">En Cuotas / Suscripción Recurrente</span>
+                <span className="font-medium text-sm">En Cuotas / Suscripción Recurrente</span>
               </label>
               <p className="text-xs text-muted-foreground mt-1 ml-6">
                 Divide el monto total en pagos mensuales automáticos
@@ -289,7 +294,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             {/* Date */}
             <div>
               <label htmlFor="date" className="block text-sm font-medium text-foreground mb-2">
@@ -301,37 +306,64 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 required
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
-            {/* Amount - show different label for installments */}
+            {/* Amount with Currency Toggle */}
             <div>
               <label htmlFor="amount" className="block text-sm font-medium text-foreground mb-2">
-                {formData.isInstallment ? 'Monto Total * ($UYU)' : 'Monto * ($UYU)'}
+                {formData.isInstallment ? 'Monto Total *' : 'Monto *'}
               </label>
-              <input
-                id="amount"
-                type="number"
-                step="0.01"
-                value={formData.amount}
-                onChange={(e) => {
-                  const amount = parseFloat(e.target.value) || 0;
-                  const installmentAmount = formData.isInstallment && formData.installmentTotal
-                    ? amount / formData.installmentTotal
-                    : amount;
-                  setFormData({ ...formData, amount, installmentAmount });
-                }}
-                required
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <div className="flex gap-2">
+                <input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  value={formData.amount}
+                  onChange={(e) => {
+                    const amount = parseFloat(e.target.value) || 0;
+                    const installmentAmount = formData.isInstallment && formData.installmentTotal
+                      ? amount / formData.installmentTotal
+                      : amount;
+                    setFormData({ ...formData, amount, installmentAmount });
+                  }}
+                  required
+                  className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+                {/* Currency Toggle */}
+                <div className="flex rounded-lg border border-border bg-background overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, currency: 'UYU' })}
+                    className={`px-3 py-2 text-sm font-medium transition-colors ${
+                      formData.currency === 'UYU'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    }`}
+                  >
+                    $U
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, currency: 'USD' })}
+                    className={`px-3 py-2 text-sm font-medium transition-colors border-l border-border ${
+                      formData.currency === 'USD'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    }`}
+                  >
+                    US$
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Installment-specific fields */}
           {formData.isInstallment && (
-            <div className="space-y-4 p-4 rounded-lg border border-border bg-primary/5">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3 p-3 rounded-lg border border-border bg-primary/5">
+              <div className="grid grid-cols-2 gap-3">
                 {/* Number of installments */}
                 <div>
                   <label htmlFor="installmentTotal" className="block text-sm font-medium text-foreground mb-2">
@@ -349,7 +381,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                       setFormData({ ...formData, installmentTotal, installmentAmount });
                     }}
                     required
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Ej: 6, 12, 24"
                   />
                 </div>
@@ -359,14 +391,14 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                   <label className="block text-sm font-medium text-foreground mb-2">
                     Monto por Cuota
                   </label>
-                  <div className="w-full px-4 py-2 rounded-lg border border-border bg-muted text-foreground font-medium">
-                    ${formData.installmentAmount?.toFixed(2) || '0.00'}
+                  <div className="w-full px-3 py-2 rounded-lg border border-border bg-muted text-foreground font-medium text-sm">
+                    {formData.currency === 'USD' ? 'US$' : '$U'} {formData.installmentAmount?.toFixed(2) || '0.00'}
                   </div>
                 </div>
               </div>
 
               <div className="text-xs text-muted-foreground">
-                Se crearán {formData.installmentTotal || 1} transacciones de ${formData.installmentAmount?.toFixed(2) || '0.00'} cada una, una por mes durante {formData.installmentTotal || 1} meses.
+                Se crearán {formData.installmentTotal || 1} transacciones de {formData.currency === 'USD' ? 'US$' : '$U'}{formData.installmentAmount?.toFixed(2) || '0.00'} cada una, una por mes durante {formData.installmentTotal || 1} meses.
               </div>
             </div>
           )}
@@ -382,42 +414,9 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
               value={formData.vendor}
               onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
               required
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="Ej: ANTEL, Del Campo, etc."
             />
-            {formData.vendor && (
-              <div className="mt-2 p-3 bg-muted/30 rounded-lg border border-border">
-                <p className="text-xs font-medium text-foreground mb-2">
-                  Acciones de automatización:
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      console.log('Abriendo QuickRuleModal con vendor:', formData.vendor);
-                      setShowQuickRuleModal(true);
-                    }}
-                    className="flex items-center gap-1 px-2 py-1 text-xs bg-primary/10 text-primary hover:bg-primary/20 rounded transition-colors"
-                    title="Crear una nueva regla para auto-categorizar"
-                  >
-                    <Zap className="h-3 w-3" />
-                    Crear Regla
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      console.log('Abriendo AddToRuleModal con vendor:', formData.vendor);
-                      setShowAddToRuleModal(true);
-                    }}
-                    className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 rounded transition-colors"
-                    title="Agregar a una regla existente"
-                  >
-                    <Plus className="h-3 w-3" />
-                    Extender Regla
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Category */}
@@ -440,7 +439,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
             </div>
 
             {showNewCategory ? (
-              <div className="space-y-3 p-4 rounded-lg border border-border bg-muted/30">
+              <div className="space-y-2 p-3 rounded-lg border border-border bg-muted/30">
                 <div>
                   <label className="block text-xs font-medium text-foreground mb-1">
                     Nombre de la categoría
@@ -463,19 +462,19 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                       type="color"
                       value={newCategoryColor}
                       onChange={(e) => setNewCategoryColor(e.target.value)}
-                      className="w-12 h-9 rounded border border-border cursor-pointer"
+                      className="w-10 h-8 rounded border border-border cursor-pointer"
                     />
                     <input
                       type="text"
                       value={newCategoryColor}
                       onChange={(e) => setNewCategoryColor(e.target.value)}
                       placeholder="#000000"
-                      className="flex-1 px-3 py-2 text-sm rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="flex-1 px-2 py-1.5 text-sm rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 pt-1">
                   <Button
                     type="button"
                     variant="outline"
@@ -485,7 +484,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                       setNewCategoryColor('#3b82f6');
                       setError('');
                     }}
-                    className="flex-1 text-xs h-8"
+                    className="flex-1 text-xs h-7"
                   >
                     Cancelar
                   </Button>
@@ -493,7 +492,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                     type="button"
                     onClick={handleCreateCategory}
                     disabled={creatingCategory || !newCategoryName.trim()}
-                    className="flex-1 text-xs h-8"
+                    className="flex-1 text-xs h-7"
                   >
                     {creatingCategory ? 'Creando...' : 'Crear'}
                   </Button>
@@ -516,34 +515,86 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
             )}
           </div>
 
-          {/* Description */}
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-foreground mb-2">
-              Descripción
-            </label>
-            <input
-              id="description"
-              type="text"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Descripción adicional (opcional)"
-            />
-          </div>
+          {/* Optional Fields Section - Collapsible */}
+          <div className="border-t border-border pt-3">
+            <button
+              type="button"
+              onClick={() => setShowOptionalFields(!showOptionalFields)}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-3"
+            >
+              <span>{showOptionalFields ? '▼' : '▶'}</span>
+              <span className="font-medium">Detalles opcionales</span>
+              <span className="text-xs">(Descripción, Notas, Automatización)</span>
+            </button>
 
-          {/* Notes */}
-          <div>
-            <label htmlFor="notes" className="block text-sm font-medium text-foreground mb-2">
-              Notas
-            </label>
-            <textarea
-              id="notes"
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              rows={3}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-              placeholder="Notas adicionales (opcional)"
-            />
+            {showOptionalFields && (
+              <div className="space-y-3">
+                {/* Description */}
+                <div>
+                  <label htmlFor="description" className="block text-sm font-medium text-foreground mb-2">
+                    Descripción
+                  </label>
+                  <input
+                    id="description"
+                    type="text"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Descripción adicional (opcional)"
+                  />
+                </div>
+
+                {/* Notes */}
+                <div>
+                  <label htmlFor="notes" className="block text-sm font-medium text-foreground mb-2">
+                    Notas
+                  </label>
+                  <textarea
+                    id="notes"
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    rows={2}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                    placeholder="Notas adicionales (opcional)"
+                  />
+                </div>
+
+                {/* Automation Actions */}
+                {formData.vendor && (
+                  <div className="p-3 bg-muted/30 rounded-lg border border-border">
+                    <p className="text-xs font-medium text-foreground mb-2">
+                      Acciones de automatización:
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          console.log('Abriendo QuickRuleModal con vendor:', formData.vendor);
+                          setShowQuickRuleModal(true);
+                        }}
+                        className="flex items-center gap-1 px-2 py-1 text-xs bg-primary/10 text-primary hover:bg-primary/20 rounded transition-colors"
+                        title="Crear una nueva regla para auto-categorizar"
+                      >
+                        <Zap className="h-3 w-3" />
+                        Crear Regla
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          console.log('Abriendo AddToRuleModal con vendor:', formData.vendor);
+                          setShowAddToRuleModal(true);
+                        }}
+                        className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 rounded transition-colors"
+                        title="Agregar a una regla existente"
+                      >
+                        <Plus className="h-3 w-3" />
+                        Extender Regla
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Actions */}
