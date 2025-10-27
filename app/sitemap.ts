@@ -1,24 +1,15 @@
 import { MetadataRoute } from 'next';
+import { getAllPostsMetadata } from '@/lib/mdx';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.ahorrin.app';
   const currentDate = new Date();
 
-  // Blog posts
-  const blogPosts = [
-    {
-      slug: 'calendario-vencimientos-impuestos-uruguay-2025',
-      date: '2025-10-23',
-    },
-    {
-      slug: 'analisis-tarjetas-que-mas-rinden-uruguay-2025',
-      date: '2025-01-22',
-    },
-    {
-      slug: 'organizar-finanzas-personales-uruguay-2025',
-      date: '2025-10-21',
-    },
-  ];
+  // Dynamically get all blog posts
+  const blogPosts = getAllPostsMetadata().map(post => ({
+    slug: post.slug!,
+    date: post.date,
+  }));
 
   return [
     // Main pages
