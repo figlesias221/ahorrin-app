@@ -27,7 +27,7 @@ export function Navbar() {
 
   const navLinks = [
     { name: 'Features', href: '#features' },
-    { name: 'Calculadora', href: '/herramientas/calculadora-presupuesto' },
+    { name: 'Herramientas', href: '/herramientas' },
     { name: 'Blog', href: '/blog' },
     { name: 'FAQ', href: '#faq' },
   ];

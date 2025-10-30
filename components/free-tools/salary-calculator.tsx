@@ -161,7 +161,7 @@ export function SalaryCalculator() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg mb-8">
             <Calculator className="w-4 h-4 text-emerald-600" />
             <span className="text-sm font-semibold text-emerald-700">
               Actualizado 2025
