@@ -153,7 +153,7 @@ export function SalaryCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-emerald-50/30 dark:to-emerald-950/10">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 sm:py-16 max-w-6xl">
         {/* Hero Section */}
         <motion.div
@@ -161,18 +161,15 @@ export function SalaryCalculator() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mb-6">
-            <Calculator className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg mb-6">
+            <Calculator className="w-4 h-4 text-emerald-600" />
+            <span className="text-sm font-semibold text-emerald-700">
               Actualizado 2025
             </span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-            ¿Cuánto te queda
-            <span className="block text-emerald-600 dark:text-emerald-400 mt-2">
-              después de impuestos?
-            </span>
+            ¿Cuánto te queda después de impuestos?
           </h1>
 
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -271,7 +268,7 @@ export function SalaryCalculator() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-6 sm:p-8 text-white shadow-2xl"
+                className="bg-emerald-600 rounded-2xl p-6 sm:p-8 text-white border border-emerald-700"
               >
                 <div className="flex items-center justify-between mb-6">
                   <div>
@@ -286,34 +283,34 @@ export function SalaryCalculator() {
                 </div>
 
                 <div className="space-y-3 mb-6">
-                  <div className="flex justify-between items-center p-3 bg-white/10 backdrop-blur-sm rounded-lg">
-                    <span className="text-emerald-100 text-sm">Salario nominal</span>
+                  <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
+                    <span className="text-white text-sm font-medium">Salario nominal</span>
                     <span className="font-semibold">{formatCurrency(currentBreakdown.nominal)}</span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-white/10 backdrop-blur-sm rounded-lg">
-                    <span className="text-emerald-100 text-sm">BPS (15%)</span>
+                  <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
+                    <span className="text-white text-sm font-medium">BPS (15%)</span>
                     <span className="font-semibold">-{formatCurrency(currentBreakdown.bpsDeduction)}</span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-white/10 backdrop-blur-sm rounded-lg">
-                    <span className="text-emerald-100 text-sm">
+                  <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
+                    <span className="text-white text-sm font-medium">
                       Fonasa ({children === 0 ? '3%' : children === 1 ? '4.5%' : '6%'})
                     </span>
                     <span className="font-semibold">-{formatCurrency(currentBreakdown.fonasaDeduction)}</span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-white/10 backdrop-blur-sm rounded-lg">
-                    <span className="text-emerald-100 text-sm">
+                  <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
+                    <span className="text-white text-sm font-medium">
                       IRPF (franja {getIRPFBracket(currentBreakdown.nominal)})
                     </span>
                     <span className="font-semibold">-{formatCurrency(currentBreakdown.irpfDeduction)}</span>
                   </div>
                 </div>
 
-                <div className="p-4 bg-black/20 backdrop-blur-sm rounded-lg border border-white/20">
+                <div className="p-4 bg-emerald-700 rounded-lg border border-emerald-800">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-emerald-100 text-sm">Total descuentos</span>
+                    <span className="text-white text-sm font-medium">Total descuentos</span>
                     <span className="text-xl font-bold">{currentBreakdown.deductionPercentage.toFixed(1)}%</span>
                   </div>
-                  <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
+                  <div className="w-full bg-emerald-800 rounded-full h-2 overflow-hidden">
                     <div
                       className="bg-white h-full rounded-full transition-all duration-500"
                       style={{ width: `${currentBreakdown.deductionPercentage}%` }}
@@ -321,9 +318,9 @@ export function SalaryCalculator() {
                   </div>
                 </div>
 
-                <div className="mt-6 p-4 bg-white/10 backdrop-blur-sm rounded-lg">
-                  <p className="text-emerald-100 text-sm mb-2">💡 Tip útil</p>
-                  <p className="text-sm leading-relaxed">
+                <div className="mt-6 p-4 bg-white/20 rounded-lg">
+                  <p className="text-white text-sm font-semibold mb-2">Aguinaldo</p>
+                  <p className="text-sm leading-relaxed text-white/90">
                     Tu aguinaldo también tiene estos descuentos. Para junio y diciembre,
                     multiplicá tu líquido mensual por 0.5 para estimar cuánto cobrarás.
                   </p>
@@ -398,30 +395,30 @@ export function SalaryCalculator() {
                 animate={{ opacity: 1, height: 'auto' }}
                 className="grid md:grid-cols-2 gap-6"
               >
-                <div className="p-5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
-                  <p className="text-sm text-emerald-700 dark:text-emerald-300 font-medium mb-2">
+                <div className="p-5 bg-emerald-50 rounded-xl border border-emerald-200">
+                  <p className="text-sm text-emerald-700 font-medium mb-2">
                     Salario actual
                   </p>
-                  <p className="text-3xl font-bold text-emerald-900 dark:text-emerald-100 mb-1">
+                  <p className="text-3xl font-bold text-emerald-900 mb-1">
                     {formatCurrency(currentBreakdown.netSalary)}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-600">
                     De {formatCurrency(currentBreakdown.nominal)} nominales
                   </p>
                 </div>
 
-                <div className="p-5 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <p className="text-sm text-blue-700 dark:text-blue-300 font-medium mb-2">
+                <div className="p-5 bg-blue-50 rounded-xl border border-blue-200">
+                  <p className="text-sm text-blue-700 font-medium mb-2">
                     Con {formatCurrency(comparisonBreakdown.nominal)}
                   </p>
-                  <p className="text-3xl font-bold text-blue-900 dark:text-blue-100 mb-1">
+                  <p className="text-3xl font-bold text-blue-900 mb-1">
                     {formatCurrency(comparisonBreakdown.netSalary)}
                   </p>
                   <div className="flex items-center gap-2">
                     <span className={`text-sm font-semibold ${
                       comparisonBreakdown.netSalary > currentBreakdown.netSalary
-                        ? 'text-green-600 dark:text-green-400'
-                        : 'text-red-600 dark:text-red-400'
+                        ? 'text-green-700'
+                        : 'text-red-700'
                     }`}>
                       {comparisonBreakdown.netSalary > currentBreakdown.netSalary ? '+' : ''}
                       {formatCurrency(comparisonBreakdown.netSalary - currentBreakdown.netSalary)}
@@ -436,34 +433,34 @@ export function SalaryCalculator() {
 
         {/* Info Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <div className="p-6 bg-card border border-border rounded-xl">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
-              <Info className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center mb-4">
+              <Info className="w-5 h-5 text-blue-600" />
             </div>
-            <h3 className="font-semibold text-foreground mb-2">IRPF 2025</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <h3 className="font-semibold text-gray-900 mb-2">IRPF 2025</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
               Impuesto progresivo de 0% a 36%. Deducción mínima de $60,596.
               Se calcula sobre tu salario después de BPS y Fonasa.
             </p>
           </div>
 
-          <div className="p-6 bg-card border border-border rounded-xl">
-            <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
-              <Calculator className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <div className="w-10 h-10 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-4">
+              <Calculator className="w-5 h-5 text-emerald-600" />
             </div>
-            <h3 className="font-semibold text-foreground mb-2">BPS Fijo</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <h3 className="font-semibold text-gray-900 mb-2">BPS Fijo</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
               El aporte jubilatorio es siempre 15% de tu salario nominal,
               sin importar cuánto ganes.
             </p>
           </div>
 
-          <div className="p-6 bg-card border border-border rounded-xl">
-            <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
-              <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+          <div className="p-6 bg-white border border-gray-200 rounded-xl">
+            <div className="w-10 h-10 rounded-lg bg-purple-50 border border-purple-200 flex items-center justify-center mb-4">
+              <Users className="w-5 h-5 text-purple-600" />
             </div>
-            <h3 className="font-semibold text-foreground mb-2">Fonasa Variable</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <h3 className="font-semibold text-gray-900 mb-2">Fonasa Variable</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
               3% sin hijos, 4.5% con 1 hijo, 6% con 2 o más.
               Financia tu mutualista.
             </p>
@@ -475,13 +472,13 @@ export function SalaryCalculator() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-1"
+          className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 sm:p-12 text-center"
         >
-          <div className="bg-card rounded-xl p-8 sm:p-12 text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               ¿Querés optimizar tus finanzas?
             </h2>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
               Ahora que sabés cuánto te queda en mano, el siguiente paso es controlar
               a dónde va cada peso. Con Ahorrin podés importar tus extractos, categorizar
               automáticamente y ver tus gastos en tiempo real.
@@ -489,14 +486,14 @@ export function SalaryCalculator() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/signup"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors"
               >
                 Crear cuenta gratis
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
                 href="/herramientas"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-background border-2 border-border font-semibold rounded-lg hover:border-emerald-300 dark:hover:border-emerald-700 transition-all"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-gray-300 font-semibold rounded-lg hover:border-emerald-600 transition-colors"
               >
                 Ver más herramientas
               </Link>
@@ -506,7 +503,7 @@ export function SalaryCalculator() {
 
         {/* FAQ Section for SEO */}
         <div className="mt-16 max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
             Preguntas Frecuentes
           </h2>
           <div className="space-y-4">
@@ -526,15 +523,15 @@ export function SalaryCalculator() {
             ].map((faq, index) => (
               <details
                 key={index}
-                className="group bg-card border border-border rounded-lg p-6 hover:border-emerald-300 dark:hover:border-emerald-700 transition-colors"
+                className="group bg-white border border-gray-200 rounded-lg p-6 hover:border-emerald-600 transition-colors"
               >
-                <summary className="font-semibold text-foreground cursor-pointer list-none flex items-center justify-between">
+                <summary className="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
                   {faq.q}
-                  <span className="text-emerald-600 dark:text-emerald-400 group-open:rotate-180 transition-transform">
+                  <span className="text-emerald-600 group-open:rotate-180 transition-transform">
                     ▼
                   </span>
                 </summary>
-                <p className="mt-4 text-muted-foreground leading-relaxed">
+                <p className="mt-4 text-gray-600 leading-relaxed">
                   {faq.a}
                 </p>
               </details>
