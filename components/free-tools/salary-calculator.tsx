@@ -154,7 +154,7 @@ export function SalaryCalculator() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 sm:py-16 max-w-6xl">
+      <div className="container mx-auto px-4 pt-24 pb-8 sm:pt-32 sm:pb-16 max-w-6xl">
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
