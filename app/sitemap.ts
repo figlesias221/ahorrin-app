@@ -115,5 +115,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.85,
     },
+    {
+      url: `${baseUrl}/herramientas/calculadora-salario-liquido`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.95, // High search volume keyword
+    },
   ];
 }

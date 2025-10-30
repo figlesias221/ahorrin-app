@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, height=630">
+    <title>OG Image - Calculadora Salario Líquido</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 1200px;
+            height: 630px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(16, 185, 129, 0.05) 0px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(90deg, rgba(16, 185, 129, 0.05) 0px, transparent 1px, transparent 40px);
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 80px 60px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            padding: 12px 24px;
+            border-radius: 999px;
+            margin-bottom: 32px;
+        }
+
+        .badge-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #065f46;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 72px;
+            font-weight: 900;
+            color: #111827;
+            line-height: 1.2;
+            margin: 0 0 24px 0;
+            max-width: 1000px;
+        }
+
+        .subtitle {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+        }
+
+        .calculation-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 32px 48px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            margin: 0 auto 40px;
+            max-width: 900px;
+        }
+
+        .amount-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .amount-label {
+            font-size: 20px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .amount-value {
+            font-size: 56px;
+            font-weight: 900;
+        }
+
+        .amount-nominal {
+            color: #111827;
+        }
+
+        .amount-net {
+            color: #10b981;
+        }
+
+        .arrow {
+            font-size: 64px;
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .features {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .feature-badge {
+            background: rgba(16, 185, 129, 0.15);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 22px;
+            font-weight: 600;
+            color: #065f46;
+        }
+
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .brand {
+            font-size: 32px;
+            font-weight: 800;
+            color: #10b981;
+        }
+
+        .url {
+            font-size: 24px;
+            color: #6b7280;
+        }
+
+        .circle-decoration {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+        }
+
+        .circle-top {
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(20, 184, 166, 0.3));
+        }
+
+        .circle-bottom {
+            bottom: -100px;
+            left: -100px;
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.3), rgba(16, 185, 129, 0.3));
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-pattern"></div>
+
+    <div class="content">
+        <div class="badge">
+            <span class="badge-text">✅ ACTUALIZADO 2025</span>
+        </div>
+
+        <h1>¿Cuánto te queda después de impuestos?</h1>
+
+        <div class="subtitle">Calculá tu salario líquido</div>
+
+        <div class="calculation-card">
+            <div class="amount-box">
+                <span class="amount-label">Salario Nominal</span>
+                <span class="amount-value amount-nominal">$80,000</span>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="amount-box">
+                <span class="amount-label">Salario Líquido</span>
+                <span class="amount-value amount-net">$65,100</span>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-badge">IRPF 2025</div>
+            <div class="feature-badge">BPS 15%</div>
+            <div class="feature-badge">Fonasa 3-6%</div>
+        </div>
+
+        <div class="footer">
+            <div class="brand">Ahorrin</div>
+            <div class="url">• www.ahorrin.app</div>
+        </div>
+    </div>
+
+    <div class="circle-decoration circle-top"></div>
+    <div class="circle-decoration circle-bottom"></div>
+</body>
+</html>

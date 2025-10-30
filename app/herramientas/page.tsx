@@ -27,6 +27,14 @@ export const metadata: Metadata = {
 
 const tools = [
   {
+    title: 'Calculadora de Salario Líquido',
+    description: '¿Cuánto te queda después de impuestos? Calculá tu salario líquido con IRPF, BPS y Fonasa actualizados 2025. Compará escenarios y descubrí cuánto te queda en mano.',
+    icon: Calculator,
+    href: '/herramientas/calculadora-salario-liquido',
+    color: 'from-emerald-500 to-teal-500',
+    keywords: ['Salario líquido', 'IRPF 2025', 'Comparador'],
+  },
+  {
     title: 'Calculadora de Presupuesto',
     description: 'Calculá tu presupuesto mensual en Uruguay. Ingresá tus ingresos y gastos, y obtené recomendaciones personalizadas para controlar tus finanzas.',
     icon: Calculator,

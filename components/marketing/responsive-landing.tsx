@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { HeroUltimate } from './hero-ultimate';
 import { HeroMobile } from './hero-mobile';
 import { FounderStory } from './founder-story';
-import { FreeToolCTA } from './free-tool-cta';
+import { FreeToolsShowcase } from './free-tools-showcase';
 import { BenefitsGrid } from './benefits-grid';
 import { IngestionShowcase } from './ingestion-showcase';
 import { CategoriesShowcase } from './categories-showcase';
@@ -49,7 +49,7 @@ export function ResponsiveLanding() {
         <FounderStory />
         <FeaturesMobile />
         <ShowcaseMobile />
-        <FreeToolCTA />
+        <FreeToolsShowcase />
         <StatsShowcase />
         <Testimonials />
         <BlogSection />
@@ -68,7 +68,7 @@ export function ResponsiveLanding() {
       <CategoriesShowcase />
       <ChartsShowcase />
       <AIAssistantShowcase />
-      <FreeToolCTA />
+      <FreeToolsShowcase />
       <StatsShowcase />
       <Testimonials />
       <BlogSection />
