@@ -59,9 +59,9 @@ export function FreeToolsShowcase() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-semibold text-blue-700">
               Herramientas 100% Gratuitas
             </span>
           </div>
