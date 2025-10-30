@@ -160,18 +160,6 @@ export function FreeToolsShowcase() {
           </Link>
         </motion.div>
 
-        {/* Trust indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-12 text-center"
-        >
-          <p className="text-sm text-muted-foreground">
-            💯 Usadas por <span className="font-semibold text-foreground">miles de uruguayos</span> cada mes
-          </p>
-        </motion.div>
       </div>
     </section>
   );

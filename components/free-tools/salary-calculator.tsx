@@ -233,29 +233,23 @@ export function SalaryCalculator() {
                       onClick={() => setChildren(num)}
                       className={`h-12 rounded-lg border-2 font-semibold transition-all ${
                         children === num
-                          ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
-                          : 'border-border hover:border-emerald-300 dark:hover:border-emerald-700'
+                          ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                          : 'border-gray-300 hover:border-emerald-500'
                       }`}
                     >
                       {num === 2 ? '2+' : num}
                     </button>
                   ))}
                 </div>
-                <div className="flex items-start gap-2 mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-blue-700 dark:text-blue-300">
-                    Afecta el descuento de Fonasa: 3% sin hijos, 4.5% con 1 hijo, 6% con 2 o más
-                  </p>
-                </div>
               </div>
 
               <Button
                 onClick={handleCalculate}
-                className="w-full h-12 text-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
+                className="w-full h-12 text-lg bg-emerald-600 hover:bg-emerald-700"
                 disabled={!nominalSalary}
               >
                 <Calculator className="w-5 h-5 mr-2" />
-                Calcular mi salario líquido
+                Calcular
               </Button>
             </div>
           </motion.div>
