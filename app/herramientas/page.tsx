@@ -140,7 +140,7 @@ export default function HerramientasPage() {
                     {tool.keywords.map((keyword) => (
                       <span
                         key={keyword}
-                        className="text-xs px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full"
+                        className="text-xs px-3 py-1 bg-blue-50 border border-blue-200 text-blue-700 rounded-full"
                       >
                         {keyword}
                       </span>
