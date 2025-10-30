@@ -93,50 +93,47 @@ export function FreeToolsShowcase() {
               >
                 <Link
                   href={tool.href}
-                  className="group relative block bg-card border border-border rounded-2xl overflow-hidden hover:shadow-2xl hover:border-transparent transition-all duration-300 h-full"
+                  className="group relative block bg-card/60 border border-border/60 hover:border-border rounded-2xl overflow-hidden hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] transition-all duration-300 h-full"
                 >
-                  {/* Gradient background on hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${tool.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-
                   <div className="relative p-6 sm:p-8">
                     {/* Header with icon and badge */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                        <Icon className="w-7 h-7 text-white" />
+                    <div className="flex items-start justify-between mb-6">
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shadow-lg`}>
+                        <Icon className="w-6 h-6 text-white" />
                       </div>
                       {tool.badge && (
-                        <span className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold rounded-full animate-pulse">
+                        <span className="px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold rounded-md">
                           {tool.badge}
                         </span>
                       )}
                     </div>
 
                     {/* Content */}
-                    <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-300">
+                    <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3 leading-tight">
                       {tool.title}
                     </h3>
 
-                    <p className="text-muted-foreground mb-4 leading-relaxed line-clamp-2">
+                    <p className="text-muted-foreground text-sm sm:text-base mb-6 leading-relaxed">
                       {tool.description}
                     </p>
 
                     {/* Stats badge */}
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-lg mb-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-background/60 border border-border/60 rounded-lg mb-6">
                       <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                      <span className="text-sm font-medium text-foreground">
+                      <span className="text-xs font-medium text-muted-foreground">
                         {tool.stats}
                       </span>
                     </div>
 
                     {/* CTA */}
-                    <div className="flex items-center text-blue-600 dark:text-blue-400 font-semibold group-hover:gap-2 transition-all">
+                    <div className="flex items-center text-blue-600 dark:text-blue-400 text-sm font-semibold group-hover:gap-1 transition-all duration-200">
                       Usar gratis
-                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-200" />
                     </div>
                   </div>
 
-                  {/* Corner decoration */}
-                  <div className={`absolute -bottom-8 -right-8 w-32 h-32 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-20 rounded-full blur-3xl transition-opacity duration-500`} />
+                  {/* Subtle glow on hover */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300 pointer-events-none`} />
                 </Link>
               </motion.div>
             );
