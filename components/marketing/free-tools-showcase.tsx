@@ -46,7 +46,7 @@ const tools = [
 
 export function FreeToolsShowcase() {
   return (
-    <section className="py-20 sm:py-32 bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
+    <section className="mt-20 py-20 sm:py-32 bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.03] dark:opacity-[0.02]" />
 
