@@ -185,7 +185,7 @@ export function SalaryCalculator() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-lg"
+            className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-lg"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
@@ -262,7 +262,7 @@ export function SalaryCalculator() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="bg-emerald-600 rounded-2xl p-6 sm:p-8 text-white border border-emerald-700"
+                className="bg-emerald-600 rounded-xl p-6 sm:p-8 text-white border border-emerald-700"
               >
                 <div className="flex items-center justify-between mb-6">
                   <div>
@@ -326,7 +326,7 @@ export function SalaryCalculator() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="bg-card border-2 border-dashed border-border rounded-2xl p-8 flex flex-col items-center justify-center text-center min-h-[400px]"
+                className="bg-card border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center text-center min-h-[400px]"
               >
                 <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
                   <FileText className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
@@ -348,7 +348,7 @@ export function SalaryCalculator() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-lg mb-12"
+            className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-lg mb-12"
           >
             <div className="flex items-center gap-3 mb-6">
               <TrendingUp className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -466,7 +466,7 @@ export function SalaryCalculator() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 sm:p-12 text-center"
+          className="bg-emerald-50 border border-emerald-200 rounded-xl p-8 sm:p-12 text-center"
         >
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">

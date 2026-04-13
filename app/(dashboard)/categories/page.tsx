@@ -13,8 +13,8 @@ import { AlertModal } from '@/components/ui/alert-modal';
 import { Select } from '@/components/ui/select';
 import { SkeletonTable, SkeletonMetricCard } from '@/components/ui/skeleton';
 import { getNextAvailableColor, getCategorySuggestions, type CategorySuggestion } from '@/lib/category-suggestions';
+import { analytics } from '@/components/analytics/google-analytics';
 import { motion, AnimatePresence } from 'framer-motion';
-import { motionVariants } from '@/lib/design-tokens';
 
 interface CategoryWithStats extends Category {
   transactionCount?: number;
@@ -223,6 +223,8 @@ export default function CategoriesPage() {
           }
           throw new Error(error.message || 'Error al crear categoría');
         }
+
+        analytics.createCategory();
       }
 
       handleCloseModal();
@@ -303,52 +305,41 @@ export default function CategoriesPage() {
           <SkeletonMetricCard />
         </div>
       ) : (
-        <motion.div
-          className="grid gap-4 md:grid-cols-3"
-          variants={motionVariants.staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
-          <motion.div variants={motionVariants.staggerItem}>
-            <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Package className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Categorías</p>
-                  <p className="text-2xl font-bold">{categories.length}</p>
-                </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Package className="h-6 w-6 text-primary" />
               </div>
-            </Card>
-          </motion.div>
-          <motion.div variants={motionVariants.staggerItem}>
-            <Card className="p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm text-muted-foreground">Transacciones</p>
-                  <p className="text-2xl font-bold">{totalTransactions}</p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <TrendingUp className="h-6 w-6 text-primary" />
-                </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Total Categorías</p>
+                <p className="text-2xl font-bold">{categories.length}</p>
               </div>
-            </Card>
-          </motion.div>
-          <motion.div variants={motionVariants.staggerItem}>
-            <Card className="p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm text-muted-foreground">Monto Total</p>
-                  <p className="text-2xl font-bold">${totalAmount.toLocaleString('es-UY')}</p>
-                </div>
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <DollarSign className="h-6 w-6 text-primary" />
-                </div>
+            </div>
+          </Card>
+          <Card className="p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm text-muted-foreground">Transacciones</p>
+                <p className="text-2xl font-bold">{totalTransactions}</p>
               </div>
-            </Card>
-          </motion.div>
-        </motion.div>
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <TrendingUp className="h-6 w-6 text-primary" />
+              </div>
+            </div>
+          </Card>
+          <Card className="p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm text-muted-foreground">Monto Total</p>
+                <p className="text-2xl font-bold">${totalAmount.toLocaleString('es-UY')}</p>
+              </div>
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <DollarSign className="h-6 w-6 text-primary" />
+              </div>
+            </div>
+          </Card>
+        </div>
       )}
 
 
@@ -374,12 +365,7 @@ export default function CategoriesPage() {
           </div>
         </div>
       ) : (
-        <motion.div
-          className="overflow-x-auto rounded-lg border border-border bg-card"
-          initial="initial"
-          animate="animate"
-          variants={motionVariants.fadeIn}
-        >
+        <div className="overflow-x-auto rounded-lg border border-border bg-card">
           <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-muted/30">
@@ -403,15 +389,10 @@ export default function CategoriesPage() {
                   </th>
                 </tr>
               </thead>
-              <motion.tbody
-                variants={motionVariants.staggerContainer}
-                initial="initial"
-                animate="animate"
-              >
+              <tbody>
                 {activeCategories.map((category) => (
-                  <motion.tr
+                  <tr
                     key={category.id}
-                    variants={motionVariants.staggerItem}
                     className="group border-b border-border/50 hover:bg-muted/30 transition-colors"
                   >
                     {/* Category Name with Color Indicator */}
@@ -509,12 +490,12 @@ export default function CategoriesPage() {
                           </Button>
                         </div>
                       </td>
-                    </motion.tr>
+                    </tr>
                   ))
                 }
-              </motion.tbody>
+              </tbody>
             </table>
-        </motion.div>
+        </div>
       )}
 
       {/* Modal */}

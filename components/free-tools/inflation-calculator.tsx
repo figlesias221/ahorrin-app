@@ -186,7 +186,7 @@ export function InflationCalculator() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8 mb-8"
+          className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8 mb-8"
         >
           <div className="space-y-6">
             <div>
@@ -252,7 +252,7 @@ export function InflationCalculator() {
           >
 
             {/* Main Result Card */}
-            <div className="bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 rounded-2xl border-2 border-red-200 dark:border-red-800 shadow-xl p-6 sm:p-8">
+            <div className="bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 rounded-xl border-2 border-red-200 dark:border-red-800 shadow-xl p-6 sm:p-8">
               <div className="text-center">
                 <p className="text-sm text-muted-foreground mb-2">Tu Inflación Real</p>
                 <div className="flex items-center justify-center gap-4 mb-6">
@@ -293,7 +293,7 @@ export function InflationCalculator() {
 
             {/* Category Breakdown */}
             {result.categories && result.categories.length > 0 && (
-              <div className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8">
+              <div className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8">
                 <h2 className="text-2xl font-bold mb-6">Impacto por Categoría</h2>
                 <div className="space-y-4">
                   {result.categories.map((cat, index) => (
@@ -328,7 +328,7 @@ export function InflationCalculator() {
             )}
 
             {/* Recommendations */}
-            <div className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8">
+            <div className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8">
               <h2 className="text-2xl font-bold mb-4">¿Qué Hacer?</h2>
               <ul className="space-y-3">
                 {getRecommendations().map((rec, index) => (
@@ -344,7 +344,7 @@ export function InflationCalculator() {
 
             {/* Email Capture */}
             {!emailSaved ? (
-              <div className="bg-primary/5 rounded-2xl border-2 border-primary/20 p-6 sm:p-8">
+              <div className="bg-primary/5 rounded-xl border-2 border-primary/20 p-6 sm:p-8">
                 <div className="flex items-start gap-4 mb-4">
                   <Mail className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                   <div>
@@ -368,7 +368,7 @@ export function InflationCalculator() {
                 </div>
               </div>
             ) : (
-              <div className="bg-green-50 dark:bg-green-950 rounded-2xl border-2 border-green-200 dark:border-green-800 p-6 sm:p-8">
+              <div className="bg-green-50 dark:bg-green-950 rounded-xl border-2 border-green-200 dark:border-green-800 p-6 sm:p-8">
                 <div className="flex items-center gap-3">
                   <DollarSign className="w-6 h-6 text-green-600" />
                   <div>
@@ -384,7 +384,7 @@ export function InflationCalculator() {
             )}
 
             {/* CTA to Ahorrin */}
-            <div className="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-2xl border-2 border-primary/30 p-6 sm:p-8">
+            <div className="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-xl border-2 border-primary/30 p-6 sm:p-8">
               <div className="text-center">
                 <h3 className="text-2xl font-bold mb-3">Controlá Tus Gastos Mes a Mes</h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">

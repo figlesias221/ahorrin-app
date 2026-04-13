@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { parseTransactionFile, validateTransactions, isSupportedExtension } from '@/lib/parsers';
+import { checkLimit, incrementUsage } from '@/lib/subscriptions';
 
 // File upload and parsing requires Node.js runtime
 // export const runtime = 'edge';
@@ -15,6 +16,18 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+
+    // Check upload limit
+    const limitCheck = await checkLimit(user.id, 'upload');
+    if (!limitCheck.allowed) {
+      return NextResponse.json({
+        error: 'Llegaste al límite de extractos este mes',
+        limit: limitCheck.limit,
+        current: limitCheck.current,
+        planId: limitCheck.planId,
+        upgradeRequired: true,
+      }, { status: 429 });
     }
 
     const formData = await request.formData();
@@ -282,6 +295,9 @@ export async function POST(request: NextRequest) {
       .from('bank_statements')
       .update({ status: 'completed', transactions_count: insertedTransactions?.length || 0 })
       .eq('id', statement.id);
+
+    // Track upload usage
+    await incrementUsage(user.id, 'uploads_count');
 
     return NextResponse.json({
       success: true,

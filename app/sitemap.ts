@@ -38,6 +38,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
 
+    // Pricing
+    {
+      url: `${baseUrl}/pricing`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+
     // Blog pages
     {
       url: `${baseUrl}/blog`,

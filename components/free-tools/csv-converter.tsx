@@ -209,7 +209,7 @@ export function CsvConverter() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8 mb-8"
+          className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8 mb-8"
         >
           <h2 className="text-xl font-bold mb-4 text-center">Bancos Soportados</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
@@ -228,7 +228,7 @@ export function CsvConverter() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8 mb-8"
+          className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8 mb-8"
         >
           <div className="space-y-6">
             <div className="text-center">
@@ -305,7 +305,7 @@ export function CsvConverter() {
           >
 
             {/* Success Card */}
-            <div className="bg-green-50 dark:bg-green-950 rounded-2xl border-2 border-green-200 dark:border-green-800 p-6 sm:p-8">
+            <div className="bg-green-50 dark:bg-green-950 rounded-xl border-2 border-green-200 dark:border-green-800 p-6 sm:p-8">
               <div className="flex items-start gap-4">
                 <CheckCircle2 className="w-8 h-8 text-green-600 flex-shrink-0" />
                 <div className="flex-1">
@@ -325,7 +325,7 @@ export function CsvConverter() {
             </div>
 
             {/* Preview */}
-            <div className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8">
+            <div className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8">
               <h2 className="text-2xl font-bold mb-4">Vista Previa (primeras 5 filas)</h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -352,7 +352,7 @@ export function CsvConverter() {
             </div>
 
             {/* Download Section */}
-            <div className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8">
+            <div className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8">
               <h2 className="text-xl font-bold mb-4">Descargar Archivo</h2>
               <div className="space-y-4">
                 <Button
@@ -400,7 +400,7 @@ export function CsvConverter() {
             </div>
 
             {/* CTA to Ahorrin */}
-            <div className="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-2xl border-2 border-primary/30 p-6 sm:p-8">
+            <div className="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-xl border-2 border-primary/30 p-6 sm:p-8">
               <div className="text-center">
                 <h3 className="text-2xl font-bold mb-3">¿Querés Automatizar Todo Esto?</h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
@@ -435,7 +435,7 @@ export function CsvConverter() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-muted/30 rounded-2xl border border-border p-6 sm:p-8"
+            className="bg-muted/30 rounded-xl border border-border p-6 sm:p-8"
           >
             <h2 className="text-xl font-bold mb-6 text-center">¿Cómo Funciona?</h2>
             <div className="grid sm:grid-cols-3 gap-6">

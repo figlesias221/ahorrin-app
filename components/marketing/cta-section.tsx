@@ -9,7 +9,7 @@ export function CTASection() {
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-accent-purple/10 via-accent-cyan/10 to-success/10" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/3 to-success/10" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-background/50 to-background" />
 
       {/* Animated grid */}
@@ -32,8 +32,8 @@ export function CTASection() {
             className="inline-flex"
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-accent-purple to-accent-cyan rounded-2xl blur-2xl opacity-50" />
-              <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-purple to-accent-cyan flex items-center justify-center">
+              <div className="absolute inset-0 bg-primary rounded-2xl blur-2xl opacity-50" />
+              <div className="relative w-16 h-16 rounded-2xl bg-primary flex items-center justify-center">
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
             </div>
@@ -51,7 +51,7 @@ export function CTASection() {
               Listo para transformar
             </span>
             <br />
-            <span className="bg-gradient-to-r from-accent-purple via-accent-cyan to-accent-purple bg-clip-text text-transparent">
+            <span className="text-primary">
               tus finanzas?
             </span>
           </motion.h2>
@@ -80,7 +80,7 @@ export function CTASection() {
             <Link href="/signup">
               <Button
                 size="lg"
-                className="group px-12 py-7 text-lg font-semibold shadow-2xl hover:shadow-3xl transition-all bg-gradient-to-r from-accent-purple to-accent-cyan hover:from-accent-purple/90 hover:to-accent-cyan/90"
+                className="group px-12 py-7 text-lg font-semibold shadow-2xl hover:shadow-3xl transition-all bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 Comenzar ahora
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -114,7 +114,7 @@ export function CTASection() {
               repeat: Infinity,
               ease: 'easeInOut',
             }}
-            className="absolute top-10 left-10 w-32 h-32 bg-accent-purple/20 rounded-full blur-3xl -z-10"
+            className="absolute top-10 left-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl -z-10"
           />
           <motion.div
             animate={{
@@ -127,7 +127,7 @@ export function CTASection() {
               ease: 'easeInOut',
               delay: 1,
             }}
-            className="absolute bottom-10 right-10 w-40 h-40 bg-accent-cyan/20 rounded-full blur-3xl -z-10"
+            className="absolute bottom-10 right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl -z-10"
           />
         </motion.div>
       </div>

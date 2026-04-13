@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "request-indexing": "tsx scripts/request-indexing.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.52",
@@ -22,8 +23,9 @@
     "framer-motion": "^12.23.24",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.545.0",
-    "next": "^15.5.6",
-    "next-mdx-remote": "^5.0.0",
+    "mercadopago": "^2.12.0",
+    "next": "^15.5.15",
+    "next-mdx-remote": "^6.0.0",
     "ofx-js": "^0.2.0",
     "papaparse": "^5.5.3",
     "pdfjs-serverless": "^1.1.0",
@@ -43,7 +45,8 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@next/bundle-analyzer": "^15.5.6",
+    "@next/bundle-analyzer": "^15.5.15",
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/papaparse": "^5.3.16",
@@ -51,7 +54,9 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
+    "googleapis": "^164.1.0",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

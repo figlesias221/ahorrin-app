@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Edit2, Eye, EyeOff, Trash2, Trash, StickyNote, Check, X, ChevronDown, Tag, ArrowUpDown, ArrowUp, ArrowDown, Plus, Search } from 'lucide-react';
+import { Edit2, Eye, EyeOff, Trash2, Trash, StickyNote, Check, X, ChevronDown, Tag, ArrowUpDown, ArrowUp, ArrowDown, Plus, Search, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
@@ -580,8 +580,16 @@ export function TransactionsTableEnhanced({
 
   if (displayedTransactions.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
-        {showIgnored ? 'No hay transacciones ignoradas' : 'No hay transacciones para mostrar'}
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center mb-4">
+          <FileText className="h-7 w-7 text-muted-foreground" />
+        </div>
+        <p className="text-muted-foreground font-medium mb-1">
+          {showIgnored ? 'No hay transacciones ignoradas' : 'No hay transacciones para mostrar'}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {showIgnored ? 'Las transacciones ignoradas apareceran aqui' : 'Importa un extracto bancario para comenzar'}
+        </p>
       </div>
     );
   }

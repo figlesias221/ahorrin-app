@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import { Navbar } from '@/components/marketing/navbar';
 import { Footer } from '@/components/marketing/footer';
 import type { Metadata } from 'next';
@@ -14,6 +15,14 @@ export default function BlogLayout({
 }) {
   return (
     <>
+      {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+        <Script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      )}
       <Navbar />
       <main className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         {children}

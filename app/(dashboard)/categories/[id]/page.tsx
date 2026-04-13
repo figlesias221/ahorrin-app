@@ -1,10 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-
-// Force dynamic rendering (skip static generation)
-export const dynamic = 'force-dynamic';
+import nextDynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Category, Transaction } from '@/types';
@@ -16,7 +13,7 @@ import { format, startOfMonth, endOfMonth, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 // Dynamic import for chart to exclude from server bundle
-const AreaChart = dynamic(() => import('@/components/charts/area-chart').then(mod => ({ default: mod.AreaChart })), { ssr: false });
+const AreaChart = nextDynamic(() => import('@/components/charts/area-chart').then(mod => ({ default: mod.AreaChart })), { ssr: false });
 
 interface MonthlyData {
   month: string;

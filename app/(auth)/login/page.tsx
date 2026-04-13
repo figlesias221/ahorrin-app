@@ -8,8 +8,8 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
-import { motionVariants } from '@/lib/design-tokens';
 import { AlertCircle, CheckCircle2, Loader2, Eye, EyeOff } from 'lucide-react';
+import { analytics } from '@/components/analytics/google-analytics';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -51,6 +51,7 @@ export default function LoginPage() {
 
       if (data.user) {
         setSuccess(true);
+        analytics.login('email');
         setTimeout(() => {
           router.push('/dashboard');
           router.refresh();
@@ -63,6 +64,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
+    analytics.login('google');
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -83,17 +85,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-success/10 p-4">
-      <motion.div
-        initial="initial"
-        animate="animate"
-        variants={motionVariants.fadeIn}
-        className="w-full max-w-md"
-      >
+      <div className="w-full max-w-md">
         <Card className="p-8">
-          <motion.div
-            className="text-center mb-8"
-            variants={motionVariants.slideUp}
-          >
+          <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <Image
                 src="/logo.svg"
@@ -106,7 +100,7 @@ export default function LoginPage() {
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Ahorrin</h1>
             <p className="text-muted-foreground">Inicia sesión en tu cuenta</p>
-          </motion.div>
+          </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <AnimatePresence mode="wait">
@@ -270,7 +264,7 @@ export default function LoginPage() {
           </Link>
         </div>
       </Card>
-      </motion.div>
+      </div>
     </div>
   );
 }

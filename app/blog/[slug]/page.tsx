@@ -8,38 +8,37 @@ import { ComparisonTable, CalloutBox } from '@/components/mdx';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import { BlogAdTop, BlogAdBottom } from '@/components/ads/blog-ads';
 
-// MDX Components
+// MDX Components - aligned with design system tokens
 const mdxComponents = {
-  // Custom components
   ComparisonTable,
   CalloutBox,
-  // HTML elements styling
-  h1: (props: any) => <h1 className="text-4xl font-bold mt-8 mb-4 text-blue-900" {...props} />,
-  h2: (props: any) => <h2 className="text-3xl font-bold mt-8 mb-4 text-blue-800" {...props} />,
-  h3: (props: any) => <h3 className="text-2xl font-semibold mt-6 mb-3 text-blue-700" {...props} />,
+  h1: (props: any) => <h1 className="text-4xl font-bold mt-8 mb-4 text-foreground" {...props} />,
+  h2: (props: any) => <h2 className="text-3xl font-bold mt-8 mb-4 text-foreground" {...props} />,
+  h3: (props: any) => <h3 className="text-2xl font-semibold mt-6 mb-3 text-foreground/90" {...props} />,
   p: (props: any) => <p className="mb-4 leading-relaxed" {...props} />,
   ul: (props: any) => <ul className="list-disc list-inside mb-4 space-y-2" {...props} />,
   ol: (props: any) => <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />,
   li: (props: any) => <li className="ml-4" {...props} />,
-  a: (props: any) => <a className="text-blue-600 hover:text-blue-700 hover:underline" {...props} />,
+  a: (props: any) => <a className="text-primary hover:text-primary/80 hover:underline transition-colors" {...props} />,
   blockquote: (props: any) => (
-    <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 bg-blue-50/50 py-2" {...props} />
+    <blockquote className="border-l-4 border-primary pl-4 italic my-4 bg-primary/5 py-2 rounded-r-lg" {...props} />
   ),
   table: (props: any) => (
-    <div className="overflow-x-auto my-6 rounded-lg border border-blue-200 shadow-sm">
+    <div className="overflow-x-auto my-6 rounded-lg border border-border shadow-sm">
       <table className="min-w-full border-collapse" {...props} />
     </div>
   ),
   th: (props: any) => (
-    <th className="border-b border-blue-200 bg-gradient-to-r from-blue-50 to-cyan-50 px-4 py-3 text-left font-semibold text-blue-900" {...props} />
+    <th className="border-b border-border bg-muted px-4 py-3 text-left font-semibold text-foreground" {...props} />
   ),
-  td: (props: any) => <td className="border-b border-blue-100 px-4 py-3 hover:bg-blue-50/30" {...props} />,
+  td: (props: any) => <td className="border-b border-border/50 px-4 py-3 hover:bg-muted/30 transition-colors" {...props} />,
   code: (props: any) => (
-    <code className="bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded text-sm font-mono border border-blue-200" {...props} />
+    <code className="bg-muted text-primary px-1.5 py-0.5 rounded text-sm font-mono border border-border" {...props} />
   ),
   pre: (props: any) => (
-    <pre className="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-lg overflow-x-auto my-4 border border-blue-200" {...props} />
+    <pre className="bg-muted p-4 rounded-lg overflow-x-auto my-4 border border-border" {...props} />
   ),
 };
 
@@ -57,9 +56,7 @@ export async function generateMetadata({
   const postData = getPostBySlug(slug);
 
   if (!postData) {
-    return {
-      title: 'Post no encontrado',
-    };
+    return { title: 'Post no encontrado' };
   }
 
   const { metadata } = postData;
@@ -100,28 +97,28 @@ export default async function BlogPostPage({
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 py-12 sm:py-16 overflow-hidden">
+      <header className="relative bg-gradient-to-br from-primary via-primary-600 to-primary-700 pt-28 sm:pt-32 pb-16 sm:pb-20 overflow-hidden">
         <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,rgba(255,255,255,0.6))]" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-white/90 hover:text-white font-medium mb-8 hover:gap-3 transition-all"
+            className="inline-flex items-center gap-2 text-primary-foreground/80 hover:text-white font-medium mb-10 hover:gap-3 transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
             Volver al blog
           </Link>
 
-          <div className="mb-6">
-            <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-700 text-sm font-semibold rounded-full border border-blue-200">
+          <div className="mb-8">
+            <span className="px-4 py-1.5 bg-white/90 backdrop-blur-sm text-primary text-sm font-semibold rounded-full">
               {metadata.category}
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6 text-white">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8 text-white leading-tight">
             {metadata.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-6 text-white">
+          <div className="flex flex-wrap items-center gap-6 text-primary-foreground/80 text-sm sm:text-base">
             <div className="flex items-center gap-2">
               <User className="w-5 h-5" />
               <span>{metadata.author.name}</span>
@@ -144,6 +141,8 @@ export default async function BlogPostPage({
         </div>
       </header>
 
+      <BlogAdTop />
+
       {/* Content */}
       <article className="py-8 sm:py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
@@ -160,9 +159,7 @@ export default async function BlogPostPage({
                       rehypeAutolinkHeadings,
                       {
                         behavior: 'wrap',
-                        properties: {
-                          className: ['anchor'],
-                        },
+                        properties: { className: ['anchor'] },
                       },
                     ],
                   ],
@@ -173,26 +170,28 @@ export default async function BlogPostPage({
         </div>
       </article>
 
-      {/* CTA Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 py-12 sm:py-16 overflow-hidden">
+      <BlogAdBottom />
+
+      {/* CTA */}
+      <section className="relative bg-gradient-to-br from-primary via-primary-600 to-primary-700 py-12 sm:py-16 overflow-hidden">
         <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(180deg,rgba(255,255,255,0.6),transparent)]" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-white">
             ¿Listo para tomar control de tus finanzas?
           </h2>
-          <p className="text-lg text-blue-50 mb-8">
+          <p className="text-lg text-primary-foreground/80 mb-8">
             Comenzá a usar Ahorrin gratis y organiza tus gastos en minutos
           </p>
           <Link
             href="/signup"
-            className="inline-block px-8 py-4 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 shadow-lg shadow-blue-900/20 transition-all"
+            className="inline-block px-8 py-4 bg-white text-primary rounded-lg font-semibold hover:bg-white/90 shadow-lg transition-all"
           >
             Crear cuenta gratis
           </Link>
         </div>
       </section>
 
-      {/* Schema.org Article Markup */}
+      {/* Schema.org */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -201,24 +200,15 @@ export default async function BlogPostPage({
             '@type': 'BlogPosting',
             headline: metadata.title,
             description: metadata.excerpt,
-            author: {
-              '@type': 'Organization',
-              name: metadata.author.name,
-            },
+            author: { '@type': 'Organization', name: metadata.author.name },
             publisher: {
               '@type': 'Organization',
               name: 'Ahorrin',
-              logo: {
-                '@type': 'ImageObject',
-                url: 'https://www.ahorrin.app/logo.png',
-              },
+              logo: { '@type': 'ImageObject', url: 'https://www.ahorrin.app/logo.png' },
             },
             datePublished: metadata.date,
             dateModified: metadata.date,
-            mainEntityOfPage: {
-              '@type': 'WebPage',
-              '@id': `https://www.ahorrin.app/blog/${slug}`,
-            },
+            mainEntityOfPage: { '@type': 'WebPage', '@id': `https://www.ahorrin.app/blog/${slug}` },
             keywords: metadata.keywords.join(', '),
           }),
         }}

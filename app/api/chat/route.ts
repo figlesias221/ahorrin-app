@@ -2,6 +2,7 @@ import { openai } from '@ai-sdk/openai';
 import { streamText, convertToCoreMessages, tool } from 'ai';
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
+import { checkLimit, incrementUsage } from '@/lib/subscriptions';
 import { startOfMonth, endOfMonth, subMonths, format } from 'date-fns';
 
 export const maxDuration = 30;
@@ -24,6 +25,21 @@ export async function POST(request: Request) {
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check AI message limit
+    const limitCheck = await checkLimit(user.id, 'ai_message');
+    if (!limitCheck.allowed) {
+      return new Response(
+        JSON.stringify({
+          error: 'Llegaste al límite de mensajes IA este mes',
+          limit: limitCheck.limit,
+          current: limitCheck.current,
+          planId: limitCheck.planId,
+          upgradeRequired: true,
+        }),
+        { status: 429, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
@@ -622,6 +638,9 @@ Responde en español.`
       // Increase maxSteps to ensure model generates text after tools
       maxSteps: mode === 'deep' ? 10 : 5,
       onFinish: async ({ text, toolCalls }) => {
+        // Track usage
+        await incrementUsage(user.id, 'ai_messages_count');
+
         // Save assistant message only if there's text
         if (text) {
           await supabase.from('chat_messages').insert({

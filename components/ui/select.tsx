@@ -135,7 +135,7 @@ export function Select({
           'focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary',
           'flex items-center justify-between gap-3',
           disabled && 'opacity-50 cursor-not-allowed',
-          error && 'border-red-500 focus:ring-red-500',
+          error && 'border-error focus:ring-error',
           isOpen && 'ring-2 ring-primary border-primary'
         )}
       >
@@ -173,7 +173,7 @@ export function Select({
       </button>
 
       {error && (
-        <p className="mt-1 text-xs text-red-500">{error}</p>
+        <p className="mt-1 text-xs text-error">{error}</p>
       )}
 
       {/* Dropdown Menu */}

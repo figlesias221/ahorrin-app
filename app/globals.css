@@ -1,32 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  --background: #fafbfc;
+  --foreground: #0f172a;
 
-  /* Primary colors - Muted, sophisticated */
-  --primary: #18181b;
-  --primary-foreground: #fafafa;
-  --primary-50: #fafafa;
-  --primary-100: #f4f4f5;
-  --primary-500: #18181b;
-  --primary-600: #09090b;
-  --primary-700: #000000;
+  /* Primary colors - Emerald/Teal for trust & financial growth */
+  --primary: #0d9488;
+  --primary-foreground: #ffffff;
+  --primary-50: #f0fdfa;
+  --primary-100: #ccfbf1;
+  --primary-500: #0d9488;
+  --primary-600: #0f766e;
+  --primary-700: #115e59;
 
-  /* Chart colors - Shadcn UI */
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  /* Chart colors - Harmonized with emerald primary */
+  --chart-1: oklch(0.55 0.17 165);
+  --chart-2: oklch(0.58 0.16 250);
+  --chart-3: oklch(0.65 0.18 300);
+  --chart-4: oklch(0.75 0.15 85);
+  --chart-5: oklch(0.60 0.20 25);
 
-  /* Gradient variants - Minimal, subtle */
-  --gradient-primary: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+  /* Gradient variants */
+  --gradient-primary: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
   --gradient-success: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   --gradient-error: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  --gradient-accent: linear-gradient(135deg, #71717a 0%, #52525b 100%);
+  --gradient-accent: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
 
-  /* Success colors (income) - More muted */
+  /* Success colors (income) */
   --success: #16a34a;
   --success-foreground: #ffffff;
   --success-50: #f0fdf4;
@@ -34,7 +34,7 @@
   --success-500: #16a34a;
   --success-600: #15803d;
 
-  /* Error colors (expenses/alerts) - More muted */
+  /* Error colors (expenses/alerts) */
   --error: #dc2626;
   --error-foreground: #ffffff;
   --error-50: #fef2f2;
@@ -42,7 +42,7 @@
   --error-500: #dc2626;
   --error-600: #b91c1c;
 
-  /* Warning colors - More muted */
+  /* Warning colors */
   --warning: #ea580c;
   --warning-foreground: #ffffff;
   --warning-50: #fff7ed;
@@ -56,24 +56,24 @@
   --accent-cyan: #06b6d4;
   --accent-cyan-foreground: #ffffff;
 
-  /* Neutral colors - Clean, minimal */
+  /* Neutral colors - Warm-tinted for sophistication */
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
-  --border: #e4e4e7;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
+  --card-foreground: #0f172a;
+  --border: #e2e8f0;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
 
-  /* Shadow system - Softer, more subtle */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-  --shadow-md: 0 2px 4px 0 rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-xl: 0 8px 12px -2px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-  --shadow-2xl: 0 12px 24px -4px rgba(0, 0, 0, 0.08);
-  --shadow-colored: 0 4px 12px -2px rgba(24, 24, 27, 0.08);
+  /* Shadow system - Tinted with brand color */
+  --shadow-sm: 0 1px 2px 0 rgba(13, 148, 136, 0.04);
+  --shadow-md: 0 2px 4px 0 rgba(13, 148, 136, 0.06);
+  --shadow-lg: 0 4px 6px -1px rgba(13, 148, 136, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-xl: 0 8px 12px -2px rgba(13, 148, 136, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-2xl: 0 12px 24px -4px rgba(13, 148, 136, 0.10);
+  --shadow-colored: 0 4px 12px -2px rgba(13, 148, 136, 0.15);
 
-  /* Glassmorphism - Subtle */
-  --glass-backdrop: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(228, 228, 231, 0.4);
+  /* Glassmorphism */
+  --glass-backdrop: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(13, 148, 136, 0.08);
 }
 
 @theme inline {
@@ -92,30 +92,32 @@
   --color-border: var(--border);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-dm-sans);
 }
 
-/* Dark theme - Deep black with vibrant accents */
+/* Dark theme - Deep with emerald accents */
 [data-theme='dark'] {
-  --background: #000000;
-  --foreground: #fafafa;
+  --background: #020617;
+  --foreground: #f1f5f9;
 
-  --primary: #fafafa;
-  --primary-foreground: #000000;
-  --primary-50: #0a0a0a;
-  --primary-100: #171717;
-  --primary-500: #fafafa;
-  --primary-600: #ffffff;
-  --primary-700: #ffffff;
+  --primary: #2dd4bf;
+  --primary-foreground: #042f2e;
+  --primary-50: #042f2e;
+  --primary-100: #0f3d3c;
+  --primary-500: #2dd4bf;
+  --primary-600: #5eead4;
+  --primary-700: #99f6e4;
 
   /* Chart colors - Dark theme */
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  --chart-1: oklch(0.70 0.17 170);
+  --chart-2: oklch(0.65 0.18 255);
+  --chart-3: oklch(0.75 0.16 305);
+  --chart-4: oklch(0.80 0.14 85);
+  --chart-5: oklch(0.70 0.20 25);
 
-  /* Vibrant but tuned-down colors */
+  --gradient-primary: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
+  --gradient-accent: linear-gradient(135deg, #a78bfa 0%, #22d3ee 100%);
+
   --success: #10b981;
   --success-foreground: #ffffff;
   --success-50: #064e3b;
@@ -131,56 +133,58 @@
   --error-600: #f87171;
 
   --warning: #f59e0b;
-  --warning-foreground: #000000;
+  --warning-foreground: #020617;
   --warning-50: #78350f;
   --warning-100: #92400e;
   --warning-500: #f59e0b;
   --warning-600: #fbbf24;
 
   --accent-purple: #a78bfa;
-  --accent-purple-foreground: #000000;
+  --accent-purple-foreground: #020617;
   --accent-cyan: #22d3ee;
-  --accent-cyan-foreground: #000000;
+  --accent-cyan-foreground: #020617;
 
-  --card: #0a0a0a;
-  --card-foreground: #fafafa;
-  --border: #171717;
-  --muted: #0a0a0a;
-  --muted-foreground: #737373;
+  --card: #0f172a;
+  --card-foreground: #f1f5f9;
+  --border: #1e293b;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
 
-  /* Dark theme shadows - Minimal */
+  /* Dark theme shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
   --shadow-md: 0 2px 4px 0 rgba(0, 0, 0, 0.6);
   --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.7), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 8px 12px -2px rgba(0, 0, 0, 0.8), 0 4px 6px -2px rgba(0, 0, 0, 0.6);
   --shadow-2xl: 0 12px 24px -4px rgba(0, 0, 0, 0.9);
-  --shadow-colored: 0 4px 12px -2px rgba(250, 250, 250, 0.08);
+  --shadow-colored: 0 4px 12px -2px rgba(45, 212, 191, 0.15);
 
-  /* Dark glassmorphism - Very subtle */
-  --glass-backdrop: rgba(10, 10, 10, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  /* Dark glassmorphism */
+  --glass-backdrop: rgba(15, 23, 42, 0.85);
+  --glass-border: rgba(45, 212, 191, 0.08);
 }
 
 /* Fallback to system preference */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --background: #000000;
-    --foreground: #fafafa;
+    --background: #020617;
+    --foreground: #f1f5f9;
 
-    --primary: #fafafa;
-    --primary-foreground: #000000;
-    --primary-50: #0a0a0a;
-    --primary-100: #171717;
-    --primary-500: #fafafa;
-    --primary-600: #ffffff;
-    --primary-700: #ffffff;
+    --primary: #2dd4bf;
+    --primary-foreground: #042f2e;
+    --primary-50: #042f2e;
+    --primary-100: #0f3d3c;
+    --primary-500: #2dd4bf;
+    --primary-600: #5eead4;
+    --primary-700: #99f6e4;
 
-    /* Chart colors - Dark theme */
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
+    --chart-1: oklch(0.70 0.17 170);
+    --chart-2: oklch(0.65 0.18 255);
+    --chart-3: oklch(0.75 0.16 305);
+    --chart-4: oklch(0.80 0.14 85);
+    --chart-5: oklch(0.70 0.20 25);
+
+    --gradient-primary: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
+    --gradient-accent: linear-gradient(135deg, #a78bfa 0%, #22d3ee 100%);
 
     --success: #10b981;
     --success-foreground: #ffffff;
@@ -197,39 +201,39 @@
     --error-600: #f87171;
 
     --warning: #f59e0b;
-    --warning-foreground: #000000;
+    --warning-foreground: #020617;
     --warning-50: #78350f;
     --warning-100: #92400e;
     --warning-500: #f59e0b;
     --warning-600: #fbbf24;
 
     --accent-purple: #a78bfa;
-    --accent-purple-foreground: #000000;
+    --accent-purple-foreground: #020617;
     --accent-cyan: #22d3ee;
-    --accent-cyan-foreground: #000000;
+    --accent-cyan-foreground: #020617;
 
-    --card: #0a0a0a;
-    --card-foreground: #fafafa;
-    --border: #171717;
-    --muted: #0a0a0a;
-    --muted-foreground: #737373;
+    --card: #0f172a;
+    --card-foreground: #f1f5f9;
+    --border: #1e293b;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
 
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
     --shadow-md: 0 2px 4px 0 rgba(0, 0, 0, 0.6);
     --shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.7), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
     --shadow-xl: 0 8px 12px -2px rgba(0, 0, 0, 0.8), 0 4px 6px -2px rgba(0, 0, 0, 0.6);
     --shadow-2xl: 0 12px 24px -4px rgba(0, 0, 0, 0.9);
-    --shadow-colored: 0 4px 12px -2px rgba(250, 250, 250, 0.08);
+    --shadow-colored: 0 4px 12px -2px rgba(45, 212, 191, 0.15);
 
-    --glass-backdrop: rgba(10, 10, 10, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-backdrop: rgba(15, 23, 42, 0.85);
+    --glass-border: rgba(45, 212, 191, 0.08);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
 }
 

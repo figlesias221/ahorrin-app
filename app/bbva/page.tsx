@@ -30,7 +30,7 @@ export default function BBVAPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#004481] via-[#0066b3] to-[#00adee] text-white py-20 sm:py-28">
+      <section className="bg-gradient-to-br from-[#004481] via-[#0066b3] to-[#00adee] text-white pt-28 sm:pt-36 pb-16 sm:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -83,7 +83,7 @@ export default function BBVAPage() {
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border-2 border-white/20 shadow-2xl">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
                       <FileUp className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -92,7 +92,7 @@ export default function BBVAPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary/80 rounded-lg flex items-center justify-center">
                       <Sparkles className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -101,7 +101,7 @@ export default function BBVAPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary/60 rounded-lg flex items-center justify-center">
                       <TrendingUp className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -130,7 +130,7 @@ export default function BBVAPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-card border border-border rounded-xl p-8">
-              <div className="w-16 h-16 bg-[#004481] rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-6">
                 <FileUp className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">1. Descargá tu Extracto de BBVA</h3>
@@ -148,7 +148,7 @@ export default function BBVAPage() {
             </div>
 
             <div className="bg-card border border-border rounded-xl p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-primary/80 rounded-2xl flex items-center justify-center mb-6">
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">2. Importá a Ahorrin</h3>
@@ -158,19 +158,19 @@ export default function BBVAPage() {
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Sube tu archivo (arrastrá y soltá)</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Categorización automática con IA</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Normalización de nombres de comercios</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Proceso completo en segundos</span>
                   </li>
                 </ul>
@@ -178,7 +178,7 @@ export default function BBVAPage() {
             </div>
 
             <div className="bg-card border border-border rounded-xl p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-primary/60 rounded-2xl flex items-center justify-center mb-6">
                 <TrendingUp className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">3. Analizá tus Finanzas</h3>
@@ -188,19 +188,19 @@ export default function BBVAPage() {
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Gráficas por categoría</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Tendencias mes a mes</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Exportá a Excel</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Reportes personalizados</span>
                   </li>
                 </ul>
@@ -224,8 +224,8 @@ export default function BBVAPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <Zap className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Zap className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-xl font-bold mb-3">Reconocimiento Automático</h3>
               <p className="text-muted-foreground">
@@ -235,8 +235,8 @@ export default function BBVAPage() {
             </div>
 
             <div className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Shield className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-xl font-bold mb-3">100% Privado</h3>
               <p className="text-muted-foreground">
@@ -246,8 +246,8 @@ export default function BBVAPage() {
             </div>
 
             <div className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                <Sparkles className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Sparkles className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-xl font-bold mb-3">IA que Entiende Uruguay</h3>
               <p className="text-muted-foreground">
@@ -257,8 +257,8 @@ export default function BBVAPage() {
             </div>
 
             <div className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                <TrendingUp className="w-6 h-6 text-orange-600" />
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <TrendingUp className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-xl font-bold mb-3">Multi-Moneda</h3>
               <p className="text-muted-foreground">
@@ -268,8 +268,8 @@ export default function BBVAPage() {
             </div>
 
             <div className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                <FileUp className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <FileUp className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-xl font-bold mb-3">Importación Ilimitada</h3>
               <p className="text-muted-foreground">
@@ -279,8 +279,8 @@ export default function BBVAPage() {
             </div>
 
             <div className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-                <Check className="w-6 h-6 text-indigo-600" />
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Check className="w-6 h-6 text-primary" />
               </div>
               <h3 className="text-xl font-bold mb-3">Exportación a Excel</h3>
               <p className="text-muted-foreground">

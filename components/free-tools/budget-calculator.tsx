@@ -153,7 +153,7 @@ export function BudgetCalculator() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8 mb-8"
+          className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8 mb-8"
         >
           <div className="space-y-6">
 
@@ -219,7 +219,7 @@ export function BudgetCalculator() {
           >
 
             {/* Summary Card */}
-            <div className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8">
+            <div className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 {getStatusIcon(budget.percentageSpent)}
                 Resumen de tu Presupuesto
@@ -267,7 +267,7 @@ export function BudgetCalculator() {
             </div>
 
             {/* Recommendations */}
-            <div className="bg-card rounded-2xl border-2 border-border shadow-xl p-6 sm:p-8">
+            <div className="bg-card rounded-xl border-2 border-border shadow-xl p-6 sm:p-8">
               <h2 className="text-2xl font-bold mb-4">Recomendaciones Personalizadas</h2>
               <ul className="space-y-3">
                 {getRecommendations().map((rec, index) => (
@@ -283,7 +283,7 @@ export function BudgetCalculator() {
 
             {/* Email Capture */}
             {!emailSaved ? (
-              <div className="bg-primary/5 rounded-2xl border-2 border-primary/20 p-6 sm:p-8">
+              <div className="bg-primary/5 rounded-xl border-2 border-primary/20 p-6 sm:p-8">
                 <div className="flex items-start gap-4 mb-4">
                   <Mail className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                   <div>
@@ -307,7 +307,7 @@ export function BudgetCalculator() {
                 </div>
               </div>
             ) : (
-              <div className="bg-green-50 dark:bg-green-950 rounded-2xl border-2 border-green-200 dark:border-green-800 p-6 sm:p-8">
+              <div className="bg-green-50 dark:bg-green-950 rounded-xl border-2 border-green-200 dark:border-green-800 p-6 sm:p-8">
                 <div className="flex items-center gap-3 mb-4">
                   <CheckCircle2 className="w-6 h-6 text-green-600" />
                   <h3 className="text-xl font-bold text-green-900 dark:text-green-100">
@@ -321,7 +321,7 @@ export function BudgetCalculator() {
             )}
 
             {/* CTA to Ahorrin */}
-            <div className="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-2xl border-2 border-primary/30 p-6 sm:p-8">
+            <div className="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-xl border-2 border-primary/30 p-6 sm:p-8">
               <div className="text-center">
                 <h3 className="text-2xl font-bold mb-3">¿Querés Automatizar Todo Esto?</h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">

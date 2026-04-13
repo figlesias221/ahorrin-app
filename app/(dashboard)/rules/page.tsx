@@ -9,8 +9,8 @@ import { useToast } from '@/contexts/toast-context';
 import { InsightCard } from '@/components/ui/insight-card';
 import { SkeletonTable, SkeletonMetricCard } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
-import { motionVariants } from '@/lib/design-tokens';
 import { QuickCategoryModal } from '@/components/upload/QuickCategoryModal';
+import { analytics } from '@/components/analytics/google-analytics';
 
 type RuleType = 'vendor_contains' | 'description_contains' | 'vendor_equals' | 'amount_greater' | 'amount_less' | 'amount_equals';
 
@@ -196,6 +196,10 @@ export default function RulesPage() {
           console.error('Supabase error:', error);
           throw new Error(`Error al crear: ${error.message || JSON.stringify(error)}`);
         }
+
+        const ruleType = formData.rule_type.startsWith('amount') ? 'amount' :
+                         formData.rule_type.includes('vendor') ? 'vendor' : 'combined';
+        analytics.createRule(ruleType as 'vendor' | 'amount' | 'combined');
       }
 
       // Reset form
@@ -360,10 +364,7 @@ export default function RulesPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <motion.div
-        className="flex items-center justify-between"
-        {...motionVariants.fadeIn}
-      >
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Reglas de Categorización</h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -372,42 +373,31 @@ export default function RulesPage() {
         </div>
         <div className="flex gap-2">
           {rules.length > 0 && (
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                onClick={() => setShowDeleteAllModal(true)}
-                variant="outline"
-                className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950 border-red-200 dark:border-red-800"
-              >
-                <Trash className="h-4 w-4" />
-                Eliminar Todas
-              </Button>
-            </motion.div>
-          )}
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
-              onClick={() => {
-                setMatchValues(['']);
-                setShowForm(true);
-              }}
-              className="flex items-center gap-2"
+              onClick={() => setShowDeleteAllModal(true)}
+              variant="outline"
+              className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950 border-red-200 dark:border-red-800"
             >
-              <Plus className="h-4 w-4" />
-              Nueva Regla
+              <Trash className="h-4 w-4" />
+              Eliminar Todas
             </Button>
-          </motion.div>
+          )}
+          <Button
+            onClick={() => {
+              setMatchValues(['']);
+              setShowForm(true);
+            }}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Nueva Regla
+          </Button>
         </div>
-      </motion.div>
+      </div>
 
       {/* Insight Cards */}
       {rules.length > 0 && (
-        <motion.div
-          className="grid gap-4 md:grid-cols-2"
-          variants={motionVariants.staggerContainer}
-          initial="initial"
-          animate="animate"
-        >
-          {/* Coverage Insight removed as requested */}
-
+        <div className="grid gap-4 md:grid-cols-2">
           {/* Inactive Rules Warning */}
           {inactivePercentage > 30 && (
             <InsightCard
@@ -417,9 +407,7 @@ export default function RulesPage() {
               metric={`${inactiveRulesCount}`}
             />
           )}
-
-          {/* Good Coverage removed as requested */}
-        </motion.div>
+        </div>
       )}
 
       {/* No rules tip */}
@@ -876,19 +864,13 @@ export default function RulesPage() {
                   </th>
                 </tr>
               </thead>
-              <motion.tbody
-                className="divide-y divide-border"
-                variants={motionVariants.staggerContainer}
-                initial="initial"
-                animate="animate"
-              >
+              <tbody className="divide-y divide-border">
                 {rules.map((rule) => {
                   const RuleIcon = RULE_TYPE_ICONS[rule.rule_type];
 
                   return (
-                    <motion.tr
+                    <tr
                       key={rule.id}
-                      variants={motionVariants.staggerItem}
                       className={`group transition-colors ${
                         rule.is_active
                           ? 'hover:bg-accent/5'
@@ -1010,10 +992,10 @@ export default function RulesPage() {
                           </Button>
                         </div>
                       </td>
-                    </motion.tr>
+                    </tr>
                   );
                 })}
-              </motion.tbody>
+              </tbody>
             </table>
           </div>
         )}

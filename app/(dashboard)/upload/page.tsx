@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { Upload as UploadIcon, FileText, CheckCircle, AlertCircle, Calendar, Plus, Zap, Trash2, Edit2, Check, X, Trash, Clock, ChevronDown, ChevronUp, History, Building2, Search, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -9,25 +11,30 @@ import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select } from '@/components/ui/select';
 import { useToast } from '@/contexts/toast-context';
-import { QuickCategoryModal } from '@/components/upload/QuickCategoryModal';
-import { QuickRuleModal } from '@/components/upload/QuickRuleModal';
-import { AddToRuleModal } from '@/components/upload/AddToRuleModal';
-import { CustomBankModal } from '@/components/upload/CustomBankModal';
-import { PrivacyNotice } from '@/components/upload/PrivacyNotice';
-import { BankExportGuide } from '@/components/upload/BankExportGuide';
 import { parseStatement, validateTransactions, deduplicateTransactions, type ParsedTransaction, type ParserResult } from '@/lib/parsers/bank-statements';
 import { autoFixDate, autoFixAmount } from '@/lib/parsers/auto-fix';
 import { createClient } from '@/lib/supabase/client';
 import { formatDate } from '@/lib/utils/formatters';
 import type { Database } from '@/lib/supabase/database.types';
 import { motion } from 'framer-motion';
-import { motionVariants } from '@/lib/design-tokens';
-import { SuggestedBanks } from '@/components/upload/SuggestedBanks';
-import { FilePreview } from '@/components/upload/FilePreview';
 import type { ColumnType } from '@/lib/parsers/preview-types';
-import { ImageUpload } from '@/components/receipts/image-upload';
-import { ReceiptPreviewModal } from '@/components/receipts/receipt-preview-modal';
 import type { ReceiptParseResult } from '@/types';
+import { analytics } from '@/components/analytics/google-analytics';
+import { useUploadData } from '@/hooks/useUploadData';
+import { useReceiptScanning } from '@/hooks/useReceiptScanning';
+import { useStatementManagement } from '@/hooks/useStatementManagement';
+import { useBankManagement } from '@/hooks/useBankManagement';
+import { ReceiptScannerSection } from '@/components/upload/ReceiptScannerSection';
+
+// Lazy load heavy components that are only shown conditionally
+const QuickCategoryModal = dynamic(() => import('@/components/upload/QuickCategoryModal').then(m => ({ default: m.QuickCategoryModal })));
+const QuickRuleModal = dynamic(() => import('@/components/upload/QuickRuleModal').then(m => ({ default: m.QuickRuleModal })));
+const AddToRuleModal = dynamic(() => import('@/components/upload/AddToRuleModal').then(m => ({ default: m.AddToRuleModal })));
+const CustomBankModal = dynamic(() => import('@/components/upload/CustomBankModal').then(m => ({ default: m.CustomBankModal })));
+const PrivacyNotice = dynamic(() => import('@/components/upload/PrivacyNotice').then(m => ({ default: m.PrivacyNotice })));
+const BankExportGuide = dynamic(() => import('@/components/upload/BankExportGuide').then(m => ({ default: m.BankExportGuide })));
+const SuggestedBanks = dynamic(() => import('@/components/upload/SuggestedBanks').then(m => ({ default: m.SuggestedBanks })));
+const FilePreview = dynamic(() => import('@/components/upload/FilePreview').then(m => ({ default: m.FilePreview })));
 
 type BankStatement = Database['public']['Tables']['bank_statements']['Row'];
 
@@ -55,7 +62,9 @@ export default function UploadPage() {
   const [parsing, setParsing] = useState(false);
   const [parsedFiles, setParsedFiles] = useState<FileWithData[]>([]);
   const [importStatus, setImportStatus] = useState<'idle' | 'importing' | 'success' | 'error'>('idle');
-  const [categories, setCategories] = useState<Array<{id: string; name: string; color: string; type: 'income' | 'expense'; parentId?: string | null}>>([]);
+  // Shared data from useUploadData hook
+  const uploadData = useUploadData();
+  const { statements, setStatements, categories, setCategories, customBanks, setCustomBanks, bankStats, setBankStats, activeRulesCount, setActiveRulesCount, loading: loadingStatements, refetch: fetchData } = uploadData;
   const [selectedCategories, setSelectedCategories] = useState<Record<number, string>>({}); // index -> categoryId
   const [selectedBank, setSelectedBank] = useState<string>(''); // User-selected bank (custom_${id})
   const [currency] = useState<string>('UYU');
@@ -67,44 +76,29 @@ export default function UploadPage() {
   const [vendorForAddToRule, setVendorForAddToRule] = useState<string>('');
   const [applyingRules, setApplyingRules] = useState(false);
 
-  // Statements history state
-  const [statements, setStatements] = useState<BankStatement[]>([]);
-  const [loadingStatements, setLoadingStatements] = useState(true);
-  const [deleting, setDeleting] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<{ id: string; fileName: string } | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState<string>('');
-  const [editingBankId, setEditingBankId] = useState<string | null>(null);
-  const [editingBankValue, setEditingBankValue] = useState<string>('');
-  const [saving, setSaving] = useState(false);
-  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
-  const [deleteAllConfirm, setDeleteAllConfirm] = useState('');
-  const [deletingAll, setDeletingAll] = useState(false);
-  const [activeRulesCount, setActiveRulesCount] = useState(0);
-  const [showHistoryDetails, setShowHistoryDetails] = useState(false);
   const [activeTab, setActiveTab] = useState<'upload' | 'receipt' | 'history' | 'banks'>('upload');
 
-  // Bulk selection state
-  const [selectedStatements, setSelectedStatements] = useState<Set<string>>(new Set());
-  const [showBulkEditModal, setShowBulkEditModal] = useState(false);
-  const [bulkEditBank, setBulkEditBank] = useState<string>('');
+  // Statement management (extracted to hook)
+  const {
+    deleting, deleteTarget, editingId, editingName, setEditingName,
+    editingBankId, editingBankValue, setEditingBankValue, saving,
+    showDeleteAllModal, deleteAllConfirm, setDeleteAllConfirm, deletingAll,
+    showHistoryDetails, setShowHistoryDetails,
+    selectedStatements, showBulkEditModal, setShowBulkEditModal,
+    bulkEditBank, setBulkEditBank,
+    handleDeleteClick, handleConfirmDelete, handleCancelDelete,
+    handleEditClick, handleCancelEdit, handleSaveEdit,
+    handleBankEditClick, handleCancelBankEdit, handleSaveBankEdit,
+    handleDeleteAllClick, handleDeleteAll, handleCancelDeleteAll,
+    handleSelectStatement, handleSelectAll,
+    handleBulkEditBanks, handleBulkDelete, handleSaveBulkEdit,
+  } = useStatementManagement(statements, setStatements, customBanks);
 
-  // Custom banks state
-  const [customBanks, setCustomBanks] = useState<Array<{ id: string; name: string; displayName: string; color: string }>>([]);
-  const [showCustomBankModal, setShowCustomBankModal] = useState(false);
+  // Bank management (extracted to hook)
+  const banks = useBankManagement(fetchData);
 
-  // Banks management state (for banks tab)
-  const [bankStats, setBankStats] = useState<Record<string, { statementsCount: number; transactionsCount: number }>>({});
-  const [searchQueryBanks, setSearchQueryBanks] = useState('');
-  const [editingBank, setEditingBank] = useState<{ id: string; name: string; displayName: string; color: string } | null>(null);
-  const [deleteBankTarget, setDeleteBankTarget] = useState<{ id: string; name: string } | null>(null);
-  const [deletingBank, setDeletingBank] = useState(false);
-
-  // Receipt scanning state
-  const [receiptImage, setReceiptImage] = useState<{ file: File; previewUrl: string } | null>(null);
-  const [parsingReceipt, setParsingReceipt] = useState(false);
-  const [receiptParseResult, setReceiptParseResult] = useState<ReceiptParseResult | null>(null);
-  const [showReceiptPreview, setShowReceiptPreview] = useState(false);
+  // Receipt scanning (extracted to hook)
+  const receipts = useReceiptScanning(fetchData);
 
   // Preview state
   const [showPreview, setShowPreview] = useState(false);
@@ -113,415 +107,7 @@ export default function UploadPage() {
   const supabase = createClient();
   const toast = useToast();
 
-  // Fetch statements and rules
-  const fetchData = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user) {
-      setLoadingStatements(false);
-      return;
-    }
-
-    // Fetch statements
-    const { data, error } = await supabase
-      .from('bank_statements')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('upload_date', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching statements:', error);
-    } else {
-      setStatements(data || []);
-    }
-
-    // Fetch active rules count
-    const { data: rules } = await supabase
-      .from('categorization_rules')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('is_active', true);
-
-    setActiveRulesCount(rules?.length || 0);
-
-    // Fetch custom banks
-    const { data: customBanksData } = await supabase
-      .from('custom_banks')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: true });
-
-    if (customBanksData) {
-      setCustomBanks(customBanksData.map(cb => ({
-        id: cb.id,
-        name: cb.name,
-        displayName: cb.display_name,
-        color: cb.color,
-      })));
-    }
-
-    // Calculate bank statistics
-    const stats: Record<string, { statementsCount: number; transactionsCount: number }> = {};
-    (data || []).forEach(stmt => {
-      const bankName = stmt.bank || 'Desconocido';
-      if (!stats[bankName]) {
-        stats[bankName] = { statementsCount: 0, transactionsCount: 0 };
-      }
-      stats[bankName].statementsCount += 1;
-      stats[bankName].transactionsCount += stmt.transactions_count;
-    });
-    setBankStats(stats);
-
-    // Fetch categories (needed for receipt scanning)
-    const { data: categoriesData, error: categoriesError } = await supabase
-      .from('categories')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('is_active', true)
-      .order('name');
-
-    if (categoriesError) {
-      console.error('❌ Error loading categories:', categoriesError);
-    } else if (categoriesData) {
-      console.log('📋 Loaded categories:', categoriesData.length, categoriesData);
-      setCategories(categoriesData);
-    } else {
-      console.warn('⚠️ No categories data returned');
-    }
-
-    setLoadingStatements(false);
-  };
-
-  // Fetch on mount
-  useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Statements management functions
-  const handleDeleteClick = (id: string, fileName: string) => {
-    setDeleteTarget({ id, fileName });
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
-
-    setDeleting(true);
-    try {
-      const { error } = await supabase
-        .from('bank_statements')
-        .delete()
-        .eq('id', deleteTarget.id);
-
-      if (error) throw error;
-
-      setStatements(statements.filter(s => s.id !== deleteTarget.id));
-      setDeleteTarget(null);
-    } catch (error) {
-      console.error('Error deleting statement:', error);
-      toast.error('Error al eliminar el extracto. Por favor intenta nuevamente.', 'Error');
-      setDeleteTarget(null);
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  const handleCancelDelete = () => {
-    if (!deleting) {
-      setDeleteTarget(null);
-    }
-  };
-
-  const handleEditClick = (id: string, currentName: string) => {
-    setEditingId(id);
-    setEditingName(currentName);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditingName('');
-  };
-
-  const handleSaveEdit = async () => {
-    if (!editingId || !editingName.trim()) return;
-
-    setSaving(true);
-    try {
-      const sanitizedName = sanitizeFileName(editingName);
-
-      // Update both file_name and file_path
-      const statement = statements.find(s => s.id === editingId);
-      if (!statement) throw new Error('Extracto no encontrado');
-
-      const pathParts = statement.file_path.split('/');
-      pathParts[pathParts.length - 1] = sanitizedName;
-      const newPath = pathParts.join('/');
-
-      const { error } = await supabase
-        .from('bank_statements')
-        .update({
-          file_name: sanitizedName,
-          file_path: newPath
-        })
-        .eq('id', editingId);
-
-      if (error) throw error;
-
-      // Update local state
-      setStatements(statements.map(s =>
-        s.id === editingId
-          ? { ...s, file_name: sanitizedName, file_path: newPath }
-          : s
-      ));
-
-      setEditingId(null);
-      setEditingName('');
-    } catch (error) {
-      console.error('Error updating statement name:', error);
-      toast.error('Error al actualizar el nombre. Por favor intenta nuevamente.', 'Error');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleBankEditClick = (id: string, currentBank: string | null) => {
-    setEditingBankId(id);
-    // Find matching custom bank from the display name
-    const customBank = customBanks.find(b => b.displayName === currentBank || b.name === currentBank);
-    setEditingBankValue(customBank ? `custom_${customBank.id}` : '');
-  };
-
-  const handleCancelBankEdit = () => {
-    setEditingBankId(null);
-    setEditingBankValue('');
-  };
-
-  const handleSaveBankEdit = async () => {
-    if (!editingBankId) return;
-
-    setSaving(true);
-    try {
-      const bankDisplayName = editingBankValue
-        ? customBanks.find(b => `custom_${b.id}` === editingBankValue)?.displayName || null
-        : null;
-
-      // Update the bank statement
-      const { error } = await supabase
-        .from('bank_statements')
-        .update({
-          bank: bankDisplayName
-        })
-        .eq('id', editingBankId);
-
-      if (error) throw error;
-
-      // Also update all associated transactions
-      const { error: txError } = await supabase
-        .from('transactions')
-        .update({
-          bank: bankDisplayName
-        })
-        .eq('statement_id', editingBankId);
-
-      if (txError) {
-        console.error('Error updating transaction banks:', txError);
-        toast.warning('Extracto actualizado, pero algunas transacciones no se actualizaron', 'Advertencia');
-      }
-
-      // Update local state
-      setStatements(statements.map(s =>
-        s.id === editingBankId
-          ? { ...s, bank: bankDisplayName }
-          : s
-      ));
-
-      toast.success('Banco y transacciones actualizados correctamente', 'Éxito');
-      setEditingBankId(null);
-      setEditingBankValue('');
-    } catch (error) {
-      console.error('Error updating bank:', error);
-      toast.error('Error al actualizar el banco. Por favor intenta nuevamente.', 'Error');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleDeleteAllClick = () => {
-    setShowDeleteAllModal(true);
-  };
-
-  const handleDeleteAll = async () => {
-    if (deleteAllConfirm !== 'ELIMINAR') {
-      toast.error('Por favor escribe "ELIMINAR" para confirmar', 'Error');
-      return;
-    }
-
-    setDeletingAll(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from('bank_statements')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-
-      // Clear local state
-      setStatements([]);
-      setShowDeleteAllModal(false);
-      setDeleteAllConfirm('');
-    } catch (error) {
-      console.error('Error deleting all statements:', error);
-      toast.error('Error al eliminar los extractos. Por favor intenta nuevamente.', 'Error');
-    } finally {
-      setDeletingAll(false);
-    }
-  };
-
-  const handleCancelDeleteAll = () => {
-    if (!deletingAll) {
-      setShowDeleteAllModal(false);
-      setDeleteAllConfirm('');
-    }
-  };
-
-  // Bulk selection handlers
-  const handleSelectStatement = (id: string) => {
-    setSelectedStatements(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
-  };
-
-  const handleSelectAll = () => {
-    if (selectedStatements.size === statements.length) {
-      setSelectedStatements(new Set());
-    } else {
-      setSelectedStatements(new Set(statements.map(s => s.id)));
-    }
-  };
-
-  const handleBulkEditBanks = () => {
-    if (selectedStatements.size === 0) {
-      toast.error('Selecciona al menos un extracto para editar', 'Error');
-      return;
-    }
-    setShowBulkEditModal(true);
-  };
-
-  const handleBulkDelete = async () => {
-    if (selectedStatements.size === 0) {
-      toast.error('Selecciona al menos un extracto para eliminar', 'Error');
-      return;
-    }
-
-    if (!confirm(`¿Estás seguro de que deseas eliminar ${selectedStatements.size} extracto(s)?`)) {
-      return;
-    }
-
-    setDeleting(true);
-    try {
-      const { error } = await supabase
-        .from('bank_statements')
-        .delete()
-        .in('id', Array.from(selectedStatements));
-
-      if (error) throw error;
-
-      // Update local state
-      setStatements(statements.filter(s => !selectedStatements.has(s.id)));
-      setSelectedStatements(new Set());
-      toast.success(`${selectedStatements.size} extracto(s) eliminado(s) correctamente`, 'Éxito');
-    } catch (error) {
-      console.error('Error deleting statements:', error);
-      toast.error('Error al eliminar los extractos', 'Error');
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  const handleSaveBulkEdit = async () => {
-    if (!bulkEditBank) {
-      toast.error('Selecciona un banco', 'Error');
-      return;
-    }
-
-    setSaving(true);
-    try {
-      const bankDisplayName = customBanks.find(b => `custom_${b.id}` === bulkEditBank)?.displayName || null;
-
-      // Update all selected statements
-      const { error } = await supabase
-        .from('bank_statements')
-        .update({ bank: bankDisplayName })
-        .in('id', Array.from(selectedStatements));
-
-      if (error) throw error;
-
-      // Update all associated transactions
-      const { error: txError } = await supabase
-        .from('transactions')
-        .update({ bank: bankDisplayName })
-        .in('statement_id', Array.from(selectedStatements));
-
-      if (txError) {
-        console.error('Error updating transaction banks:', txError);
-        toast.warning('Extractos actualizados, pero algunas transacciones no se actualizaron', 'Advertencia');
-      }
-
-      // Update local state
-      setStatements(statements.map(s =>
-        selectedStatements.has(s.id)
-          ? { ...s, bank: bankDisplayName }
-          : s
-      ));
-
-      toast.success(`${selectedStatements.size} extracto(s) actualizado(s) correctamente`, 'Éxito');
-      setShowBulkEditModal(false);
-      setBulkEditBank('');
-      setSelectedStatements(new Set());
-    } catch (error) {
-      console.error('Error updating banks:', error);
-      toast.error('Error al actualizar los bancos', 'Error');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return (
-          <Badge className="bg-success/10 text-success border-success/20">
-            <CheckCircle className="h-3 w-3 mr-1" />
-            Completado
-          </Badge>
-        );
-      case 'processing':
-        return (
-          <Badge className="bg-warning/10 text-warning border-warning/20">
-            <Clock className="h-3 w-3 mr-1" />
-            Procesando
-          </Badge>
-        );
-      case 'failed':
-        return (
-          <Badge className="bg-error/10 text-error border-error/20">
-            <AlertCircle className="h-3 w-3 mr-1" />
-            Error
-          </Badge>
-        );
-      default:
-        return null;
-    }
-  };
 
   const handleCategoryCreated = (newCategory: { id: string; name: string; color: string; type: 'income' | 'expense' }) => {
     // Add new category to the list
@@ -570,52 +156,10 @@ export default function UploadPage() {
 
   const handleCustomBankCreated = (bank: { id: string; name: string; displayName: string; color: string }) => {
     setSelectedBank(`custom_${bank.id}`);
-    fetchData(); // Refresh all data including the new bank
+    banks.handleBankCreated(bank);
   };
 
-  // Banks tab handlers
-  const handleCreateBankClick = () => {
-    setEditingBank(null);
-    setShowCustomBankModal(true);
-  };
 
-  const handleEditBankClick = (bank: { id: string; name: string; displayName: string; color: string }) => {
-    setEditingBank(bank);
-    setShowCustomBankModal(true);
-  };
-
-  const handleDeleteBankClick = (bank: { id: string; name: string; displayName: string; color: string }) => {
-    setDeleteBankTarget({ id: bank.id, name: bank.displayName });
-  };
-
-  const handleConfirmDeleteBank = async () => {
-    if (!deleteBankTarget) return;
-
-    setDeletingBank(true);
-    try {
-      const { error } = await supabase
-        .from('custom_banks')
-        .delete()
-        .eq('id', deleteBankTarget.id);
-
-      if (error) throw error;
-
-      toast.success(`Banco "${deleteBankTarget.name}" eliminado exitosamente`, 'Banco eliminado');
-      setDeleteBankTarget(null);
-      fetchData(); // Refresh data
-    } catch (error) {
-      console.error('Error deleting bank:', error);
-      toast.error('Error al eliminar el banco', 'Error');
-    } finally {
-      setDeletingBank(false);
-    }
-  };
-
-  const sanitizeFileName = (fileName: string): string => {
-    // Remove or replace dangerous characters
-    // Allow: letters, numbers, spaces, dots, dashes, underscores, parentheses
-    return fileName.replace(/[^a-zA-Z0-9\s.\-_()]/g, '_').trim();
-  };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -1311,6 +855,7 @@ export default function UploadPage() {
         // No need to create them again here
 
         setImportStatus('success');
+        analytics.uploadFile('csv', selectedBank || undefined);
 
         // Refresh statements list
         const { data: updatedStatements } = await supabase
@@ -1353,70 +898,17 @@ export default function UploadPage() {
     }
   };
 
-  // Receipt scanning handlers
-  const handleReceiptImageSelected = (file: File, previewUrl: string) => {
-    setReceiptImage({ file, previewUrl });
-  };
-
-  const handleReceiptImageClear = () => {
-    setReceiptImage(null);
-    setReceiptParseResult(null);
-  };
-
-  const handleAnalyzeReceipt = async () => {
-    if (!receiptImage) return;
-
-    setParsingReceipt(true);
-    setReceiptParseResult(null);
-
-    try {
-      const formData = new FormData();
-      formData.append('image', receiptImage.file);
-
-      const response = await fetch('/api/receipts/parse-image', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result: ReceiptParseResult = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Error al procesar la imagen');
-      }
-
-      setReceiptParseResult(result);
-
-      if (result.success) {
-        setShowReceiptPreview(true);
-        toast.success(`Ticket analizado con ${(result.confidence * 100).toFixed(0)}% de confianza`);
-      } else {
-        toast.error(result.error || 'No se pudo analizar el ticket');
-      }
-    } catch (error: unknown) {
-      const err = error as Error;
-      console.error('Error analyzing receipt:', error);
-      toast.error(err.message || 'Error al analizar el ticket');
-    } finally {
-      setParsingReceipt(false);
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return (<Badge className="bg-success/10 text-success border-success/20"><CheckCircle className="h-3 w-3 mr-1" />Completado</Badge>);
+      case 'processing':
+        return (<Badge className="bg-warning/10 text-warning border-warning/20"><Clock className="h-3 w-3 mr-1" />Procesando</Badge>);
+      case 'error':
+        return (<Badge className="bg-error/10 text-error border-error/20"><AlertCircle className="h-3 w-3 mr-1" />Error</Badge>);
+      default:
+        return (<Badge variant="default">{status}</Badge>);
     }
-  };
-
-  const handleReceiptSaved = () => {
-    // Refresh data (statements and categories)
-    fetchData();
-
-    // Reset receipt state
-    setReceiptImage(null);
-    setReceiptParseResult(null);
-    setShowReceiptPreview(false);
-
-    toast.success('Transacción creada exitosamente desde ticket');
-  };
-
-  const handleReceiptRetry = () => {
-    setShowReceiptPreview(false);
-    setReceiptParseResult(null);
-    // Image is still loaded, user can re-analyze
   };
 
   return (
@@ -1600,11 +1092,7 @@ export default function UploadPage() {
           ) : (
             <div className="w-full">
               {parsing && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="space-y-4 mb-4"
-                >
+                <div className="space-y-4 mb-4">
                   <div className="flex items-center gap-3 text-primary bg-blue-100 dark:bg-primary/10 px-6 py-3 rounded-lg">
                     <motion.div
                       animate={{ rotate: 360 }}
@@ -1632,7 +1120,7 @@ export default function UploadPage() {
                       </div>
                     </Card>
                   ))}
-                </motion.div>
+                </div>
               )}
 
               {!parsing && parsedFiles.length > 0 && (
@@ -1710,7 +1198,7 @@ export default function UploadPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setShowCustomBankModal(true)}
+                  onClick={() => banks.setShowModal(true)}
                   className="flex items-center gap-2 flex-shrink-0"
                 >
                   <Plus className="h-4 w-4" />
@@ -1996,164 +1484,46 @@ export default function UploadPage() {
 
       {/* Import Status - Success Celebration */}
       {importStatus === 'success' && (
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.8, opacity: 0 }}
-          transition={{
-            type: "spring",
-            stiffness: 260,
-            damping: 20
-          }}
-        >
-          <Card className="p-6 border-success bg-success/5 shadow-lg shadow-success/20">
-            <motion.div
-              className="flex items-center gap-4"
-              initial={{ x: -20 }}
-              animate={{ x: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <motion.div
-                className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 10, -10, 0]
-                }}
-                transition={{
-                  duration: 0.6,
-                  ease: "easeInOut"
-                }}
-              >
-                <CheckCircle className="h-6 w-6 text-success" />
-              </motion.div>
-              <div>
-                <motion.h3
-                  className="font-semibold text-foreground mb-1 text-lg"
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  ¡Importación exitosa! 🎉
-                </motion.h3>
-                <motion.p
-                  className="text-sm text-muted-foreground"
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  Se importaron las transacciones correctamente
-                </motion.p>
-              </div>
-            </motion.div>
-          </Card>
-        </motion.div>
+        <Card className="p-6 border-success bg-success/5 shadow-lg shadow-success/20">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center">
+              <CheckCircle className="h-6 w-6 text-success" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-foreground mb-1 text-lg">
+                ¡Importación exitosa! 🎉
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Se importaron las transacciones correctamente
+              </p>
+              <Link href="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 transition-colors mt-4">
+                Ver en Dashboard
+              </Link>
+            </div>
+          </div>
+        </Card>
       )}
         </>
       )}
 
       {/* Tab Content: Escanear Ticket */}
       {activeTab === 'receipt' && (
-        <>
-          <Card className="p-6">
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-foreground mb-2">Escanear Ticket de Compra</h2>
-              <p className="text-sm text-muted-foreground">
-                Sube una foto de tu ticket y la IA extraerá automáticamente los datos de la transacción
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              {/* Image Upload */}
-              <ImageUpload
-                onImageSelected={handleReceiptImageSelected}
-                onClear={handleReceiptImageClear}
-                disabled={parsingReceipt}
-              />
-
-              {/* Analyze Button */}
-              {receiptImage && !receiptParseResult && (
-                <div className="flex justify-center">
-                  <Button
-                    onClick={handleAnalyzeReceipt}
-                    disabled={parsingReceipt}
-                    size="lg"
-                    className="min-w-[200px]"
-                  >
-                    {parsingReceipt ? (
-                      <>
-                        <span className="mr-2">Analizando...</span>
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        >
-                          <Camera className="h-5 w-5" />
-                        </motion.div>
-                      </>
-                    ) : (
-                      <>
-                        <Zap className="h-5 w-5 mr-2" />
-                        Analizar Ticket con IA
-                      </>
-                    )}
-                  </Button>
-                </div>
-              )}
-
-              {/* Info cards */}
-              <div className="grid md:grid-cols-3 gap-4 pt-4 border-t">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Camera className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm">Captura clara</h4>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Asegúrate que el ticket esté bien iluminado y enfocado
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Zap className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm">IA precisa</h4>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      GPT-5-mini extrae fecha, comercio, monto y categoría
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm">Revisión final</h4>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Siempre podrás editar los datos antes de guardar
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Tips */}
-          <Card className="p-4 bg-muted/30">
-            <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-primary" />
-              Consejos para mejores resultados
-            </h3>
-            <ul className="text-xs text-muted-foreground space-y-1 ml-6 list-disc">
-              <li>Fotografía el ticket completo, incluyendo el encabezado y total</li>
-              <li>Evita sombras y reflejos que dificulten la lectura</li>
-              <li>Si el ticket está arrugado, estíralo antes de fotografiar</li>
-              <li>Funciona con tickets de supermercados, farmacias, restaurantes, etc.</li>
-            </ul>
-          </Card>
-        </>
+        <ReceiptScannerSection
+          receiptImage={receipts.receiptImage}
+          receiptImages={receipts.receiptImages}
+          parsingReceipt={receipts.parsingReceipt}
+          receiptParseResult={receipts.receiptParseResult}
+          receiptParseResults={receipts.receiptParseResults}
+          showReceiptPreview={receipts.showReceiptPreview}
+          currentReceiptIndex={receipts.currentReceiptIndex}
+          categories={categories}
+          onImageSelected={receipts.handleImageSelected}
+          onImagesSelected={receipts.handleImagesSelected}
+          onImageClear={receipts.handleImageClear}
+          onAnalyze={receipts.handleAnalyze}
+          onSaved={receipts.handleSaved}
+          onRetry={receipts.handleRetry}
+        />
       )}
 
       {/* Tab Content: Historial de Extractos */}
@@ -2172,7 +1542,7 @@ export default function UploadPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setShowCustomBankModal(true)}
+              onClick={() => banks.setShowModal(true)}
               className="flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
@@ -2320,13 +1690,7 @@ export default function UploadPage() {
               </Card>
             )}
 
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="overflow-hidden"
-          >
+          <div className="overflow-hidden">
             <div className="overflow-x-auto rounded-lg border border-border bg-card">
               <table className="w-full">
               <thead>
@@ -2389,7 +1753,7 @@ export default function UploadPage() {
                               <input
                                 type="text"
                                 value={editingName}
-                                onChange={(e) => setEditingName(sanitizeFileName(e.target.value))}
+                                onChange={(e) => setEditingName(e.target.value.replace(/[<>:"/\\|?*\x00-\x1f]/g, ''))}
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter') handleSaveEdit();
                                   if (e.key === 'Escape') handleCancelEdit();
@@ -2543,20 +1907,14 @@ export default function UploadPage() {
                 </tbody>
               </table>
             </div>
-          </motion.div>
+          </div>
           </>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Card className="p-6 text-center">
-              <p className="text-sm text-muted-foreground">
-                Haz clic en "Ver detalles" para ver el historial completo
-              </p>
-            </Card>
-          </motion.div>
+          <Card className="p-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              Haz clic en "Ver detalles" para ver el historial completo
+            </p>
+          </Card>
         )}
       </div>
         </>
@@ -2574,7 +1932,7 @@ export default function UploadPage() {
             </div>
             <Button
               variant="primary"
-              onClick={handleCreateBankClick}
+              onClick={banks.handleCreate}
               className="flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
@@ -2589,13 +1947,13 @@ export default function UploadPage() {
               <input
                 type="text"
                 placeholder="Buscar banco..."
-                value={searchQueryBanks}
-                onChange={(e) => setSearchQueryBanks(e.target.value)}
+                value={banks.searchQuery}
+                onChange={(e) => banks.setSearchQuery(e.target.value)}
                 className="w-full h-10 pl-10 pr-10 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
-              {searchQueryBanks && (
+              {banks.searchQuery && (
                 <button
-                  onClick={() => setSearchQueryBanks('')}
+                  onClick={() => banks.setSearchQuery('')}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   <X className="h-4 w-4" />
@@ -2614,7 +1972,7 @@ export default function UploadPage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Crea tu primer banco personalizado para comenzar
               </p>
-              <Button variant="primary" onClick={handleCreateBankClick}>
+              <Button variant="primary" onClick={banks.handleCreate}>
                 <Plus className="h-4 w-4 mr-2" />
                 Crear Banco
               </Button>
@@ -2623,8 +1981,8 @@ export default function UploadPage() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {customBanks
                 .filter(bank => {
-                  const matchesSearch = bank.displayName.toLowerCase().includes(searchQueryBanks.toLowerCase()) ||
-                                       bank.name.toLowerCase().includes(searchQueryBanks.toLowerCase());
+                  const matchesSearch = bank.displayName.toLowerCase().includes(banks.searchQuery.toLowerCase()) ||
+                                       bank.name.toLowerCase().includes(banks.searchQuery.toLowerCase());
                   return matchesSearch;
                 })
                 .map((bank) => (
@@ -2642,14 +2000,14 @@ export default function UploadPage() {
                     <div className="flex items-start justify-end mb-3 mt-2">
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          onClick={() => handleEditBankClick(bank)}
+                          onClick={() => banks.handleEdit(bank)}
                           className="p-1.5 hover:bg-primary/10 rounded text-primary transition-colors"
                           title="Editar"
                         >
                           <Edit2 className="h-3.5 w-3.5" />
                         </button>
                         <button
-                          onClick={() => handleDeleteBankClick(bank)}
+                          onClick={() => banks.handleDelete(bank)}
                           className="p-1.5 hover:bg-red-50 dark:hover:bg-red-950 rounded text-red-600 transition-colors"
                           title="Eliminar"
                         >
@@ -2736,13 +2094,13 @@ export default function UploadPage() {
 
       {/* Custom Bank Modal */}
       <CustomBankModal
-        isOpen={showCustomBankModal}
+        isOpen={banks.showModal}
         onClose={() => {
-          setShowCustomBankModal(false);
+          banks.setShowModal(false);
           setEditingBank(null);
         }}
         onBankCreated={handleCustomBankCreated}
-        bank={editingBank}
+        bank={banks.editingBank}
         existingBanks={customBanks}
       />
 
@@ -2908,15 +2266,15 @@ export default function UploadPage() {
 
       {/* Delete Bank Confirmation Modal */}
       <ConfirmModal
-        isOpen={deleteBankTarget !== null}
-        onClose={() => !deletingBank && setDeleteBankTarget(null)}
-        onConfirm={handleConfirmDeleteBank}
+        isOpen={banks.deleteBankTarget !== null}
+        onClose={() => !banks.deletingBank && banks.setDeleteBankTarget(null)}
+        onConfirm={banks.handleConfirmDelete}
         title="Eliminar banco"
-        message={`¿Estás seguro de eliminar el banco "${deleteBankTarget?.name}"?\n\nNOTA: Las transacciones y extractos asociados a este banco NO serán eliminados, pero ya no podrás filtrar por este banco.`}
+        message={`¿Estás seguro de eliminar el banco "${banks.deleteBankTarget?.name}"?\n\nNOTA: Las transacciones y extractos asociados a este banco NO serán eliminados, pero ya no podrás filtrar por este banco.`}
         confirmText="Eliminar"
         cancelText="Cancelar"
         variant="danger"
-        loading={deletingBank}
+        loading={banks.deletingBank}
       />
 
       {/* File Preview Modal */}
@@ -2933,16 +2291,6 @@ export default function UploadPage() {
       )}
 
       {/* Receipt Preview Modal */}
-      {showReceiptPreview && receiptParseResult && receiptImage && (
-        <ReceiptPreviewModal
-          result={receiptParseResult}
-          imageUrl={receiptImage.previewUrl}
-          categories={categories}
-          onClose={() => setShowReceiptPreview(false)}
-          onSave={handleReceiptSaved}
-          onRetry={handleReceiptRetry}
-        />
-      )}
     </div>
   );
 }

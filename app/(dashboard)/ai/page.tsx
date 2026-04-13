@@ -3,7 +3,6 @@
 import { useChat, type UIMessage } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Send,
   Sparkles,
@@ -352,9 +351,25 @@ export default function AIPage() {
 
         {/* Error Message */}
         {error && (
-          <div className="mx-4 mt-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive">
-            <p className="text-sm font-medium">Error al comunicarse con el asistente</p>
-            <p className="text-xs mt-1">Por favor, intenta de nuevo más tarde.</p>
+          <div className="mx-4 mt-4">
+            {error.message?.includes('429') || error.message?.includes('límite') ? (
+              <div className="p-4 rounded-xl bg-gradient-to-r from-accent-purple/10 via-accent-cyan/10 to-accent-purple/10 border border-accent-purple/20">
+                <p className="text-sm font-medium">Llegaste al límite de mensajes IA este mes</p>
+                <p className="text-xs mt-1 text-muted-foreground">El plan Free incluye 5 mensajes por mes.</p>
+                <a
+                  href="/pricing"
+                  className="inline-flex items-center gap-1.5 mt-3 px-4 py-1.5 rounded-lg bg-gradient-to-r from-accent-purple to-accent-cyan text-white text-sm font-medium hover:opacity-90 transition-opacity"
+                >
+                  <Zap className="w-3.5 h-3.5" />
+                  Pasate a Pro - $99/mes
+                </a>
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive">
+                <p className="text-sm font-medium">Error al comunicarse con el asistente</p>
+                <p className="text-xs mt-1">Por favor, intenta de nuevo más tarde.</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -390,7 +405,6 @@ export default function AIPage() {
             </div>
           ) : (
             <div className="max-w-5xl mx-auto space-y-4">
-              <AnimatePresence>
                 {messages.map((message, index) => {
                   // Extract text parts
                   const textParts = message.parts?.filter((p: any) => p.type === 'text') || [];
@@ -642,10 +656,8 @@ export default function AIPage() {
                     : null;
 
                   return (
-                    <motion.div
+                    <div
                       key={message.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
                       className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                       {message.role === 'user' ? (
@@ -703,21 +715,16 @@ export default function AIPage() {
                           )}
                         </div>
                       )}
-                    </motion.div>
+                    </div>
                   );
                 })}
-              </AnimatePresence>
 
               {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex justify-start"
-                >
+                <div className="flex justify-start">
                   <div className="bg-surface ring-1 ring-border rounded-2xl px-4 py-3">
                     <Loader2 className="h-5 w-5 animate-spin text-primary" />
                   </div>
-                </motion.div>
+                </div>
               )}
 
               <div ref={messagesEndRef} />

@@ -45,9 +45,8 @@ export async function parseReceiptImage(
     const base64Image = imageBuffer.toString('base64');
     const imageDataUrl = `data:image/jpeg;base64,${base64Image}`;
 
-    // Build category list for prompt
+    // Build category list for prompt (already filtered by is_active at DB level)
     const categoryNames = userCategories
-      .filter(cat => cat.isActive)
       .map(cat => cat.name)
       .join(', ');
 
@@ -68,7 +67,7 @@ CONTEXTO DEL USUARIO:
 - Sugiere la categoría más apropiada según el comercio/items
 
 REGLAS IMPORTANTES:
-1. **Fecha**: Si no tiene año, usar 2025. Convertir a YYYY-MM-DD.
+1. **Fecha**: Si no tiene año, usar ${new Date().getFullYear()}. Convertir a YYYY-MM-DD.
 2. **Comercio**: Normalizar quitando sucursales
    - "DEVOTO N°3" → "DEVOTO"
    - "FARMASHOP LOCAL 8" → "FARMASHOP"
@@ -94,9 +93,6 @@ EJEMPLOS DE NORMALIZACIÓN:
 Si la imagen está borrosa, rotada, o no contiene un ticket legible, indica confidence <0.5.
 
 Responde SOLO con el JSON estructurado.`;
-
-    // Call GPT-5-mini with vision
-    console.log('🤖 Analyzing receipt image with GPT-5-mini Vision...');
 
     const result = await generateObject({
       model: openai('gpt-5-mini'),
@@ -135,9 +131,6 @@ Responde SOLO con el JSON estructurado.`;
         error: 'No se pudo extraer una fecha válida del ticket.',
       };
     }
-
-    console.log(`✅ Receipt parsed successfully (confidence: ${(parsed.confidence * 100).toFixed(0)}%)`);
-    console.log(`   Vendor: ${parsed.vendor}, Amount: ${parsed.amount} ${parsed.currency}`);
 
     return {
       success: true,

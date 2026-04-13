@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CheckCircle, Sparkles, ArrowRight, X, AlertCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { motionVariants } from '@/lib/design-tokens';
 
 interface TemplatePackage {
   id: string;
@@ -132,7 +131,7 @@ export default function OnboardingPage() {
       }
 
       // Redirect to dashboard
-      router.push('/dashboard');
+      router.push('/upload');
     } catch (err: any) {
       setError(err.message || 'Error al copiar reglas');
       setLoading(false);
@@ -154,32 +153,23 @@ export default function OnboardingPage() {
         }
       }
 
-      router.push('/dashboard');
+      router.push('/upload');
     } catch (err) {
       console.error('Error during skip:', err);
-      router.push('/dashboard'); // Continue anyway
+      router.push('/upload'); // Continue anyway
     }
   };
 
   if (loadingPackages) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-success/10 p-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className="w-full max-w-4xl"
-        >
+        <div className="w-full max-w-4xl">
           <Card className="p-8">
             {/* Skeleton Header */}
             <div className="text-center mb-8">
-              <motion.div
-                className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4"
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
                 <Sparkles className="h-8 w-8 text-primary" />
-              </motion.div>
+              </div>
               <div className="h-8 bg-muted animate-pulse rounded-lg w-64 mx-auto mb-2" />
               <div className="h-4 bg-muted animate-pulse rounded-lg w-48 mx-auto" />
             </div>
@@ -211,39 +201,26 @@ export default function OnboardingPage() {
               <div className="w-48 h-10 bg-muted animate-pulse rounded-lg" />
             </div>
           </Card>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-success/10 p-4">
-      <motion.div
-        initial="initial"
-        animate="animate"
-        variants={motionVariants.fadeIn}
-        className="w-full max-w-4xl"
-      >
+      <div className="w-full max-w-4xl">
         <Card className="p-8">
-          <motion.div
-            className="text-center mb-8"
-            variants={motionVariants.slideUp}
-          >
-            <motion.div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-            >
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
               <Sparkles className="h-8 w-8 text-primary" />
-            </motion.div>
+            </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
               ¡Bienvenido a Ahorrin! 👋
             </h1>
             <p className="text-muted-foreground">
               Elige un paquete de reglas para empezar rápidamente
             </p>
-          </motion.div>
+          </div>
 
           <AnimatePresence mode="wait">
             {error && (
@@ -261,23 +238,13 @@ export default function OnboardingPage() {
 
         <div className="space-y-6">
           {/* Package Options */}
-          <motion.div
-            className="grid gap-4 md:grid-cols-2"
-            variants={motionVariants.staggerContainer}
-            initial="initial"
-            animate="animate"
-          >
+          <div className="grid gap-4 md:grid-cols-2">
             {packages.map((pkg, index) => {
               const summary = packageSummaries[pkg.id];
               const isSelected = selectedPackage === pkg.id;
 
               return (
-                <motion.div
-                  key={pkg.id}
-                  variants={motionVariants.staggerItem}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
+                <div key={pkg.id}>
                   <Card
                     className={`p-6 cursor-pointer transition-all h-full ${
                       isSelected
@@ -341,18 +308,13 @@ export default function OnboardingPage() {
                     </div>
                   )}
                   </Card>
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
 
           {/* Action Buttons */}
-          <motion.div
-            className="flex gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
+          <div className="flex gap-4">
             <Button
               onClick={() => selectedPackage && handleCopyRules(selectedPackage)}
               disabled={loading || !selectedPackage}
@@ -381,21 +343,16 @@ export default function OnboardingPage() {
               Empezar desde Cero
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div
-          className="mt-6 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
+        <div className="mt-6 text-center">
           <p className="text-xs text-muted-foreground">
             💡 Tip: Puedes modificar o eliminar las reglas en cualquier momento desde Configuración
           </p>
-        </motion.div>
+        </div>
       </Card>
-      </motion.div>
+      </div>
     </div>
   );
 }

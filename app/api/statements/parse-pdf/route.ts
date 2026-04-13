@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const response = {
       ...result,
       info: result.usedLLM
-        ? '🤖 Transacciones extraídas usando GPT-5-mini (~$0.005-0.01)'
+        ? '🤖 Transacciones extraídas usando IA'
         : result.success
         ? '✅ Transacciones extraídas con parser específico (gratis)'
         : '❌ No se pudieron extraer transacciones',

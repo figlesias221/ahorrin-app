@@ -2,9 +2,10 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Check, Sparkles, Zap, Crown } from 'lucide-react';
+import { Check, X, Sparkles, Zap, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { CheckoutButton } from '@/components/payments/checkout-button';
 
 export function Pricing() {
   const plans = [
@@ -15,13 +16,17 @@ export function Pricing() {
       period: 'por siempre',
       description: 'Perfecto para empezar a gestionar tus finanzas',
       features: [
-        'Transacciones ilimitadas',
-        'Reglas de categorización custom',
-        'Categorías personalizables',
-        'Dashboard en tiempo real',
-        '1 cuenta bancaria',
-        'Reportes básicos',
-        'Soporte por email',
+        { text: '3 extractos por mes', included: true },
+        { text: '5 mensajes IA por mes', included: true },
+        { text: '10 categorías', included: true },
+        { text: '10 reglas de categorización', included: true },
+        { text: 'Dashboard en tiempo real', included: true },
+        { text: 'Historial de 3 meses', included: true },
+        { text: 'Exportación básica', included: true },
+        { text: 'Escaneo de recibos con IA', included: false },
+        { text: 'Multi-moneda (UYU + USD)', included: false },
+        { text: 'Bancos personalizados', included: false },
+        { text: 'Reporte mensual por email', included: false },
       ],
       cta: 'Comenzar gratis',
       href: '/signup',
@@ -31,43 +36,52 @@ export function Pricing() {
     {
       name: 'Pro',
       icon: Zap,
-      price: '$0',
-      period: 'por siempre',
-      description: 'Todas las funciones avanzadas, completamente gratis',
+      price: '$99',
+      priceCurrency: 'UYU',
+      period: 'por mes',
+      description: 'Todo ilimitado para controlar tus finanzas en serio',
       badge: 'Más popular',
       features: [
-        'Todo en Free, más:',
-        'Múltiples cuentas bancarias',
-        'Reglas ilimitadas con prioridades',
-        'Reportes avanzados y exportación',
-        'Normalización automática de vendors',
-        'Presupuestos ilimitados',
-        'Soporte prioritario 24/7',
-        'Acceso a API',
+        { text: 'Extractos ilimitados', included: true },
+        { text: 'Chat IA ilimitado', included: true },
+        { text: 'Categorías ilimitadas', included: true },
+        { text: 'Reglas ilimitadas con prioridades', included: true },
+        { text: 'Dashboard en tiempo real', included: true },
+        { text: 'Historial completo', included: true },
+        { text: 'Exportación avanzada con gráficas', included: true },
+        { text: 'Escaneo de recibos con IA', included: true },
+        { text: 'Multi-moneda (UYU + USD)', included: true },
+        { text: 'Bancos personalizados', included: true },
+        { text: 'Reporte mensual por email', included: true },
       ],
-      cta: 'Comenzar gratis',
-      href: '/signup',
+      cta: 'Comenzar prueba gratis',
+      href: '/signup?plan=pro',
       popular: true,
       gradient: 'from-accent-purple via-accent-cyan to-accent-purple',
     },
     {
       name: 'Business',
       icon: Crown,
-      price: '$0',
-      period: 'por siempre',
+      price: '$999',
+      priceCurrency: 'UYU',
+      period: 'por mes',
       description: 'Para equipos y empresas que necesitan más',
+      badge: 'Próximamente',
       features: [
-        'Todo en Pro, más:',
-        'Usuarios ilimitados',
-        'Dashboard compartido',
-        'Roles y permisos',
-        'Integraciones empresariales',
-        'Onboarding personalizado',
-        'Soporte dedicado',
-        'SLA garantizado',
+        { text: 'Todo en Pro, más:', included: true },
+        { text: 'Usuarios ilimitados', included: true },
+        { text: 'Dashboard compartido', included: true },
+        { text: 'Roles y permisos', included: true },
+        { text: 'Integraciones empresariales', included: true },
+        { text: 'Onboarding personalizado', included: true },
+        { text: 'Soporte dedicado', included: true },
+        { text: 'SLA garantizado', included: true },
+        { text: 'Reportes para contadores', included: true },
+        { text: 'Exportación fiscal', included: true },
+        { text: 'API access', included: true },
       ],
       cta: 'Contactar ventas',
-      href: '#',
+      href: 'mailto:hola@ahorrin.app?subject=Plan Business',
       popular: false,
       gradient: 'from-warning to-warning/70',
     },
@@ -77,7 +91,7 @@ export function Pricing() {
     <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-card/30" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent-purple/5 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
 
       <div className="max-w-7xl mx-auto relative">
         {/* Section Header */}
@@ -89,12 +103,12 @@ export function Pricing() {
           className="text-center mb-16 space-y-4"
         >
           <h2 className="text-4xl sm:text-5xl font-bold">
-            <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Precios simples y transparentes
             </span>
           </h2>
-          <p className="text-lg  max-w-2xl mx-auto">
-            Todas las funciones, completamente gratis. Sin trucos, sin límites ocultos.
+          <p className="text-lg max-w-2xl mx-auto text-muted-foreground">
+            Empezá gratis y pasate a Pro cuando necesites más poder.
           </p>
         </motion.div>
 
@@ -112,9 +126,9 @@ export function Pricing() {
                 className={`relative ${plan.popular ? 'md:-mt-4 md:mb-4' : ''}`}
               >
                 {/* Popular badge */}
-                {plan.popular && (
+                {plan.badge && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                    <Badge className="px-4 py-1 bg-gradient-to-r from-accent-purple to-accent-cyan text-white border-0 font-semibold">
+                    <Badge className={`px-4 py-1 ${plan.popular ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'} border-0 font-semibold`}>
                       {plan.badge}
                     </Badge>
                   </div>
@@ -123,13 +137,13 @@ export function Pricing() {
                 <div
                   className={`h-full bg-card border ${
                     plan.popular
-                      ? 'border-accent-purple shadow-2xl scale-105'
+                      ? 'border-primary shadow-2xl scale-105'
                       : 'border-border/50'
                   } rounded-2xl p-8 hover:shadow-xl transition-all relative overflow-hidden group`}
                 >
                   {/* Gradient overlay for popular plan */}
                   {plan.popular && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-accent-purple/5 via-accent-cyan/5 to-accent-purple/5 opacity-50 group-hover:opacity-70 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 opacity-50 group-hover:opacity-70 transition-opacity" />
                   )}
 
                   <div className="relative">
@@ -146,41 +160,61 @@ export function Pricing() {
 
                     {/* Plan name */}
                     <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                    <p className="text-sm  mb-6 min-h-[40px]">
+                    <p className="text-sm text-muted-foreground mb-6 min-h-[40px]">
                       {plan.description}
                     </p>
 
                     {/* Price */}
                     <div className="mb-8">
                       <div className="flex items-baseline gap-2">
-                        <span className={`text-5xl font-bold ${plan.popular ? 'bg-gradient-to-r from-accent-purple to-accent-cyan bg-clip-text text-transparent' : ''}`}>
+                        <span className={`text-5xl font-bold ${plan.popular ? 'text-foreground' : ''}`}>
                           {plan.price}
                         </span>
-                        <span className="">/ {plan.period}</span>
+                        <div className="flex flex-col">
+                          {plan.priceCurrency && (
+                            <span className="text-sm text-muted-foreground">{plan.priceCurrency}</span>
+                          )}
+                          <span className="text-muted-foreground">/ {plan.period}</span>
+                        </div>
                       </div>
+                      {plan.priceCurrency === 'UYU' && plan.name === 'Pro' && (
+                        <p className="text-xs text-muted-foreground mt-1">~$2.25 USD - menos que un café</p>
+                      )}
                     </div>
 
                     {/* CTA Button */}
-                    <Link href={plan.href} className="block mb-8">
-                      <Button
-                        className={`w-full py-6 text-base font-semibold ${
-                          plan.popular
-                            ? 'bg-gradient-to-r from-accent-purple to-accent-cyan hover:from-accent-purple/90 hover:to-accent-cyan/90 text-white'
-                            : ''
-                        }`}
-                        variant={plan.popular ? 'default' : 'outline'}
-                      >
-                        {plan.cta}
-                      </Button>
-                    </Link>
+                    {plan.name === 'Pro' ? (
+                      <div className="mb-8">
+                        <CheckoutButton
+                          planId="pro"
+                          className="w-full py-6 bg-primary text-primary-foreground hover:bg-primary/90"
+                          size="lg"
+                        >
+                          {plan.cta}
+                        </CheckoutButton>
+                      </div>
+                    ) : (
+                      <Link href={plan.href} className="block mb-8">
+                        <Button
+                          className={`w-full py-6 text-base font-semibold`}
+                          variant="outline"
+                        >
+                          {plan.cta}
+                        </Button>
+                      </Link>
+                    )}
 
                     {/* Features */}
                     <div className="space-y-4">
                       {plan.features.map((feature, i) => (
                         <div key={i} className="flex items-start gap-3">
-                          <Check className={`w-5 h-5 flex-shrink-0 mt-0.5 ${plan.popular ? 'text-accent-purple' : 'text-success'}`} />
-                          <span className={`text-sm ${feature.startsWith('Todo') ? 'font-semibold' : ''}`}>
-                            {feature}
+                          {feature.included ? (
+                            <Check className="w-5 h-5 flex-shrink-0 mt-0.5 text-success" />
+                          ) : (
+                            <X className="w-5 h-5 flex-shrink-0 mt-0.5 text-muted-foreground/40" />
+                          )}
+                          <span className={`text-sm ${!feature.included ? 'text-muted-foreground/60' : ''} ${feature.text.startsWith('Todo') ? 'font-semibold' : ''}`}>
+                            {feature.text}
                           </span>
                         </div>
                       ))}
@@ -200,20 +234,20 @@ export function Pricing() {
           transition={{ duration: 0.5 }}
           className="text-center mt-16 space-y-4"
         >
-          <p className="text-sm ">
+          <p className="text-sm text-muted-foreground">
             ¿Preguntas sobre nuestros planes?{' '}
             <Link href="#faq" className="text-primary hover:underline font-medium">
               Ver preguntas frecuentes
             </Link>
           </p>
-          <div className="flex items-center justify-center gap-8 text-xs  pt-4">
+          <div className="flex items-center justify-center gap-8 text-xs text-muted-foreground pt-4">
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-success" />
-              <span>Setup instantáneo</span>
+              <span>Sin tarjeta de crédito</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-success" />
-              <span>100% seguro</span>
+              <span>Cancelá cuando quieras</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4 text-success" />

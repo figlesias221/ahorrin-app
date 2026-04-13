@@ -8,8 +8,8 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
-import { motionVariants } from '@/lib/design-tokens';
 import { AlertCircle, CheckCircle2, Loader2, Eye, EyeOff, Check, X } from 'lucide-react';
+import { analytics } from '@/components/analytics/google-analytics';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -89,6 +89,7 @@ export default function SignupPage() {
 
       if (data.user) {
         setSuccess(true);
+        analytics.signup('email');
         // If email confirmation is disabled, redirect to onboarding
         if (data.session) {
           setTimeout(() => router.push('/onboarding'), 2000);
@@ -102,6 +103,7 @@ export default function SignupPage() {
   };
 
   const handleGoogleSignup = async () => {
+    analytics.signup('google');
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -123,67 +125,34 @@ export default function SignupPage() {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-success/10 p-4">
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className="w-full max-w-md"
-        >
+        <div className="w-full max-w-md">
           <Card className="p-8 text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-              className="mb-4 inline-block"
-            >
+            <div className="mb-4 inline-block">
               <div className="w-20 h-20 bg-success/20 rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 className="h-12 w-12 text-success" />
               </div>
-            </motion.div>
-            <motion.h2
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-2xl font-bold text-foreground mb-2"
-            >
+            </div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">
               ¡Cuenta Creada!
-            </motion.h2>
-            <motion.p
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-muted-foreground mb-6"
-            >
+            </h2>
+            <p className="text-muted-foreground mb-6">
               Tu cuenta ha sido creada exitosamente.
-            </motion.p>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="flex items-center justify-center gap-2 text-sm text-muted-foreground"
-            >
+            </p>
+            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" />
               Redirigiendo a la configuración inicial...
-            </motion.div>
+            </div>
           </Card>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-success/10 p-4">
-      <motion.div
-        initial="initial"
-        animate="animate"
-        variants={motionVariants.fadeIn}
-        className="w-full max-w-md"
-      >
+      <div className="w-full max-w-md">
         <Card className="p-8">
-          <motion.div
-            className="text-center mb-8"
-            variants={motionVariants.slideUp}
-          >
+          <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <Image
                 src="/logo.svg"
@@ -196,7 +165,7 @@ export default function SignupPage() {
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Ahorrin</h1>
             <p className="text-muted-foreground">Crea tu cuenta</p>
-          </motion.div>
+          </div>
 
           <form onSubmit={handleSignup} className="space-y-4">
             <AnimatePresence mode="wait">
@@ -465,7 +434,7 @@ export default function SignupPage() {
             </Link>
           </div>
         </Card>
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -39,7 +39,7 @@ const tools = [
     description: 'Calculá tu presupuesto mensual en Uruguay. Ingresá tus ingresos y gastos, y obtené recomendaciones personalizadas para controlar tus finanzas.',
     icon: Calculator,
     href: '/herramientas/calculadora-presupuesto',
-    color: 'from-blue-500 to-cyan-500',
+    color: 'from-primary to-primary/70',
     keywords: ['Presupuesto mensual', 'Análisis de gastos', 'Recomendaciones'],
   },
   {
@@ -47,7 +47,7 @@ const tools = [
     description: 'Convertí extractos bancarios de cualquier banco uruguayo (Itaú, BBVA, Scotiabank, BROU, Santander, Heritage) a formato Excel estandarizado.',
     icon: FileSpreadsheet,
     href: '/herramientas/conversor-extractos',
-    color: 'from-green-500 to-emerald-500',
+    color: 'from-success to-success/70',
     keywords: ['CSV a Excel', 'Todos los bancos', 'Procesamiento privado'],
   },
   {
@@ -96,13 +96,13 @@ export default function HerramientasPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-blue-50/30 dark:to-blue-950/10">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
         {/* Hero Section */}
-        <div className="container mx-auto px-4 py-16 sm:py-24">
+        <div className="container mx-auto px-4 pt-28 sm:pt-36 pb-16 sm:pb-24">
           <div className="text-center mb-16">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
               Herramientas Financieras
-              <span className="block text-blue-600 dark:text-blue-400 mt-2">
+              <span className="block text-primary mt-2">
                 100% Gratuitas
               </span>
             </h1>
@@ -120,37 +120,47 @@ export default function HerramientasPage() {
                 <Link
                   key={tool.href}
                   href={tool.href}
-                  className="group relative bg-card border border-border rounded-xl p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+                  className="group relative bg-card border border-border rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
                 >
-                  {/* Icon with gradient background */}
-                  <div className={`w-14 h-14 rounded-lg bg-gradient-to-br ${tool.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-7 h-7 text-white" />
-                  </div>
+                  {/* Colored accent bar */}
+                  <div className={`h-1 bg-gradient-to-r ${tool.color}`} />
 
-                  {/* Content */}
-                  <h2 className="text-2xl font-bold text-foreground mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    {tool.title}
-                  </h2>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {tool.description}
-                  </p>
+                  <div className="p-8">
+                    {/* Popular badge */}
+                    {tool.href === '/herramientas/calculadora-salario-liquido' && (
+                      <span className="absolute top-4 right-4 text-xs px-2 py-1 bg-primary/10 text-primary rounded-full font-medium">Popular</span>
+                    )}
 
-                  {/* Keywords/Features */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {tool.keywords.map((keyword) => (
-                      <span
-                        key={keyword}
-                        className="text-xs px-3 py-1 bg-blue-50 border border-blue-200 text-blue-700 rounded-full"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
+                    {/* Icon with gradient background */}
+                    <div className={`w-14 h-14 rounded-lg bg-gradient-to-br ${tool.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                      <Icon className="w-7 h-7 text-white" />
+                    </div>
 
-                  {/* CTA */}
-                  <div className="flex items-center text-blue-600 dark:text-blue-400 font-semibold group-hover:gap-2 transition-all">
-                    Usar herramienta
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    {/* Content */}
+                    <h2 className="text-2xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                      {tool.title}
+                    </h2>
+                    <p className="text-muted-foreground mb-6 leading-relaxed line-clamp-2">
+                      {tool.description}
+                    </p>
+
+                    {/* Keywords/Features */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {tool.keywords.map((keyword) => (
+                        <span
+                          key={keyword}
+                          className="text-xs px-3 py-1 bg-primary/10 border border-primary/20 text-primary rounded-full"
+                        >
+                          {keyword}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* CTA */}
+                    <div className="flex items-center text-primary font-semibold group-hover:gap-2 transition-all">
+                      Usar herramienta
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
 
                   {/* Decorative corner gradient */}
@@ -162,8 +172,8 @@ export default function HerramientasPage() {
 
           {/* Bottom CTA */}
           <div className="mt-20 text-center">
-            <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-1 max-w-2xl mx-auto">
-              <div className="bg-card rounded-xl p-8 sm:p-12">
+            <div className="bg-gradient-to-r from-primary to-primary/80 rounded-xl p-1 max-w-2xl mx-auto">
+              <div className="bg-card rounded-lg p-8 sm:p-12">
                 <h2 className="text-3xl font-bold text-foreground mb-4">
                   ¿Querés más control sobre tus finanzas?
                 </h2>
@@ -173,7 +183,7 @@ export default function HerramientasPage() {
                 </p>
                 <Link
                   href="/signup"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 hover:shadow-xl hover:-translate-y-0.5 transition-all"
                 >
                   Crear cuenta gratis
                   <ArrowRight className="w-5 h-5" />

@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { parseReceiptImage, validateReceiptImage } from '@/lib/parsers/receipt-vision-parser';
+import { getUserPlan, incrementUsage } from '@/lib/subscriptions';
 import type { Category } from '@/types';
 
 export const runtime = 'nodejs';
@@ -53,7 +54,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2. Check rate limit
+    // 2. Check Pro plan required for receipt scanning
+    const plan = await getUserPlan(user.id);
+    if (!plan.features.receipts) {
+      return NextResponse.json(
+        { success: false, error: 'El escaneo de recibos es una función Pro', upgradeRequired: true, planId: plan.planId },
+        { status: 403 }
+      );
+    }
+
+    // 3. Check rate limit
     const rateLimitCheck = checkRateLimit(user.id);
     if (!rateLimitCheck.allowed) {
       return NextResponse.json(
@@ -86,8 +96,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`📸 Processing receipt image for user ${user.id}: ${imageFile.name} (${(imageBuffer.length / 1024).toFixed(1)}KB)`);
-
     // 6. Fetch user categories
     const { data: categories, error: categoriesError } = await supabase
       .from('categories')
@@ -113,10 +121,8 @@ export async function POST(request: NextRequest) {
 
     // 8. Return result
     if (result.success) {
-      console.log(`✅ Receipt parsed successfully for user ${user.id}`);
       return NextResponse.json(result, { status: 200 });
     } else {
-      console.log(`⚠️ Receipt parsing failed for user ${user.id}: ${result.error}`);
       return NextResponse.json(result, { status: 400 });
     }
 
@@ -140,7 +146,7 @@ export async function GET() {
   return NextResponse.json({
     status: 'ok',
     endpoint: 'receipt-parse-image',
-    model: 'gpt-5-mini',
+    model: 'ai-vision',
     maxFileSize: '20MB',
     supportedFormats: ['JPG', 'PNG', 'WebP'],
   });

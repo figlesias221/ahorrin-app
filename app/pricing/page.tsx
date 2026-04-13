@@ -5,9 +5,9 @@ import { Footer } from '@/components/marketing/footer';
 import { CheckCircle2 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Planes y Precios - Ahorrin | 100% Gratis para Siempre',
+  title: 'Planes y Precios - Ahorrin | Desde $0 UYU',
   description:
-    'Descubrí los planes de Ahorrin: 100% gratis, sin costos ocultos. Control total de tus finanzas personales en Uruguay. Importá extractos bancarios, categorizá gastos automáticamente con IA, y visualizá tu dinero en tiempo real.',
+    'Descubrí los planes de Ahorrin: empezá gratis y pasate a Pro por solo $99 UYU/mes. Control total de tus finanzas personales en Uruguay. Extractos ilimitados, chat IA, escaneo de recibos y más.',
   keywords: [
     'planes ahorrin',
     'precios ahorrin uruguay',
@@ -74,29 +74,29 @@ export default function PricingPage() {
         price: '0',
         priceCurrency: 'UYU',
         description:
-          'Plan gratuito de Ahorrin con funciones esenciales para control de finanzas personales',
+          'Plan gratuito de Ahorrin con funciones esenciales para control de finanzas personales en Uruguay',
         availability: 'https://schema.org/InStock',
-        priceValidUntil: '2025-12-31',
+        priceValidUntil: '2026-12-31',
       },
       {
         '@type': 'Offer',
         name: 'Plan Pro',
-        price: '0',
+        price: '99',
         priceCurrency: 'UYU',
         description:
-          'Plan Pro gratuito de Ahorrin con funciones avanzadas: múltiples cuentas, reglas ilimitadas, reportes avanzados',
+          'Plan Pro de Ahorrin: extractos ilimitados, chat IA ilimitado, escaneo de recibos, multi-moneda y más',
         availability: 'https://schema.org/InStock',
-        priceValidUntil: '2025-12-31',
+        priceValidUntil: '2026-12-31',
       },
       {
         '@type': 'Offer',
         name: 'Plan Business',
-        price: '0',
+        price: '999',
         priceCurrency: 'UYU',
         description:
-          'Plan Business gratuito de Ahorrin con funciones empresariales: usuarios ilimitados, dashboard compartido, soporte dedicado',
+          'Plan Business de Ahorrin: usuarios ilimitados, dashboard compartido, soporte dedicado, SLA garantizado',
         availability: 'https://schema.org/InStock',
-        priceValidUntil: '2025-12-31',
+        priceValidUntil: '2026-12-31',
       },
     ],
   };
@@ -174,10 +174,7 @@ export default function PricingPage() {
             </h1>
 
             <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto">
-              Elegí el plan que mejor se adapte a tus necesidades.{' '}
-              <span className="text-foreground font-semibold">
-                Todos 100% gratis.
-              </span>
+              Empezá gratis y pasate a Pro cuando necesites más poder.
             </p>
           </div>
         </section>

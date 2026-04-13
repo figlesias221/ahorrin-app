@@ -40,7 +40,7 @@ export function Card({
       className={cn(
         'overflow-hidden',
         borderRadius.card,
-        `p-${spacing.lg}`,
+        'p-6',
         transitions.fast,
         variantStyles[variant],
         isInteractive && 'cursor-pointer hover:border-border/70',
@@ -62,7 +62,7 @@ interface CardHeaderProps {
 
 export function CardHeader({ children, className, action }: CardHeaderProps) {
   return (
-    <div className={cn(`flex items-center justify-between mb-${spacing.lg}`, className)}>
+    <div className={cn('flex items-center justify-between mb-6', className)}>
       {children}
       {action && <div>{action}</div>}
     </div>

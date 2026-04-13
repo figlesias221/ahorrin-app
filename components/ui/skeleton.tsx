@@ -71,7 +71,7 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
 
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('overflow-hidden rounded-2xl border border-border bg-card p-6', className)}>
+    <div className={cn('overflow-hidden rounded-xl border border-border bg-card p-6', className)}>
       <div className="space-y-4">
         <Skeleton variant="text" width="40%" height={20} />
         <Skeleton variant="rectangular" height={200} />
@@ -86,7 +86,7 @@ export function SkeletonCard({ className }: { className?: string }) {
 
 export function SkeletonMetricCard({ className }: { className?: string }) {
   return (
-    <div className={cn('overflow-hidden rounded-2xl border border-border bg-card px-6 py-5', className)}>
+    <div className={cn('overflow-hidden rounded-xl border border-border bg-card px-6 py-5', className)}>
       <div className="flex items-center justify-between">
         <div className="flex-1 space-y-3">
           <Skeleton variant="text" width="50%" height={14} />
@@ -145,7 +145,7 @@ export function SkeletonButton({ className }: { className?: string }) {
 
 export function SkeletonChartCard({ className }: { className?: string }) {
   return (
-    <div className={cn('overflow-hidden rounded-2xl border border-border bg-card p-6', className)}>
+    <div className={cn('overflow-hidden rounded-xl border border-border bg-card p-6', className)}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <Skeleton variant="text" width="40%" height={20} />

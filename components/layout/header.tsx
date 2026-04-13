@@ -127,7 +127,7 @@ export function Header() {
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                     )}
                   >
-                    <Icon className={cn(iconSizes.sm, isAI && !isActive && 'animate-pulse')} />
+                    <Icon className={iconSizes.sm} />
                     <span className="hidden xl:inline">{item.name}</span>
                   </Link>
                 );
@@ -257,13 +257,8 @@ export function Header() {
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                     )}
                   >
-                    <Icon className={cn(iconSizes.md, isAI && !isActive && 'animate-pulse')} />
+                    <Icon className={iconSizes.md} />
                     {item.name}
-                    {isAI && !isActive && (
-                      <span className="ml-auto text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full font-semibold">
-                        Nuevo
-                      </span>
-                    )}
                   </Link>
                 );
               })}

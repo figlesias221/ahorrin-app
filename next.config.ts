@@ -1,14 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Optimize for edge runtime
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
     },
-    optimizePackageImports: ['framer-motion', 'lucide-react', 'date-fns', 'recharts'],
+    optimizePackageImports: ['framer-motion', 'lucide-react', 'date-fns', 'recharts', 'echarts', 'echarts-for-react'],
   },
-  // Image optimization configuration for Cloudflare
   images: {
     remotePatterns: [
       {
@@ -18,25 +16,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Enable standalone output for OpenNext
   output: 'standalone',
-  // Disable linting and type checking during build for faster deployments
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Webpack configuration for bundle optimization
   webpack: (config) => {
-    // Tree shaking and code splitting optimizations
     config.optimization = {
       ...config.optimization,
       usedExports: true,
       sideEffects: true,
       moduleIds: 'deterministic',
     };
-
     return config;
   },
 };

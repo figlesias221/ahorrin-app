@@ -18,6 +18,8 @@ interface ReceiptPreviewModalProps {
   onClose: () => void;
   onSave: () => void;
   onRetry?: () => void;
+  currentIndex?: number;
+  totalCount?: number;
 }
 
 export function ReceiptPreviewModal({
@@ -27,10 +29,9 @@ export function ReceiptPreviewModal({
   onClose,
   onSave,
   onRetry,
+  currentIndex,
+  totalCount,
 }: ReceiptPreviewModalProps) {
-  console.log('🎯 ReceiptPreviewModal opened with categories:', categories);
-  console.log('🎯 Categories count:', categories.length);
-
   const [formData, setFormData] = useState({
     date: result.transaction?.date || new Date().toISOString().split('T')[0],
     vendor: result.transaction?.vendor || '',
@@ -39,6 +40,7 @@ export function ReceiptPreviewModal({
     description: result.transaction?.description || '',
     categoryId: '',
   });
+  const [createPerItem, setCreatePerItem] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -70,27 +72,54 @@ export function ReceiptPreviewModal({
         throw new Error('Debes seleccionar una categoría');
       }
 
-      const transactionData = {
-        user_id: user.id,
-        date: formData.date,
-        vendor: formData.vendor,
-        description: formData.description || null,
-        amount: formData.amount,
-        type: 'expense' as const, // Receipts are always expenses
-        currency: formData.currency,
-        category_id: formData.categoryId,
-        notes: 'Creado desde escaneo de ticket',
-        is_manually_verified: true,
-        confidence_score: result.confidence,
-      };
+      if (createPerItem && result.transaction?.items && result.transaction.items.length > 0) {
+        // Create one transaction per item
+        const transactionsToInsert = result.transaction.items.map(item => ({
+          user_id: user.id,
+          date: formData.date,
+          vendor: formData.vendor,
+          description: item.name,
+          amount: item.amount,
+          type: 'expense' as const,
+          currency: formData.currency,
+          category_id: formData.categoryId,
+          notes: 'Creado desde escaneo de ticket (ítem individual)',
+          is_manually_verified: true,
+          confidence_score: result.confidence,
+        }));
 
-      const { error: insertError } = await supabase
-        .from('transactions')
-        .insert(transactionData);
+        const { error: insertError } = await supabase
+          .from('transactions')
+          .insert(transactionsToInsert);
 
-      if (insertError) throw insertError;
+        if (insertError) throw insertError;
 
-      toast.success('Transacción creada exitosamente');
+        toast.success(`${transactionsToInsert.length} transacciones creadas exitosamente`);
+      } else {
+        // Create single transaction with total amount
+        const transactionData = {
+          user_id: user.id,
+          date: formData.date,
+          vendor: formData.vendor,
+          description: formData.description || null,
+          amount: formData.amount,
+          type: 'expense' as const,
+          currency: formData.currency,
+          category_id: formData.categoryId,
+          notes: 'Creado desde escaneo de ticket',
+          is_manually_verified: true,
+          confidence_score: result.confidence,
+        };
+
+        const { error: insertError } = await supabase
+          .from('transactions')
+          .insert(transactionData);
+
+        if (insertError) throw insertError;
+
+        toast.success('Transacción creada exitosamente');
+      }
+
       onSave();
     } catch (err: unknown) {
       const error = err as Error;
@@ -137,6 +166,11 @@ export function ReceiptPreviewModal({
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold text-foreground">
               Confirmar Datos del Ticket
+              {totalCount && totalCount > 1 && (
+                <span className="text-sm font-normal text-muted-foreground ml-2">
+                  ({(currentIndex ?? 0) + 1} de {totalCount})
+                </span>
+              )}
             </h2>
             {confidenceBadge()}
           </div>
@@ -280,6 +314,28 @@ export function ReceiptPreviewModal({
                   />
                 )}
               </div>
+
+              {/* Create per item option */}
+              {result.transaction?.items && result.transaction.items.length > 1 && (
+                <div className="p-4 rounded-lg bg-muted border border-border">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={createPerItem}
+                      onChange={(e) => setCreatePerItem(e.target.checked)}
+                      className="mt-1 h-4 w-4 rounded border-muted-foreground/25 text-primary focus:ring-primary"
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-foreground">
+                        Crear una transacción por cada ítem
+                      </div>
+                      <div className="text-xs text-muted-foreground mt-1">
+                        Se crearán {result.transaction.items.length} transacciones separadas en lugar de una sola con el total ({formData.currency} {formData.amount.toFixed(2)})
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              )}
 
               {/* Description */}
               <div>

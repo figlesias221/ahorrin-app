@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Transaction, Category, TransactionFilters, BankStatement } from '@/types';
-import { Plus, Filter, Search, Download, Eye, EyeOff, X, Edit2, Check, Trash2 } from 'lucide-react';
+import { Plus, Filter, Search, Download, Eye, EyeOff, X, Edit2, Check, Trash2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { AlertModal } from '@/components/ui/alert-modal';
@@ -15,7 +15,6 @@ import { useCurrency } from '@/contexts/currency-context';
 import { convertCurrency, formatCurrencyWithSymbol } from '@/lib/utils/currency';
 import { exportTransactionsToExcel } from '@/lib/utils/export';
 import { motion, AnimatePresence } from 'framer-motion';
-import { motionVariants } from '@/lib/design-tokens';
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<(Transaction & { category?: Category })[]>([]);
@@ -319,12 +318,7 @@ export default function TransactionsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <motion.div
-        className="flex items-center justify-between gap-4"
-        initial="initial"
-        animate="animate"
-        variants={motionVariants.fadeIn}
-      >
+      <div className="flex items-center justify-between gap-4">
         <div className="min-w-0 flex-1">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground truncate">Transacciones</h1>
           <p className="mt-1 text-sm text-muted-foreground hidden sm:block">
@@ -336,7 +330,7 @@ export default function TransactionsPage() {
           <span className="hidden sm:inline">Nueva Transacción</span>
           <span className="sm:hidden">Nueva</span>
         </Button>
-      </motion.div>
+      </div>
 
       {/* Search and Filters Bar */}
       <div className="bg-gradient-to-r from-card via-card/95 to-muted/10 rounded-xl border border-border/50 p-3 shadow-sm">
@@ -520,13 +514,26 @@ export default function TransactionsPage() {
       </AnimatePresence>
 
 
+      {/* Uncategorized Transactions Banner */}
+      {uncategorizedCount > 0 && !showUncategorized && (
+        <div className="flex items-center justify-between p-4 rounded-lg bg-warning/10 border border-warning/20">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="h-5 w-5 text-warning flex-shrink-0" />
+            <p className="text-sm font-medium text-foreground">
+              {uncategorizedCount} transacciones sin categoria
+            </p>
+          </div>
+          <button
+            onClick={() => setShowUncategorized(true)}
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            Categorizar ahora
+          </button>
+        </div>
+      )}
+
       {/* Transactions Table */}
-      <motion.div
-        className="overflow-x-auto rounded-lg border border-border bg-card"
-        initial="initial"
-        animate="animate"
-        variants={motionVariants.slideUp}
-      >
+      <div className="overflow-x-auto rounded-lg border border-border bg-card">
         {loading ? (
           <div className="p-4">
             <SkeletonTable rows={8} columns={7} />
@@ -543,16 +550,11 @@ export default function TransactionsPage() {
             onEditModeChange={handleEditModeChange}
           />
         )}
-      </motion.div>
+      </div>
 
       {/* Pagination */}
       {!loading && transactions.length > 0 && (
-        <motion.div
-          className="flex items-center justify-between gap-4 px-4 py-3 bg-card rounded-lg border border-border shadow-sm"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-card rounded-lg border border-border shadow-sm">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span className="font-medium text-foreground">
               {startIndex + 1}-{Math.min(endIndex, transactions.length)}
@@ -663,7 +665,7 @@ export default function TransactionsPage() {
               </Button>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Transaction Modal */}

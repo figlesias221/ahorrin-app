@@ -387,6 +387,117 @@ export interface Database {
           created_at?: string
         }
       }
+      plans: {
+        Row: {
+          id: string
+          name: string
+          price_uyu: number
+          price_usd: number
+          interval: 'monthly' | 'yearly' | 'lifetime'
+          features: Json
+          limits: Json
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id: string
+          name: string
+          price_uyu?: number
+          price_usd?: number
+          interval?: 'monthly' | 'yearly' | 'lifetime'
+          features?: Json
+          limits?: Json
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          price_uyu?: number
+          price_usd?: number
+          interval?: 'monthly' | 'yearly' | 'lifetime'
+          features?: Json
+          limits?: Json
+          is_active?: boolean
+          created_at?: string
+        }
+      }
+      subscriptions: {
+        Row: {
+          id: string
+          user_id: string
+          plan_id: string
+          status: 'active' | 'canceled' | 'past_due' | 'trialing'
+          current_period_start: string
+          current_period_end: string
+          cancel_at_period_end: boolean
+          payment_provider: string | null
+          payment_provider_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          plan_id: string
+          status?: 'active' | 'canceled' | 'past_due' | 'trialing'
+          current_period_start?: string
+          current_period_end?: string
+          cancel_at_period_end?: boolean
+          payment_provider?: string | null
+          payment_provider_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          plan_id?: string
+          status?: 'active' | 'canceled' | 'past_due' | 'trialing'
+          current_period_start?: string
+          current_period_end?: string
+          cancel_at_period_end?: boolean
+          payment_provider?: string | null
+          payment_provider_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      usage_tracking: {
+        Row: {
+          id: string
+          user_id: string
+          period_start: string
+          uploads_count: number
+          ai_messages_count: number
+          receipts_count: number
+          exports_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          period_start?: string
+          uploads_count?: number
+          ai_messages_count?: number
+          receipts_count?: number
+          exports_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          period_start?: string
+          uploads_count?: number
+          ai_messages_count?: number
+          receipts_count?: number
+          exports_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

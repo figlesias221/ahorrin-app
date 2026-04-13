@@ -57,9 +57,20 @@ export async function GET(request: NextRequest) {
           new URL(`/login?error=server_error&error_description=${encodeURIComponent('Failed to create user profile')}`, request.url)
         );
       }
+
+      // Check if new user (no categories) → redirect to onboarding
+      const { data: categories } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('user_id', data.user.id)
+        .limit(1);
+
+      if (!categories || categories.length === 0) {
+        return NextResponse.redirect(new URL('/onboarding', request.url));
+      }
     }
   }
 
-  // URL to redirect to after sign in process completes
+  // Existing user with categories → go to dashboard
   return NextResponse.redirect(new URL('/dashboard', request.url));
 }
