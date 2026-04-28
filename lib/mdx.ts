@@ -73,6 +73,52 @@ export function getAllPostsMetadata(): BlogPostMetadata[] {
 }
 
 /**
+ * Convert a category name to a URL-safe slug.
+ * Example: "Bancos y Tarjetas" -> "bancos-y-tarjetas"
+ */
+export function categoryToSlug(category: string): string {
+  return category
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+
+/**
+ * Get all unique categories with post counts and slugs.
+ */
+export function getAllCategories(): { name: string; slug: string; count: number }[] {
+  const posts = getAllPostsMetadata();
+  const counts = posts.reduce<Record<string, number>>((acc, post) => {
+    acc[post.category] = (acc[post.category] || 0) + 1;
+    return acc;
+  }, {});
+  return Object.entries(counts)
+    .map(([name, count]) => ({ name, slug: categoryToSlug(name), count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+/**
+ * Get all posts in a given category by slug.
+ */
+export function getPostsByCategorySlug(slug: string): BlogPostMetadata[] {
+  return getAllPostsMetadata().filter(
+    (p) => categoryToSlug(p.category) === slug
+  );
+}
+
+/**
+ * Get the category metadata (name, slug) given a slug.
+ */
+export function getCategoryBySlug(
+  slug: string
+): { name: string; slug: string; count: number } | null {
+  return getAllCategories().find((c) => c.slug === slug) || null;
+}
+
+/**
  * Get up to `limit` posts related to the given slug.
  * Priority: same category first, then most recent posts.
  */

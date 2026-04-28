@@ -5,6 +5,16 @@ import Link from 'next/link';
 import { Clock, ArrowRight } from 'lucide-react';
 import type { BlogPostMetadata } from '@/lib/mdx';
 
+function slugifyCategory(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+
 interface Props {
   posts: BlogPostMetadata[];
   categories: { name: string; count: number }[];
@@ -62,9 +72,12 @@ export function BlogCategoryFilter({ posts, categories }: Props) {
                   <div className="aspect-[16/9] bg-gradient-to-br from-primary/80 via-primary to-primary-700 relative overflow-hidden">
                     <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors" />
                     <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-primary text-xs font-semibold rounded-full">
+                      <Link
+                        href={`/blog/categoria/${slugifyCategory(post.category)}`}
+                        className="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-primary text-xs font-semibold rounded-full hover:bg-white transition-colors"
+                      >
                         {post.category}
-                      </span>
+                      </Link>
                     </div>
                   </div>
 

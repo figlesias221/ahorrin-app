@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getAllPostsMetadata } from '@/lib/mdx';
+import { getAllPostsMetadata, getAllCategories } from '@/lib/mdx';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.ahorrin.app';
@@ -10,8 +10,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     date: post.date,
   }));
 
+  const categories = getAllCategories();
+
   return [
-    // Top-tier: home + main content hubs
+    // Top-tier: home + main hubs
     {
       url: baseUrl,
       lastModified: currentDate,
@@ -31,7 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
 
-    // High-priority commercial pages
+    // Commercial pages
     {
       url: `${baseUrl}/pricing`,
       lastModified: currentDate,
@@ -45,7 +47,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
 
-    // Free tools (high-conversion, indexable)
+    // Reference content
+    {
+      url: `${baseUrl}/glosario`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/preguntas-frecuentes`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+
+    // Free tools
     {
       url: `${baseUrl}/herramientas/calculadora-salario-liquido`,
       lastModified: currentDate,
@@ -71,12 +87,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
 
-    // Blog posts — bumped priority and freshness signal so Google
-    // moves them out of "Discovered – currently not indexed"
+    // Blog category pages
+    ...categories.map((c) => ({
+      url: `${baseUrl}/blog/categoria/${c.slug}`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.75,
+    })),
+
+    // Blog posts
     ...blogPosts.map((post) => {
       const postDate = new Date(post.date);
-      // Use the more recent of (post date, 30 days ago) as lastModified
-      // so Google sees these as "still fresh / worth crawling"
       const thirtyDaysAgo = new Date(currentDate);
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       const lastModified = postDate > thirtyDaysAgo ? postDate : thirtyDaysAgo;
@@ -88,7 +109,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       };
     }),
 
-    // Trust pages (lower priority, don't compete with content)
+    // Trust pages
     {
       url: `${baseUrl}/sobre-nosotros`,
       lastModified: currentDate,
@@ -114,7 +135,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
 
-    // Auth pages (kept indexable but very low priority — no SEO value)
+    // Auth pages
     {
       url: `${baseUrl}/signup`,
       lastModified: currentDate,

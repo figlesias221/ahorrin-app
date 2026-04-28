@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Clock, User, ChevronRight } from 'lucide-react';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getAllPostSlugs, getPostBySlug, getRelatedPosts } from '@/lib/mdx';
+import { getAllPostSlugs, getPostBySlug, getRelatedPosts, categoryToSlug } from '@/lib/mdx';
 import { ComparisonTable, CalloutBox } from '@/components/mdx';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
@@ -150,9 +150,12 @@ export default async function BlogPostPage({
           </Link>
 
           <div className="mb-8">
-            <span className="px-4 py-1.5 bg-white/90 backdrop-blur-sm text-primary text-sm font-semibold rounded-full">
+            <Link
+              href={`/blog/categoria/${categoryToSlug(metadata.category)}`}
+              className="inline-block px-4 py-1.5 bg-white/90 backdrop-blur-sm text-primary text-sm font-semibold rounded-full hover:bg-white transition-colors"
+            >
               {metadata.category}
-            </span>
+            </Link>
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8 text-white leading-tight">

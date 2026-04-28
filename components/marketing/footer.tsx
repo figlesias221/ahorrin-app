@@ -59,6 +59,16 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/glosario" className="text-sm transition-colors">
+                  Glosario financiero
+                </Link>
+              </li>
+              <li>
+                <Link href="/preguntas-frecuentes" className="text-sm transition-colors">
+                  Preguntas frecuentes
+                </Link>
+              </li>
+              <li>
                 <Link href="/bancos-uruguay" className="text-sm transition-colors">
                   Bancos en Uruguay
                 </Link>
