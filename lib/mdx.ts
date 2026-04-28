@@ -73,6 +73,25 @@ export function getAllPostsMetadata(): BlogPostMetadata[] {
 }
 
 /**
+ * Get up to `limit` posts related to the given slug.
+ * Priority: same category first, then most recent posts.
+ */
+export function getRelatedPosts(slug: string, limit = 3): BlogPostMetadata[] {
+  const all = getAllPostsMetadata();
+  const current = all.find((p) => p.slug === slug);
+  if (!current) return all.filter((p) => p.slug !== slug).slice(0, limit);
+
+  const sameCategory = all.filter(
+    (p) => p.slug !== slug && p.category === current.category
+  );
+  const others = all.filter(
+    (p) => p.slug !== slug && p.category !== current.category
+  );
+
+  return [...sameCategory, ...others].slice(0, limit);
+}
+
+/**
  * Get full post data including content
  */
 export function getPostBySlug(slug: string) {
