@@ -23,6 +23,16 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      { source: '/bbva', destination: '/bancos-uruguay', permanent: true },
+      { source: '/itau', destination: '/bancos-uruguay', permanent: true },
+      { source: '/santander', destination: '/bancos-uruguay', permanent: true },
+      { source: '/scotiabank', destination: '/bancos-uruguay', permanent: true },
+      { source: '/brou', destination: '/bancos-uruguay', permanent: true },
+      { source: '/heritage', destination: '/bancos-uruguay', permanent: true },
+    ];
+  },
   webpack: (config) => {
     config.optimization = {
       ...config.optimization,

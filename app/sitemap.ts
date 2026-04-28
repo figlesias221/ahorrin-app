@@ -5,19 +5,41 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.ahorrin.app';
   const currentDate = new Date();
 
-  // Dynamically get all blog posts
   const blogPosts = getAllPostsMetadata().map(post => ({
     slug: post.slug!,
     date: post.date,
   }));
 
   return [
-    // Main pages
     {
       url: baseUrl,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/sobre-nosotros`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/contacto`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/privacidad`,
+      lastModified: currentDate,
+      changeFrequency: 'yearly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/terminos`,
+      lastModified: currentDate,
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
     {
       url: `${baseUrl}/login`,
@@ -32,21 +54,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/terminos`,
-      lastModified: currentDate,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-
-    // Pricing
-    {
       url: `${baseUrl}/pricing`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
 
-    // Blog pages
+    // Bancos consolidado (reemplaza /bbva, /itau, /santander, /scotiabank, /brou, /heritage)
+    {
+      url: `${baseUrl}/bancos-uruguay`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+
+    // Blog
     {
       url: `${baseUrl}/blog`,
       lastModified: currentDate,
@@ -60,45 +82,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     })),
 
-    // Bank-specific landing pages (high priority for SEO)
-    {
-      url: `${baseUrl}/brou`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.95, // BROU es el banco más grande de Uruguay
-    },
-    {
-      url: `${baseUrl}/bbva`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/scotiabank`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/itau`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/santander`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/heritage`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.85,
-    },
-
-    // Free tools (high value for SEO)
+    // Free tools
     {
       url: `${baseUrl}/herramientas`,
       lastModified: currentDate,
@@ -127,7 +111,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/herramientas/calculadora-salario-liquido`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
-      priority: 0.95, // High search volume keyword
+      priority: 0.95,
     },
   ];
 }
