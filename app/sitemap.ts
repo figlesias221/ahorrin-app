@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   return [
+    // Top-tier: home + main content hubs
     {
       url: baseUrl,
       lastModified: currentDate,
@@ -18,49 +19,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/sobre-nosotros`,
+      url: `${baseUrl}/blog`,
       lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.7,
+      changeFrequency: 'daily',
+      priority: 0.95,
     },
     {
-      url: `${baseUrl}/contacto`,
+      url: `${baseUrl}/herramientas`,
       lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.6,
+      changeFrequency: 'weekly',
+      priority: 0.95,
     },
-    {
-      url: `${baseUrl}/privacidad`,
-      lastModified: currentDate,
-      changeFrequency: 'yearly',
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/terminos`,
-      lastModified: currentDate,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/signup`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
+
+    // High-priority commercial pages
     {
       url: `${baseUrl}/pricing`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
       priority: 0.9,
     },
-
-    // Bancos consolidado (reemplaza /bbva, /itau, /santander, /scotiabank, /brou, /heritage)
     {
       url: `${baseUrl}/bancos-uruguay`,
       lastModified: currentDate,
@@ -68,25 +45,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
 
-    // Blog
+    // Free tools (high-conversion, indexable)
     {
-      url: `${baseUrl}/blog`,
+      url: `${baseUrl}/herramientas/calculadora-salario-liquido`,
       lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    ...blogPosts.map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: new Date(post.date),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })),
-
-    // Free tools
-    {
-      url: `${baseUrl}/herramientas`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
+      changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
@@ -107,11 +70,56 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.85,
     },
+
+    // Blog posts — bumped priority and freshness signal so Google
+    // moves them out of "Discovered – currently not indexed"
+    ...blogPosts.map((post) => {
+      const postDate = new Date(post.date);
+      // Use the more recent of (post date, 30 days ago) as lastModified
+      // so Google sees these as "still fresh / worth crawling"
+      const thirtyDaysAgo = new Date(currentDate);
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const lastModified = postDate > thirtyDaysAgo ? postDate : thirtyDaysAgo;
+      return {
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified,
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      };
+    }),
+
+    // Trust pages (lower priority, don't compete with content)
     {
-      url: `${baseUrl}/herramientas/calculadora-salario-liquido`,
+      url: `${baseUrl}/sobre-nosotros`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
-      priority: 0.95,
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/contacto`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/privacidad`,
+      lastModified: currentDate,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/terminos`,
+      lastModified: currentDate,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+
+    // Auth pages (kept indexable but very low priority — no SEO value)
+    {
+      url: `${baseUrl}/signup`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.4,
     },
   ];
 }
