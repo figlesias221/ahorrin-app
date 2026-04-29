@@ -1,133 +1,177 @@
 #!/usr/bin/env tsx
 
 /**
- * Google Indexing API Script
+ * Google Indexing API: request indexing for all important Ahorrin URLs.
  *
- * Este script solicita la indexación de URLs en Google Search Console
- * usando la Google Indexing API.
+ * URL list is built dynamically from lib/mdx, lib/glossary, lib/authors so it
+ * never goes stale as new posts and terms are added. Default quota on the
+ * Indexing API is 200 URLs/day — current site ships well under that.
  *
- * Setup:
- * 1. Crear un Service Account en Google Cloud Console
+ * Note: Google's Indexing API officially supports JobPosting and BroadcastEvent.
+ * For blog/glossary/static pages the API call still succeeds, but Google may
+ * not re-crawl on every call. Complement with sitemap submission and GSC URL
+ * Inspection for the most important pages.
+ *
+ * Setup (one-time):
+ * 1. Crear Service Account en Google Cloud Console
  * 2. Habilitar "Web Search Indexing API"
- * 3. Descargar el JSON de credenciales
+ * 3. Descargar JSON de credenciales (este repo lo espera en ./creds.json)
  * 4. Agregar el email del service account como owner en Search Console
- * 5. Guardar las credenciales en GOOGLE_APPLICATION_CREDENTIALS o .env
  *
  * Uso:
- * npm run request-indexing
+ *   bash scripts/index-blogs.sh        # carga GOOGLE_APPLICATION_CREDENTIALS y corre el script
+ *   npm run request-indexing            # asume que GOOGLE_APPLICATION_CREDENTIALS ya está seteada
+ *
+ * Filtros opcionales (env vars):
+ *   ONLY_NEW=1            # solo glosario standalone + páginas de autor + metodología
+ *   ONLY_BLOG=1           # solo posts del blog
+ *   DRY_RUN=1             # imprime URLs sin llamar a la API
  */
 
 import { google } from 'googleapis';
+import { getAllPostSlugs } from '../lib/mdx';
+import { getStandalonePageSlugs } from '../lib/glossary';
+import { getAllAuthorSlugs } from '../lib/authors';
 
 const SCOPES = ['https://www.googleapis.com/auth/indexing'];
 const BASE_URL = 'https://www.ahorrin.app';
 
-// URLs de blogs para indexar
-const BLOG_URLS = [
-  '/blog/afap-uruguay-2025-cual-elegir-rendimiento-comisiones',
-  '/blog/aguinaldo-uruguay-2025-cuando-se-cobra-como-calcularlo',
-  '/blog/alquiler-uruguay-2025-todo-lo-que-nadie-te-cuenta-antes-de-firmar',
-  '/blog/devolucion-irpf-uruguay-2025-como-saber-cuanto-cobrar',
-  '/blog/dolar-estrategia-uruguay-2025-cuando-comprar-ui-vs-dolares',
-  '/blog/monotributo-uruguay-2025-guia-completa-requisitos-costos',
-  '/blog/prestamos-personales-uruguay-2025-tasas-reales-comparativa',
-  '/blog/salario-liquido-uruguay-2025-cuanto-te-queda-realmente',
-  '/blog/gastos-hormiga-uruguay-como-100-pesos-se-vuelven-3600-al-ano',
-  '/blog/invertir-desde-500-pesos-uruguay-guia-principiantes',
-  '/blog/prestamos-hipotecarios-uruguay-2025-guia-completa',
-  '/blog/calendario-vencimientos-impuestos-uruguay-2025',
-  '/blog/organizar-finanzas-personales-uruguay-2025',
-  '/blog/analisis-tarjetas-que-mas-rinden-uruguay-2025',
+const ONLY_NEW = process.env.ONLY_NEW === '1';
+const ONLY_BLOG = process.env.ONLY_BLOG === '1';
+const DRY_RUN = process.env.DRY_RUN === '1';
+
+const STATIC_PAGES = [
+  '/',
+  '/blog',
+  '/herramientas',
+  '/glosario',
+  '/preguntas-frecuentes',
+  '/bancos-uruguay',
+  '/pricing',
+  '/sobre-nosotros',
+  '/metodologia',
+  '/contacto',
+  '/herramientas/calculadora-salario-liquido',
+  '/herramientas/calculadora-presupuesto',
+  '/herramientas/conversor-extractos',
+  '/herramientas/inflacion-real',
 ];
 
+function buildUrls(): string[] {
+  const blogPaths = getAllPostSlugs().map((s) => `/blog/${s}`);
+  const glossaryPaths = getStandalonePageSlugs().map((s) => `/glosario/${s}`);
+  const authorPaths = getAllAuthorSlugs().map((s) => `/autor/${s}`);
+
+  let paths: string[];
+  if (ONLY_BLOG) {
+    paths = blogPaths;
+  } else if (ONLY_NEW) {
+    paths = [...glossaryPaths, ...authorPaths, '/metodologia'];
+  } else {
+    paths = [...STATIC_PAGES, ...blogPaths, ...glossaryPaths, ...authorPaths];
+  }
+
+  // Dedupe + absolute URLs
+  const seen = new Set<string>();
+  return paths
+    .map((p) => `${BASE_URL}${p}`)
+    .filter((url) => {
+      if (seen.has(url)) return false;
+      seen.add(url);
+      return true;
+    });
+}
+
 async function requestIndexing() {
+  const urls = buildUrls();
+
+  console.log(`📋 ${urls.length} URLs a indexar`);
+  if (ONLY_NEW) console.log('   (filtro: ONLY_NEW)');
+  if (ONLY_BLOG) console.log('   (filtro: ONLY_BLOG)');
+  if (DRY_RUN) console.log('   (DRY_RUN — no se llamará a la API)');
+  console.log('');
+
+  if (DRY_RUN) {
+    urls.forEach((u) => console.log(`  - ${u}`));
+    console.log(`\nTotal: ${urls.length}`);
+    return;
+  }
+
+  if (urls.length > 200) {
+    console.warn(
+      `⚠️  ${urls.length} URLs supera el quota diario por defecto (200). Algunas fallarán hacia el final.\n`,
+    );
+  }
+
   try {
     console.log('🚀 Iniciando solicitud de indexación...\n');
 
-    // Autenticación con service account
     const auth = new google.auth.GoogleAuth({
       keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
       scopes: SCOPES,
     });
-
     const authClient = await auth.getClient();
-    const indexing = google.indexing({ version: 'v3', auth: authClient as any });
+    const indexing = google.indexing({ version: 'v3', auth: authClient as never });
 
     let successCount = 0;
     let errorCount = 0;
+    let quotaCount = 0;
 
-    // Solicitar indexación para cada URL
-    for (const path of BLOG_URLS) {
-      const url = `${BASE_URL}${path}`;
-
+    for (const url of urls) {
       try {
-        console.log(`📄 Solicitando indexación: ${url}`);
-
+        process.stdout.write(`📄 ${url} ... `);
         const response = await indexing.urlNotifications.publish({
-          requestBody: {
-            url: url,
-            type: 'URL_UPDATED',
-          },
+          requestBody: { url, type: 'URL_UPDATED' },
         });
 
         if (response.status === 200) {
-          console.log(`✅ Éxito: ${url}\n`);
+          console.log('✅');
           successCount++;
         } else {
-          console.log(`⚠️  Status ${response.status}: ${url}\n`);
+          console.log(`⚠️  status ${response.status}`);
           errorCount++;
         }
 
-        // Delay para evitar rate limiting
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-      } catch (error: any) {
-        console.error(`❌ Error en ${url}:`);
-        console.error(`   ${error.message}\n`);
+        // Pequeña pausa entre llamadas (rate limiting)
+        await new Promise((resolve) => setTimeout(resolve, 800));
+      } catch (error) {
+        const err = error as { message?: string; code?: number };
+        const msg = err.message ?? String(error);
+        if (msg.includes('quota') || msg.includes('Quota') || err.code === 429) {
+          console.log('🛑 quota agotado');
+          quotaCount++;
+          break; // quota agotado: cortar el loop
+        }
+        console.log(`❌ ${msg.slice(0, 80)}`);
         errorCount++;
       }
     }
 
-    // Resumen
     console.log('\n' + '='.repeat(60));
-    console.log('📊 RESUMEN DE INDEXACIÓN');
+    console.log('📊 RESUMEN');
     console.log('='.repeat(60));
     console.log(`✅ Exitosas: ${successCount}`);
-    console.log(`❌ Errores: ${errorCount}`);
-    console.log(`📝 Total: ${BLOG_URLS.length}`);
+    console.log(`❌ Errores:  ${errorCount}`);
+    if (quotaCount) console.log(`🛑 Detenido por quota tras ${successCount + errorCount} URLs`);
+    console.log(`📝 Total intentadas: ${successCount + errorCount}/${urls.length}`);
     console.log('='.repeat(60) + '\n');
 
     if (successCount > 0) {
-      console.log('🎉 Solicitudes enviadas exitosamente!');
-      console.log('⏱️  Google procesará las URLs en las próximas horas/días.');
-      console.log('🔍 Verifica el estado en: https://search.google.com/search-console\n');
+      console.log('🎉 URLs notificadas. Google procesa en horas/días.');
+      console.log('🔍 Estado: https://search.google.com/search-console\n');
     }
-
-  } catch (error: any) {
+  } catch (error) {
+    const err = error as { message?: string };
     console.error('\n❌ ERROR FATAL:');
-
-    if (error.message.includes('GOOGLE_APPLICATION_CREDENTIALS')) {
+    if (err.message?.includes('GOOGLE_APPLICATION_CREDENTIALS')) {
       console.error('\n⚠️  No se encontraron credenciales de Google.');
-      console.error('\n📖 PASOS PARA CONFIGURAR:\n');
-      console.error('1. Ir a https://console.cloud.google.com/');
-      console.error('2. Crear un Service Account');
-      console.error('3. Habilitar "Web Search Indexing API"');
-      console.error('4. Descargar el JSON de credenciales');
-      console.error('5. Ejecutar:');
-      console.error('   export GOOGLE_APPLICATION_CREDENTIALS="/path/to/credentials.json"');
-      console.error('   O agregar a .env.local:\n');
-      console.error('   GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json\n');
+      console.error('Usá: bash scripts/index-blogs.sh');
+      console.error('o seteá GOOGLE_APPLICATION_CREDENTIALS apuntando a creds.json\n');
     } else {
-      console.error(error.message);
-      console.error('\n💡 Si el error es sobre permisos:');
-      console.error('   - Verifica que el email del service account esté agregado');
-      console.error('     como owner en Google Search Console');
-      console.error('   - URL: https://search.google.com/search-console\n');
+      console.error(err.message ?? error);
     }
-
     process.exit(1);
   }
 }
 
-// Ejecutar
 requestIndexing();
