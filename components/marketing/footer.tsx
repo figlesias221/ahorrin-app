@@ -79,6 +79,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/metodologia" className="text-sm transition-colors">
+                  Metodología y fuentes
+                </Link>
+              </li>
+              <li>
                 <Link href="/contacto" className="text-sm transition-colors">
                   Contacto
                 </Link>

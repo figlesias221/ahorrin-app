@@ -1,9 +1,13 @@
 import { MetadataRoute } from 'next';
 import { getAllPostsMetadata, getAllCategories } from '@/lib/mdx';
+import { getAllAuthorSlugs } from '@/lib/authors';
+import { getStandalonePageTerms } from '@/lib/glossary';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.ahorrin.app';
   const currentDate = new Date();
+  const authorSlugs = getAllAuthorSlugs();
+  const standaloneTerms = getStandalonePageTerms();
 
   const blogPosts = getAllPostsMetadata().map(post => ({
     slug: post.slug!,
@@ -54,6 +58,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.85,
     },
+
+    // Standalone glossary term pages
+    ...standaloneTerms.map((t) => ({
+      url: `${baseUrl}/glosario/${t.slug}`,
+      lastModified: t.lastReviewed ? new Date(t.lastReviewed) : currentDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    })),
     {
       url: `${baseUrl}/preguntas-frecuentes`,
       lastModified: currentDate,
@@ -114,7 +126,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/sobre-nosotros`,
       lastModified: currentDate,
       changeFrequency: 'monthly',
-      priority: 0.6,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/metodologia`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/contacto`,
@@ -122,6 +140,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+
+    // Author pages
+    ...authorSlugs.map((slug) => ({
+      url: `${baseUrl}/autor/${slug}`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
     {
       url: `${baseUrl}/privacidad`,
       lastModified: currentDate,

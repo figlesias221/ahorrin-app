@@ -9,6 +9,7 @@ export interface BlogPostMetadata {
   excerpt: string;
   category: string;
   date: string;
+  lastReviewed?: string;
   readTime: string;
   author: {
     name: string;

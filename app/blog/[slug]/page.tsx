@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, User, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, User, ChevronRight, ShieldCheck } from 'lucide-react';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getAllPostSlugs, getPostBySlug, getRelatedPosts, categoryToSlug } from '@/lib/mdx';
+import { getAuthorByName } from '@/lib/authors';
 import { ComparisonTable, CalloutBox } from '@/components/mdx';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
@@ -108,12 +109,24 @@ export default async function BlogPostPage({
   const { metadata, content } = postData;
   const related = getRelatedPosts(slug, 3);
   const postUrl = `https://www.ahorrin.app/blog/${slug}`;
+  const author = getAuthorByName(metadata.author.name);
 
-  // Use modification date that signals freshness to crawlers (rolling 30 days)
+  // Use modification date that signals freshness to crawlers.
+  // Prefer explicit `lastReviewed` from frontmatter; otherwise use a rolling 30-day floor.
   const postDate = new Date(metadata.date);
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const dateModified = (postDate > thirtyDaysAgo ? postDate : thirtyDaysAgo).toISOString();
+  const reviewedDate = metadata.lastReviewed ? new Date(metadata.lastReviewed) : null;
+  const dateModified = (
+    reviewedDate ?? (postDate > thirtyDaysAgo ? postDate : thirtyDaysAgo)
+  ).toISOString();
+  const reviewedDisplay = reviewedDate
+    ? reviewedDate.toLocaleDateString('es-UY', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -163,10 +176,14 @@ export default async function BlogPostPage({
           </h1>
 
           <div className="flex flex-wrap items-center gap-6 text-primary-foreground/80 text-sm sm:text-base">
-            <div className="flex items-center gap-2">
+            <Link
+              href={`/autor/${author.slug}`}
+              className="flex items-center gap-2 hover:text-white transition-colors"
+              rel="author"
+            >
               <User className="w-5 h-5" />
               <span>{metadata.author.name}</span>
-            </div>
+            </Link>
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
               <time dateTime={metadata.date}>
@@ -182,10 +199,26 @@ export default async function BlogPostPage({
               <span>{metadata.readTime} de lectura</span>
             </div>
           </div>
+
+          {reviewedDisplay && (
+            <p className="mt-4 text-sm text-primary-foreground/70">
+              Última revisión: {reviewedDisplay}
+            </p>
+          )}
         </div>
       </header>
 
       <BlogAdTop />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 mt-6">
+        <Link
+          href="/metodologia"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border rounded-full px-3 py-1.5"
+        >
+          <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+          Cómo verificamos esta información
+        </Link>
+      </div>
 
       <article className="py-8 sm:py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
@@ -290,9 +323,15 @@ export default async function BlogPostPage({
             description: metadata.excerpt,
             image: 'https://www.ahorrin.app/og-image.png',
             author: {
-              '@type': 'Organization',
-              name: metadata.author.name,
-              url: 'https://www.ahorrin.app/sobre-nosotros',
+              '@type': 'Person',
+              name: author.name,
+              url: author.url,
+              jobTitle: author.role,
+              worksFor: {
+                '@type': 'Organization',
+                name: 'Ahorrin',
+                url: 'https://www.ahorrin.app',
+              },
             },
             publisher: {
               '@type': 'Organization',

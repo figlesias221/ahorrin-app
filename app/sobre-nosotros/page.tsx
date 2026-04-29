@@ -74,13 +74,28 @@ export default function SobreNosotrosPage() {
           <p className="text-muted-foreground leading-relaxed mb-4">
             Ahorrin lo desarrolla un pequeño equipo basado en Montevideo. La empresa se llama
             <strong> Larson Labs</strong> y construye productos digitales para el mercado
-            uruguayo. El producto está liderado por Federico Iglesias, desarrollador full-stack
-            con experiencia en startups SaaS.
+            uruguayo. El producto está liderado por{' '}
+            <Link
+              href="/autor/federico-iglesias"
+              className="text-primary hover:underline font-medium"
+            >
+              Federico Iglesias
+            </Link>
+            , desarrollador full-stack con experiencia en startups SaaS, que también escribe la
+            mayor parte del contenido del blog.
           </p>
-          <p className="text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground leading-relaxed mb-4">
             No somos un banco, no somos asesores financieros y no estamos regulados por el BCU.
             Somos una herramienta de software. Las decisiones financieras siguen siendo tuyas;
             nuestro trabajo es darte mejor información para tomarlas.
+          </p>
+          <p className="text-muted-foreground leading-relaxed">
+            Si querés saber cómo investigamos, contrastamos y revisamos cada artículo y cada
+            calculadora,{' '}
+            <Link href="/metodologia" className="text-primary hover:underline font-medium">
+              leé nuestra metodología
+            </Link>
+            .
           </p>
         </section>
 
@@ -142,6 +157,38 @@ export default function SobreNosotrosPage() {
             .
           </p>
         </section>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Ahorrin',
+              alternateName: 'Larson Labs',
+              url: 'https://www.ahorrin.app',
+              logo: 'https://www.ahorrin.app/logo.svg',
+              description:
+                'Herramienta de finanzas personales hecha en Uruguay. Categoriza extractos bancarios, calcula impuestos y ayuda a planificar el mes.',
+              email: 'hola@ahorrin.app',
+              founder: {
+                '@type': 'Person',
+                name: 'Federico Iglesias',
+                url: 'https://www.ahorrin.app/autor/federico-iglesias',
+              },
+              foundingLocation: {
+                '@type': 'Place',
+                address: {
+                  '@type': 'PostalAddress',
+                  addressLocality: 'Montevideo',
+                  addressCountry: 'UY',
+                },
+              },
+              areaServed: { '@type': 'Country', name: 'Uruguay' },
+              sameAs: [],
+            }),
+          }}
+        />
       </div>
     </div>
   );
