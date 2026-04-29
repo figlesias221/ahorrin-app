@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "request-indexing": "tsx scripts/request-indexing.ts"
+    "request-indexing": "tsx scripts/request-indexing.ts",
+    "request-indexnow": "tsx scripts/indexnow.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.52",
