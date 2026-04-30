@@ -162,24 +162,29 @@ export default async function GlossaryTermPage({
             </ol>
           </nav>
 
-          <h1 className="text-4xl sm:text-5xl font-bold mb-3">{term.term}</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3 tracking-tight">{term.term}</h1>
           {term.abbr && (
-            <p className="text-lg text-muted-foreground mb-6">{term.abbr}</p>
+            <p className="text-sm font-mono uppercase tracking-widest text-muted-foreground mb-8">
+              {term.abbr}
+            </p>
           )}
 
-          <p className="text-xl text-foreground/90 leading-relaxed mb-4">{term.definition}</p>
+          <p className="text-xl text-foreground/90 leading-relaxed mb-6">{term.definition}</p>
 
-          <div className="flex flex-wrap gap-3 mb-10">
+          <div className="flex flex-wrap gap-2 mb-10">
             <Link
               href="/metodologia"
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border rounded-full px-3 py-1.5"
+              className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors border border-border rounded-full px-3 py-1.5"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-primary" />
               Cómo verificamos esta información
             </Link>
             {reviewedDisplay && (
-              <span className="inline-flex items-center text-xs text-muted-foreground border border-border rounded-full px-3 py-1.5">
-                Última revisión: {reviewedDisplay}
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-muted-foreground border border-border rounded-full px-3 py-1.5">
+                Última revisión
+                <span className="normal-case tracking-wider text-foreground/80">
+                  {reviewedDisplay}
+                </span>
               </span>
             )}
           </div>
@@ -248,7 +253,7 @@ export default async function GlossaryTermPage({
 
           {term.relatedTool && (
             <section className="my-12 not-prose bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-6">
-              <p className="text-sm font-semibold uppercase tracking-wide text-primary mb-2">
+              <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-primary mb-3">
                 Herramienta relacionada
               </p>
               <h3 className="text-xl font-bold mb-2">{term.relatedTool.label}</h3>
@@ -276,12 +281,12 @@ export default async function GlossaryTermPage({
                   <Link
                     key={p.slug}
                     href={`/blog/${p.slug}`}
-                    className="block border border-border rounded-lg p-4 hover:border-primary/40 hover:bg-muted/30 transition-all"
+                    className="block border border-border rounded-lg p-5 hover:border-primary/40 hover:bg-muted/30 transition-all"
                   >
-                    <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-primary">
                       {p.category}
                     </span>
-                    <h3 className="text-lg font-bold mt-1 mb-1">{p.title}</h3>
+                    <h3 className="text-lg font-bold mt-2 mb-1.5">{p.title}</h3>
                     <p className="text-sm text-muted-foreground line-clamp-2">{p.excerpt}</p>
                   </Link>
                 ))}

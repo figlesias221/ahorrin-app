@@ -93,12 +93,14 @@ export default async function AuthorPage({
             />
           </div>
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold mb-1">
+            <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-primary mb-2">
+              {author.role}
+            </p>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2 tracking-tight">
               {author.displayName}
             </h1>
-            <p className="text-primary font-medium mb-2">{author.role}</p>
-            <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <MapPin className="w-4 h-4" /> Montevideo, Uruguay
+            <p className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
+              <MapPin className="w-3.5 h-3.5" /> Montevideo, Uruguay
             </p>
           </div>
         </div>
@@ -186,23 +188,23 @@ export default async function AuthorPage({
                 <Link
                   key={post.slug}
                   href={`/blog/${post.slug}`}
-                  className="block border border-border rounded-lg p-4 hover:border-primary/40 hover:bg-muted/30 transition-all"
+                  className="block border border-border rounded-lg p-5 hover:border-primary/40 hover:bg-muted/30 transition-all"
                 >
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-primary">
                     {post.category}
                   </span>
-                  <h3 className="text-lg font-bold mt-1 mb-1">{post.title}</h3>
+                  <h3 className="text-lg font-bold mt-2 mb-1.5">{post.title}</h3>
                   <p className="text-sm text-muted-foreground line-clamp-2">{post.excerpt}</p>
-                  <div className="flex gap-3 mt-2 text-xs text-muted-foreground">
-                    <time dateTime={post.date}>
+                  <div className="flex gap-3 mt-3 text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
+                    <time dateTime={post.date} className="normal-case tracking-wider">
                       {new Date(post.date).toLocaleDateString('es-UY', {
                         year: 'numeric',
-                        month: 'long',
+                        month: 'short',
                         day: 'numeric',
                       })}
                     </time>
                     <span>·</span>
-                    <span>{post.readTime} de lectura</span>
+                    <span>{post.readTime}</span>
                   </div>
                 </Link>
               ))}

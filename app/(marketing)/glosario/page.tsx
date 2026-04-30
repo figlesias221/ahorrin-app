@@ -133,7 +133,9 @@ export default function GlosarioPage() {
                               <span className="text-2xl font-bold">{t.term}</span>
                             )}
                             {t.abbr && (
-                              <span className="text-base text-muted-foreground">({t.abbr})</span>
+                              <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                                {t.abbr}
+                              </span>
                             )}
                           </dt>
                           <dd className="text-muted-foreground leading-relaxed mb-3">
@@ -145,8 +147,10 @@ export default function GlosarioPage() {
                             </dd>
                           )}
                           {t.related && t.related.length > 0 && (
-                            <dd className="flex flex-wrap gap-2 text-sm">
-                              <span className="text-muted-foreground">Ver también:</span>
+                            <dd className="flex flex-wrap items-center gap-2 text-sm">
+                              <span className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
+                                Ver también
+                              </span>
                               {t.related.map((r) => (
                                 <Link
                                   key={r.href}

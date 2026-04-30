@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Space_Mono } from "next/font/google";
 import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { CurrencyProvider } from "@/contexts/currency-context";
@@ -13,6 +13,16 @@ import "./globals.css";
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
+  display: "swap",
+});
+
+// Space Mono: monospaced typography for labels, metadata, and numeric data.
+// Pairs with DM Sans the way Space Grotesk + Space Mono do in the Nothing
+// design system — same Colophon foundry DNA, technical/instrument feel.
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -152,7 +162,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${dmSans.variable} antialiased font-sans`}
+        className={`${dmSans.variable} ${spaceMono.variable} antialiased font-sans`}
         suppressHydrationWarning
       >
         <Suspense fallback={null}>

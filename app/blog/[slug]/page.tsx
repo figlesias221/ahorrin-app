@@ -165,7 +165,7 @@ export default async function BlogPostPage({
           <div className="mb-8">
             <Link
               href={`/blog/categoria/${categoryToSlug(metadata.category)}`}
-              className="inline-block px-4 py-1.5 bg-white/90 backdrop-blur-sm text-primary text-sm font-semibold rounded-full hover:bg-white transition-colors"
+              className="inline-block px-3 py-1 bg-white/90 backdrop-blur-sm text-primary text-[11px] font-mono font-bold uppercase tracking-widest rounded-full hover:bg-white transition-colors"
             >
               {metadata.category}
             </Link>
@@ -175,34 +175,34 @@ export default async function BlogPostPage({
             {metadata.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-6 text-primary-foreground/80 text-sm sm:text-base">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-primary-foreground/80 text-xs font-mono uppercase tracking-widest">
             <Link
               href={`/autor/${author.slug}`}
               className="flex items-center gap-2 hover:text-white transition-colors"
               rel="author"
             >
-              <User className="w-5 h-5" />
+              <User className="w-3.5 h-3.5" />
               <span>{metadata.author.name}</span>
             </Link>
             <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              <time dateTime={metadata.date}>
+              <Calendar className="w-3.5 h-3.5" />
+              <time dateTime={metadata.date} className="normal-case tracking-wider">
                 {new Date(metadata.date).toLocaleDateString('es-UY', {
                   year: 'numeric',
-                  month: 'long',
+                  month: 'short',
                   day: 'numeric',
                 })}
               </time>
             </div>
             <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
-              <span>{metadata.readTime} de lectura</span>
+              <Clock className="w-3.5 h-3.5" />
+              <span>{metadata.readTime}</span>
             </div>
           </div>
 
           {reviewedDisplay && (
-            <p className="mt-4 text-sm text-primary-foreground/70">
-              Última revisión: {reviewedDisplay}
+            <p className="mt-6 text-[11px] font-mono uppercase tracking-widest text-primary-foreground/60">
+              Última revisión <span className="normal-case tracking-wider">{reviewedDisplay}</span>
             </p>
           )}
         </div>
@@ -213,7 +213,7 @@ export default async function BlogPostPage({
       <div className="max-w-4xl mx-auto px-4 sm:px-6 mt-6">
         <Link
           href="/metodologia"
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border rounded-full px-3 py-1.5"
+          className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors border border-border rounded-full px-3 py-1.5"
         >
           <ShieldCheck className="w-3.5 h-3.5 text-primary" />
           Cómo verificamos esta información
@@ -265,7 +265,7 @@ export default async function BlogPostPage({
                   href={`/blog/${post.slug}`}
                   className="group bg-card border border-border rounded-lg p-5 hover:shadow-md hover:border-primary/30 transition-all"
                 >
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-primary">
                     {post.category}
                   </span>
                   <h3 className="text-lg font-bold mt-2 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
@@ -274,8 +274,8 @@ export default async function BlogPostPage({
                   <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
                     {post.excerpt}
                   </p>
-                  <span className="text-xs text-muted-foreground">
-                    {post.readTime} de lectura
+                  <span className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
+                    {post.readTime}
                   </span>
                 </Link>
               ))}
