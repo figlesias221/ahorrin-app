@@ -100,7 +100,10 @@ export default function HerramientasPage() {
         {/* Hero Section */}
         <div className="container mx-auto px-4 pt-28 sm:pt-36 pb-16 sm:pb-24">
           <div className="text-center mb-16">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
+            <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-primary mb-4">
+              {tools.length} Herramientas — Uruguay
+            </p>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
               Herramientas Financieras
               <span className="block text-primary mt-2">
                 100% Gratuitas
@@ -128,7 +131,9 @@ export default function HerramientasPage() {
                   <div className="p-8">
                     {/* Popular badge */}
                     {tool.href === '/herramientas/calculadora-salario-liquido' && (
-                      <span className="absolute top-4 right-4 text-xs px-2 py-1 bg-primary/10 text-primary rounded-full font-medium">Popular</span>
+                      <span className="absolute top-4 right-4 text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-1 bg-primary/10 border border-primary/20 text-primary rounded-full">
+                        Popular
+                      </span>
                     )}
 
                     {/* Icon with gradient background */}
@@ -149,7 +154,7 @@ export default function HerramientasPage() {
                       {tool.keywords.map((keyword) => (
                         <span
                           key={keyword}
-                          className="text-xs px-3 py-1 bg-primary/10 border border-primary/20 text-primary rounded-full"
+                          className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 border border-border text-muted-foreground rounded-full"
                         >
                           {keyword}
                         </span>
@@ -157,9 +162,9 @@ export default function HerramientasPage() {
                     </div>
 
                     {/* CTA */}
-                    <div className="flex items-center text-primary font-semibold group-hover:gap-2 transition-all">
+                    <div className="flex items-center text-[11px] font-mono font-bold uppercase tracking-widest text-primary">
                       Usar herramienta
-                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
 

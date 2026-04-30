@@ -266,8 +266,10 @@ export function SalaryCalculator() {
               >
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <p className="text-emerald-100 text-sm font-medium mb-1">Tu salario líquido</p>
-                    <h3 className="text-4xl sm:text-5xl font-bold">
+                    <p className="text-emerald-100 text-[11px] font-mono font-bold uppercase tracking-widest mb-2">
+                      Tu salario líquido
+                    </p>
+                    <h3 className="text-4xl sm:text-5xl font-bold font-mono tabular-nums tracking-tight">
                       {formatCurrency(currentBreakdown.netSalary)}
                     </h3>
                   </div>
@@ -278,31 +280,39 @@ export function SalaryCalculator() {
 
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
-                    <span className="text-white text-sm font-medium">Salario nominal</span>
-                    <span className="font-semibold">{formatCurrency(currentBreakdown.nominal)}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
-                    <span className="text-white text-sm font-medium">BPS (15%)</span>
-                    <span className="font-semibold">-{formatCurrency(currentBreakdown.bpsDeduction)}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
-                    <span className="text-white text-sm font-medium">
-                      Fonasa ({children === 0 ? '3%' : children === 1 ? '4.5%' : '6%'})
+                    <span className="text-white text-[11px] font-mono uppercase tracking-widest">
+                      Salario nominal
                     </span>
-                    <span className="font-semibold">-{formatCurrency(currentBreakdown.fonasaDeduction)}</span>
+                    <span className="font-mono tabular-nums font-bold">{formatCurrency(currentBreakdown.nominal)}</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
-                    <span className="text-white text-sm font-medium">
-                      IRPF (franja {getIRPFBracket(currentBreakdown.nominal)})
+                    <span className="text-white text-[11px] font-mono uppercase tracking-widest">
+                      BPS · 15%
                     </span>
-                    <span className="font-semibold">-{formatCurrency(currentBreakdown.irpfDeduction)}</span>
+                    <span className="font-mono tabular-nums font-bold">−{formatCurrency(currentBreakdown.bpsDeduction)}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
+                    <span className="text-white text-[11px] font-mono uppercase tracking-widest">
+                      Fonasa · {children === 0 ? '3%' : children === 1 ? '4,5%' : '6%'}
+                    </span>
+                    <span className="font-mono tabular-nums font-bold">−{formatCurrency(currentBreakdown.fonasaDeduction)}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
+                    <span className="text-white text-[11px] font-mono uppercase tracking-widest">
+                      IRPF · Franja {getIRPFBracket(currentBreakdown.nominal)}
+                    </span>
+                    <span className="font-mono tabular-nums font-bold">−{formatCurrency(currentBreakdown.irpfDeduction)}</span>
                   </div>
                 </div>
 
                 <div className="p-4 bg-emerald-700 rounded-lg border border-emerald-800">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-white text-sm font-medium">Total descuentos</span>
-                    <span className="text-xl font-bold">{currentBreakdown.deductionPercentage.toFixed(1)}%</span>
+                    <span className="text-white text-[11px] font-mono uppercase tracking-widest">
+                      Total descuentos
+                    </span>
+                    <span className="text-xl font-bold font-mono tabular-nums">
+                      {currentBreakdown.deductionPercentage.toFixed(1)}%
+                    </span>
                   </div>
                   <div className="w-full bg-emerald-800 rounded-full h-2 overflow-hidden">
                     <div
@@ -390,22 +400,22 @@ export function SalaryCalculator() {
                 className="grid md:grid-cols-2 gap-6"
               >
                 <div className="p-5 bg-emerald-50 rounded-xl border border-emerald-200">
-                  <p className="text-sm text-emerald-700 font-medium mb-2">
+                  <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-700 mb-3">
                     Salario actual
                   </p>
-                  <p className="text-3xl font-bold text-emerald-900 mb-1">
+                  <p className="text-3xl font-bold font-mono tabular-nums text-emerald-900 mb-1 tracking-tight">
                     {formatCurrency(currentBreakdown.netSalary)}
                   </p>
-                  <p className="text-sm text-gray-600">
-                    De {formatCurrency(currentBreakdown.nominal)} nominales
+                  <p className="text-xs font-mono text-gray-600">
+                    De <span className="tabular-nums">{formatCurrency(currentBreakdown.nominal)}</span> nominales
                   </p>
                 </div>
 
                 <div className="p-5 bg-blue-50 rounded-xl border border-blue-200">
-                  <p className="text-sm text-blue-700 font-medium mb-2">
-                    Con {formatCurrency(comparisonBreakdown.nominal)}
+                  <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-blue-700 mb-3">
+                    Con <span className="tabular-nums">{formatCurrency(comparisonBreakdown.nominal)}</span>
                   </p>
-                  <p className="text-3xl font-bold text-blue-900 mb-1">
+                  <p className="text-3xl font-bold font-mono tabular-nums text-blue-900 mb-1 tracking-tight">
                     {formatCurrency(comparisonBreakdown.netSalary)}
                   </p>
                   <div className="flex items-center gap-2">

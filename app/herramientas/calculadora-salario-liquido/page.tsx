@@ -128,7 +128,10 @@ export default function CalculadoraSalarioLiquidoPage() {
 
       <section className="bg-background pt-28 sm:pt-36 pb-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4">
+          <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-primary mb-4">
+            Calculadora · IRPF · BPS · FONASA · 2026
+          </p>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4 tracking-tight">
             Calculadora de Salario Líquido Uruguay 2026
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed mb-6">
