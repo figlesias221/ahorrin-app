@@ -21,11 +21,15 @@ export function HeroMobile() {
           transition={{ duration: 0.5 }}
           className="text-center"
         >
-          <h1 className="text-3xl font-bold tracking-tight mb-4 leading-tight">
+          <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-primary mb-5">
+            Ahorrin · Montevideo · 2026
+          </p>
+
+          <h1 className="text-3xl font-bold tracking-tight mb-5 leading-[1.1]">
             Dejá de Perder Plata por No Saber En Qué Gastás 🇺🇾
           </h1>
 
-          <p className="text-base text-foreground/80 mb-6 font-medium">
+          <p className="text-base text-foreground/80 mb-8 leading-relaxed">
             Subí tu extracto o ingresá manualmente. Automático y rápido.
           </p>
 
@@ -36,7 +40,14 @@ export function HeroMobile() {
             </Button>
           </Link>
 
-          <p className="text-sm text-muted-foreground mt-4">Sin conectar tu banco. Sin tarjeta de crédito. 100% gratis.</p>
+          <div className="mt-10 space-y-2">
+            <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-foreground/70">
+              BROU · Itaú · BBVA · Scotia · Santander
+            </p>
+            <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60">
+              Sin banco · Sin tarjeta · Gratis
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>
