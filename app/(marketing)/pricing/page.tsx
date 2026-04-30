@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import { Pricing } from '@/components/marketing/pricing';
-import { Navbar } from '@/components/marketing/navbar';
-import { Footer } from '@/components/marketing/footer';
 import { CheckCircle2 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -135,8 +133,6 @@ export default function PricingPage() {
 
   return (
     <>
-      <Navbar />
-
       {/* WebPage Schema */}
       <script
         type="application/ld+json"
@@ -245,8 +241,6 @@ export default function PricingPage() {
           </div>
         </section>
       </div>
-
-      <Footer />
     </>
   );
 }
