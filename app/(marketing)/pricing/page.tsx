@@ -153,14 +153,14 @@ export default function PricingPage() {
 
       <div className="min-h-screen">
         {/* Hero Section - Similar to homepage */}
-        <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section className="relative pt-32 sm:pt-40 pb-24 sm:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
           {/* Background gradient like homepage */}
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
 
-          <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-8 sm:space-y-10 relative z-10">
             <div className="inline-block">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 text-success text-sm font-medium border border-success/20">
-                <CheckCircle2 className="w-4 h-4" />
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 text-success text-[11px] font-mono font-bold uppercase tracking-widest border border-success/20">
+                <CheckCircle2 className="w-3.5 h-3.5" />
                 100% Gratis para Siempre
               </span>
             </div>
@@ -169,7 +169,7 @@ export default function PricingPage() {
               Planes y Precios
             </h1>
 
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Empezá gratis y pasate a Pro cuando necesites más poder.
             </p>
           </div>
@@ -178,36 +178,36 @@ export default function PricingPage() {
         {/* Pricing Component */}
         <Pricing />
 
-        {/* Trust Section - Compact */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        {/* Trust Section */}
+        <section className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8 bg-muted/30 border-y border-border">
           <div className="max-w-5xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center space-y-2">
+            <div className="grid md:grid-cols-3 gap-10 md:gap-12">
+              <div className="text-center space-y-3">
                 <div className="w-12 h-12 mx-auto bg-success/10 rounded-xl flex items-center justify-center">
                   <CheckCircle2 className="w-6 h-6 text-success" />
                 </div>
-                <h3 className="font-semibold">Sin Costos Ocultos</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold pt-1">Sin Costos Ocultos</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   No hay trucos ni tarifas escondidas
                 </p>
               </div>
 
-              <div className="text-center space-y-2">
+              <div className="text-center space-y-3">
                 <div className="w-12 h-12 mx-auto bg-primary/10 rounded-xl flex items-center justify-center">
                   <CheckCircle2 className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-semibold">Todos los Bancos</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold pt-1">Todos los Bancos</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   BROU, Itaú, BBVA, Scotia, Santander y más
                 </p>
               </div>
 
-              <div className="text-center space-y-2">
+              <div className="text-center space-y-3">
                 <div className="w-12 h-12 mx-auto bg-accent-cyan/10 rounded-xl flex items-center justify-center">
                   <CheckCircle2 className="w-6 h-6 text-accent-cyan" />
                 </div>
-                <h3 className="font-semibold">Seguro y Privado</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold pt-1">Seguro y Privado</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   Tus datos nunca salen de tu control
                 </p>
               </div>
@@ -216,15 +216,15 @@ export default function PricingPage() {
         </section>
 
         {/* CTA Section - Like homepage */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl sm:text-4xl font-bold">
+        <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center space-y-10">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
               Comenzá a controlar tus finanzas hoy
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Sin tarjeta de crédito. Sin compromisos. Comenzá en 30 segundos.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <a
                 href="/signup"
                 className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-xl bg-gradient-to-r from-primary to-primary/90 text-white hover:shadow-xl hover:scale-105 transition-all duration-300"
