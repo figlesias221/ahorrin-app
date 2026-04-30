@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { DM_Sans } from "next/font/google";
 import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
@@ -129,13 +130,6 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#3b82f6" />
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
-            crossOrigin="anonymous"
-          />
-        )}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -173,6 +167,14 @@ export default function RootLayout({
             </CurrencyProvider>
           </ToastProvider>
         </ThemeProvider>
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+          <Script
+            id="adsbygoogle-init"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
+            strategy="lazyOnload"
+            crossOrigin="anonymous"
+          />
+        )}
       </body>
     </html>
   );
