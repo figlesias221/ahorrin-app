@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Select } from '@/components/ui/select';
 import { createClient } from '@/lib/supabase/client';
+import { RuleMatchPreview } from '@/components/categorization/RuleMatchPreview';
 
 interface QuickRuleModalProps {
   isOpen: boolean;
@@ -201,6 +202,13 @@ export function QuickRuleModal({
                 ? 'Ingresa el monto numérico de referencia'
                 : 'Puedes editar el texto para que la regla sea más específica'}
             </p>
+            <div className="mt-3">
+              <RuleMatchPreview
+                ruleType={formData.rule_type}
+                matchValues={[formData.match_value]}
+                enabled={isOpen}
+              />
+            </div>
           </div>
 
           <Select

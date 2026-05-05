@@ -10,6 +10,7 @@ import { InsightCard } from '@/components/ui/insight-card';
 import { SkeletonTable, SkeletonMetricCard } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QuickCategoryModal } from '@/components/upload/QuickCategoryModal';
+import { RuleMatchPreview } from '@/components/categorization/RuleMatchPreview';
 import { analytics } from '@/components/analytics/google-analytics';
 
 type RuleType = 'vendor_contains' | 'description_contains' | 'vendor_equals' | 'amount_greater' | 'amount_less' | 'amount_equals';
@@ -599,6 +600,14 @@ export default function RulesPage() {
                       <span>La regla coincidirá si contiene <strong>cualquiera</strong> de estos valores</span>
                     </p>
                   )}
+
+                  <div className="mt-3">
+                    <RuleMatchPreview
+                      ruleType={formData.rule_type}
+                      matchValues={matchValues}
+                      enabled={showForm}
+                    />
+                  </div>
                 </div>
 
                 {/* Categoría */}

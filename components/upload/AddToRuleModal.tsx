@@ -5,6 +5,8 @@ import { X, Plus, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { createClient } from '@/lib/supabase/client';
+import { RuleMatchPreview } from '@/components/categorization/RuleMatchPreview';
+import type { CategorizationRule } from '@/lib/categorization/rules';
 
 interface Rule {
   id: string;
@@ -169,6 +171,18 @@ export function AddToRuleModal({
           <p className="text-xs text-muted-foreground mt-1">
             Puedes editar el texto para que sea más específico. Luego selecciona una regla existente para agregarlo.
           </p>
+          {selectedRuleId && (
+            <div className="mt-3">
+              <RuleMatchPreview
+                ruleType={
+                  (rules.find((r) => r.id === selectedRuleId)?.rule_type ??
+                    'vendor_contains') as CategorizationRule['rule_type']
+                }
+                matchValues={[editableVendor]}
+                enabled={isOpen}
+              />
+            </div>
+          )}
         </div>
 
         {error && (
