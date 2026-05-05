@@ -43,9 +43,23 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get or create conversation
+    // Get or create conversation. If client supplied an ID, verify ownership before
+    // sending any context to the LLM — RLS only kicks in on insert, which is too late.
     let currentConversationId = conversationId;
-    if (!currentConversationId) {
+    if (currentConversationId) {
+      const { data: conv, error: ownerErr } = await supabase
+        .from('chat_conversations')
+        .select('id, user_id')
+        .eq('id', currentConversationId)
+        .maybeSingle();
+
+      if (ownerErr || !conv || conv.user_id !== user.id) {
+        return new Response(
+          JSON.stringify({ error: 'Conversación no encontrada' }),
+          { status: 404, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    } else {
       const { data: newConv, error: convError } = await supabase
         .from('chat_conversations')
         .insert({ user_id: user.id, mode })

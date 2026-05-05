@@ -41,6 +41,10 @@ creds.json
 # vercel
 .vercel
 
+# supabase
+supabase/.temp/
+supabase/.branches/
+
 # cloudflare
 .open-next/
 .wrangler/

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPayment } from '@/lib/payments/mercadopago';
+import { getPayment, verifyMercadoPagoSignature } from '@/lib/payments/mercadopago';
 import { createClient } from '@supabase/supabase-js';
 
 export async function POST(request: NextRequest) {
@@ -19,6 +19,17 @@ export async function POST(request: NextRequest) {
     const paymentId = body.data?.id;
     if (!paymentId) {
       return NextResponse.json({ error: 'No payment ID' }, { status: 400 });
+    }
+
+    // Verify signature: rejects forged webhooks attempting to activate Pro for arbitrary users.
+    const sig = verifyMercadoPagoSignature({
+      signatureHeader: request.headers.get('x-signature'),
+      requestId: request.headers.get('x-request-id'),
+      dataId: String(paymentId),
+    });
+    if (!sig.ok) {
+      console.error('MP webhook signature rejected:', sig.reason);
+      return NextResponse.json({ error: 'invalid signature' }, { status: 401 });
     }
 
     // Get payment details from MercadoPago
