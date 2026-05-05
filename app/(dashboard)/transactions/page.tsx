@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Transaction, Category, TransactionFilters, BankStatement } from '@/types';
-import { Plus, Filter, Search, Download, Eye, EyeOff, X, Edit2, Check, Trash2, AlertCircle } from 'lucide-react';
+import { Plus, Filter, Search, Download, Eye, EyeOff, X, Edit2, Check, Trash2, AlertCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { AlertModal } from '@/components/ui/alert-modal';
@@ -33,6 +33,7 @@ export default function TransactionsPage() {
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
   const [deletingAll, setDeletingAll] = useState(false);
   const [uncategorizedCount, setUncategorizedCount] = useState(0);
+  const [applyingRules, setApplyingRules] = useState(false);
   const [alertModal, setAlertModal] = useState<{
     isOpen: boolean;
     title: string;
@@ -287,6 +288,40 @@ export default function TransactionsPage() {
     }
   };
 
+  const handleApplyRulesToUnmatched = async () => {
+    if (applyingRules) return;
+    setApplyingRules(true);
+    try {
+      const res = await fetch('/api/transactions/recategorize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scope: 'unmatched' }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        showAlert('No se pudo aplicar', json.error ?? 'Error desconocido');
+      } else if (json.reset === 0) {
+        showAlert(
+          'Nada que reprocesar',
+          'No hay transacciones sin categorizar pendientes de reglas',
+          'info',
+        );
+      } else {
+        showAlert(
+          'Aplicando reglas',
+          `${json.reset} transacciones en cola. Las verás categorizadas en unos segundos.`,
+          'success',
+        );
+        // Refresh shortly so the count updates as the worker progresses.
+        setTimeout(() => fetchTransactions(), 4000);
+      }
+    } catch (err) {
+      showAlert('Error', String(err));
+    } finally {
+      setApplyingRules(false);
+    }
+  };
+
   // Calculate totals excluding ignored transactions with currency conversion
   const activeTransactions = transactions.filter((tx: any) => !tx.is_ignored);
 
@@ -393,6 +428,25 @@ export default function TransactionsPage() {
                 {uncategorizedCount}
               </span>
             </Button>
+
+            {/* Apply rules to uncategorized — only surface when there's
+                something actionable. Subdued styling so it doesn't fight the
+                primary "Sin Categoría" filter chip next to it. */}
+            {uncategorizedCount > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleApplyRulesToUnmatched}
+                disabled={applyingRules}
+                className="flex items-center gap-1.5 h-9 px-2.5 text-primary hover:bg-primary/5 disabled:opacity-50"
+                title="Aplicar reglas y memoria a las transacciones sin categorizar"
+              >
+                <Sparkles className={`h-3.5 w-3.5 ${applyingRules ? 'animate-pulse' : ''}`} />
+                <span className="text-[11px] font-mono uppercase tracking-widest">
+                  {applyingRules ? 'Aplicando' : 'Aplicar reglas'}
+                </span>
+              </Button>
+            )}
 
             {/* Ignored Filter */}
             <Button
@@ -520,15 +574,29 @@ export default function TransactionsPage() {
           <div className="flex items-center gap-3">
             <AlertCircle className="h-5 w-5 text-warning flex-shrink-0" />
             <p className="text-sm font-medium text-foreground">
-              {uncategorizedCount} transacciones sin categoria
+              <span className="font-mono tabular-nums">{uncategorizedCount}</span>{' '}
+              transacciones sin categoría
             </p>
           </div>
-          <button
-            onClick={() => setShowUncategorized(true)}
-            className="text-sm font-medium text-primary hover:underline"
-          >
-            Categorizar ahora
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleApplyRulesToUnmatched}
+              disabled={applyingRules}
+              className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-primary transition-opacity duration-150 ease-out hover:opacity-70 disabled:opacity-40"
+            >
+              <Sparkles className={`h-3.5 w-3.5 ${applyingRules ? 'animate-pulse' : ''}`} />
+              {applyingRules ? 'Aplicando' : 'Aplicar reglas'}
+            </button>
+            <span className="text-border" aria-hidden>
+              ·
+            </span>
+            <button
+              onClick={() => setShowUncategorized(true)}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Categorizar ahora
+            </button>
+          </div>
         </div>
       )}
 

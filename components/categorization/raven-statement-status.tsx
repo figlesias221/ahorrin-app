@@ -1,8 +1,11 @@
 'use client';
 
 // Live status panel for a sharded-raven statement. Subscribes to
-// bank_statements and the related categorization_jobs row so the UI updates
-// in real time as the worker progresses.
+// bank_statements + the related transaction rows so the UI updates as the
+// worker progresses.
+//
+// Visual language follows BRAND.md: DM Sans body, Space Mono for labels &
+// data, emerald primary as the single moment of color, borders over shadows.
 
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -15,6 +18,7 @@ export type StatementStatus =
   | 'failed';
 
 interface CountsRow {
+  pending: number;
   rules: number;
   cache: number;
   similar: number;
@@ -25,11 +29,11 @@ interface CountsRow {
 
 interface Props {
   statementId: string;
-  /** Optional callback when the statement finishes categorizing. */
   onComplete?: (counts: CountsRow) => void;
 }
 
 const ZERO_COUNTS: CountsRow = {
+  pending: 0,
   rules: 0,
   cache: 0,
   similar: 0,
@@ -44,11 +48,20 @@ const STEPS: Array<{ key: StatementStatus; label: string }> = [
   { key: 'completed', label: 'Listo' },
 ];
 
+const STAT_ORDER: Array<{ key: keyof CountsRow; label: string }> = [
+  { key: 'rules', label: 'Reglas' },
+  { key: 'cache', label: 'Memoria' },
+  { key: 'similar', label: 'Similares' },
+  { key: 'manual', label: 'Manuales' },
+  { key: 'unmatched', label: 'Sin categorizar' },
+];
+
 export function RavenStatementStatus({ statementId, onComplete }: Props) {
   const supabase = createClient();
   const [status, setStatus] = useState<StatementStatus>('parsed');
   const [counts, setCounts] = useState<CountsRow>(ZERO_COUNTS);
   const [recategorizing, setRecategorizing] = useState(false);
+  const [inlineNote, setInlineNote] = useState<string | null>(null);
 
   const refreshCounts = useCallback(async () => {
     const { data } = await supabase
@@ -105,106 +118,196 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
     if (status === 'completed' && onComplete) onComplete(counts);
   }, [status, counts, onComplete]);
 
-  const stepIndex = STEPS.findIndex((s) => s.key === status);
-  const isFailed = status === 'failed';
-
   const handleRecategorize = async () => {
     setRecategorizing(true);
+    setInlineNote(null);
     try {
-      await fetch('/api/transactions/recategorize', {
+      const res = await fetch('/api/transactions/recategorize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ statement_id: statementId }),
       });
-      // Status will refresh via Realtime.
+      const json = await res.json();
+      if (!res.ok) {
+        setInlineNote(json.error ?? 'Error al re-categorizar');
+      } else if (json.reset === 0) {
+        setInlineNote('No hay transacciones para reprocesar');
+      } else {
+        setInlineNote(`${json.reset} en cola`);
+      }
+    } catch (err) {
+      setInlineNote(String(err));
     } finally {
       setRecategorizing(false);
     }
   };
 
+  const stepIndex = STEPS.findIndex((s) => s.key === status);
+  const isFailed = status === 'failed';
+  const isWorking = status === 'categorizing';
+  const showStats = (status === 'completed' || isWorking) && counts.total > 0;
+  const completionPct =
+    counts.total > 0
+      ? Math.round(((counts.total - counts.unmatched - counts.pending) / counts.total) * 100)
+      : 0;
+
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-          Estado del extracto
-        </h3>
+    <section
+      aria-label="Estado de categorización"
+      className="rounded-xl border border-border bg-background p-6"
+    >
+      {/* Header — single primary moment, label in mono caps */}
+      <div className="flex items-baseline justify-between gap-4">
+        <div className="flex items-baseline gap-3">
+          <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-muted-foreground">
+            Extracto
+          </span>
+          <h3 className="text-base font-semibold tracking-tight text-foreground">
+            {isFailed
+              ? 'Error de categorización'
+              : isWorking
+                ? 'Categorizando…'
+                : status === 'completed'
+                  ? 'Listo'
+                  : 'En cola'}
+          </h3>
+        </div>
         <button
           onClick={handleRecategorize}
-          disabled={recategorizing || status === 'categorizing'}
-          className="rounded-md border border-slate-200 px-3 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          disabled={recategorizing || isWorking}
+          className="text-[11px] font-mono uppercase tracking-widest text-primary transition-opacity duration-150 ease-out hover:opacity-70 disabled:opacity-30 disabled:hover:opacity-30"
         >
-          {recategorizing ? 'Reprocesando…' : 'Re-categorizar'}
+          {recategorizing ? 'Reprocesando' : 'Re-categorizar'}
         </button>
       </div>
 
-      <div className="mt-4 flex items-center gap-2">
+      {/* Step rail — three notches; the active one is filled emerald, past steps are muted-foreground, future steps are border-only */}
+      <ol className="mt-6 grid grid-cols-3 gap-2">
         {STEPS.map((step, i) => {
-          const reached = !isFailed && (stepIndex >= i || status === 'completed');
-          const isCurrent = STEPS[stepIndex]?.key === step.key;
+          const past = !isFailed && stepIndex > i;
+          const current = !isFailed && stepIndex === i;
+          const future = !isFailed && stepIndex < i;
           return (
-            <div key={step.key} className="flex flex-1 items-center gap-2">
+            <li key={step.key} className="flex flex-col gap-2">
               <div
-                className={`h-2 flex-1 rounded-full transition-colors ${
+                className={[
+                  'h-px w-full transition-colors duration-300 ease-out',
                   isFailed
-                    ? 'bg-red-300'
-                    : reached
-                      ? 'bg-emerald-500'
-                      : 'bg-slate-200 dark:bg-slate-700'
-                } ${isCurrent && status === 'categorizing' ? 'animate-pulse' : ''}`}
+                    ? 'bg-error'
+                    : past
+                      ? 'bg-foreground'
+                      : current
+                        ? 'bg-primary'
+                        : 'bg-border',
+                ].join(' ')}
               />
-              <span
-                className={`text-xs font-medium ${
-                  reached ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'
-                }`}
-              >
-                {step.label}
-              </span>
-            </div>
+              <div className="flex items-center justify-between">
+                <span
+                  className={[
+                    'text-[10px] font-mono uppercase tracking-widest',
+                    current
+                      ? 'text-primary'
+                      : past
+                        ? 'text-foreground'
+                        : 'text-muted-foreground',
+                  ].join(' ')}
+                >
+                  {step.label}
+                </span>
+                {current && isWorking && (
+                  <span
+                    className="h-1 w-1 rounded-full bg-primary"
+                    style={{ animation: 'raven-pulse 1.4s ease-out infinite' }}
+                    aria-hidden
+                  />
+                )}
+              </div>
+            </li>
           );
         })}
-      </div>
+      </ol>
 
       {isFailed && (
-        <p className="mt-3 text-xs text-red-600">
-          La categorización falló. Probá «Re-categorizar».
+        <p className="mt-6 text-[13px] text-foreground">
+          La categorización falló. Probá <span className="font-medium">Re-categorizar</span>.
         </p>
       )}
 
-      {(status === 'completed' || status === 'categorizing') && counts.total > 0 && (
-        <dl className="mt-4 grid grid-cols-2 gap-3 text-xs sm:grid-cols-5">
-          <Stat label="Reglas" value={counts.rules} tone="emerald" />
-          <Stat label="Memoria" value={counts.cache} tone="sky" />
-          <Stat label="Similares" value={counts.similar} tone="violet" />
-          <Stat label="Manuales" value={counts.manual} tone="slate" />
-          <Stat label="Sin categorizar" value={counts.unmatched} tone="amber" />
-        </dl>
-      )}
-    </div>
-  );
-}
+      {showStats && (
+        <>
+          {/* Big primary — the % categorized. One number, oversized, mono. */}
+          <div className="mt-8 flex items-baseline gap-3">
+            <span
+              className="font-mono text-5xl font-medium tracking-tight tabular-nums text-foreground"
+              style={{ fontVariantNumeric: 'tabular-nums' }}
+            >
+              {completionPct}
+              <span className="text-2xl text-muted-foreground">%</span>
+            </span>
+            <span className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
+              categorizado · {counts.total} mov.
+            </span>
+          </div>
 
-function Stat({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: number;
-  tone: 'emerald' | 'sky' | 'violet' | 'slate' | 'amber';
-}) {
-  const toneCls: Record<typeof tone, string> = {
-    emerald: 'text-emerald-700 bg-emerald-50 dark:text-emerald-300 dark:bg-emerald-950',
-    sky: 'text-sky-700 bg-sky-50 dark:text-sky-300 dark:bg-sky-950',
-    violet: 'text-violet-700 bg-violet-50 dark:text-violet-300 dark:bg-violet-950',
-    slate: 'text-slate-700 bg-slate-50 dark:text-slate-300 dark:bg-slate-800',
-    amber: 'text-amber-700 bg-amber-50 dark:text-amber-300 dark:bg-amber-950',
-  };
-  return (
-    <div className={`rounded-md px-2 py-2 text-center ${toneCls[tone]}`}>
-      <div className="text-base font-semibold leading-none">{value}</div>
-      <div className="mt-1 text-[10px] uppercase tracking-wide opacity-80">
-        {label}
-      </div>
-    </div>
+          {/* Breakdown — clean grid of mono labels + tabular numbers, no
+              colored pills. Unmatched is the only one allowed to lean primary
+              when it's actionable. */}
+          <dl className="mt-6 grid grid-cols-5 divide-x divide-border border-y border-border">
+            {STAT_ORDER.map(({ key, label }) => {
+              const value = counts[key];
+              const isUnmatched = key === 'unmatched';
+              const isActionable = isUnmatched && value > 0;
+              return (
+                <div
+                  key={key}
+                  className="flex flex-col gap-1 px-3 py-3 first:pl-0 last:pr-0"
+                >
+                  <dt className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                    {label}
+                  </dt>
+                  <dd
+                    className={[
+                      'font-mono text-lg font-medium tabular-nums',
+                      isActionable ? 'text-primary' : 'text-foreground',
+                    ].join(' ')}
+                    style={{ fontVariantNumeric: 'tabular-nums' }}
+                  >
+                    {value}
+                  </dd>
+                </div>
+              );
+            })}
+          </dl>
+        </>
+      )}
+
+      {inlineNote && (
+        <p
+          className="mt-4 text-[11px] font-mono uppercase tracking-widest text-muted-foreground"
+          role="status"
+          aria-live="polite"
+        >
+          {inlineNote}
+        </p>
+      )}
+
+      <style jsx>{`
+        @keyframes raven-pulse {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.4;
+            transform: scale(1.6);
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          ol li div[style*='raven-pulse'] {
+            animation: none !important;
+          }
+        }
+      `}</style>
+    </section>
   );
 }

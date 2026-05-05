@@ -9,7 +9,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceRoleClient, workerSecret } from '@/lib/categorization/worker-client';
-import { runPipelineForStatement } from '@/lib/categorization/pipeline';
+import {
+  runPipelineForStatement,
+  runPipelineForUserPending,
+} from '@/lib/categorization/pipeline';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -64,7 +67,7 @@ export async function POST(request: NextRequest) {
           claimed.user_id as string,
           claimed.statement_id as string,
         )
-      : { rules: 0, cache: 0, similar: 0, unmatched: 0, total: 0 };
+      : await runPipelineForUserPending(supabase, claimed.user_id as string);
 
     if (claimed.statement_id) {
       await supabase

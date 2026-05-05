@@ -37,13 +37,29 @@ export async function runPipelineForStatement(
   userId: string,
   statementId: string,
 ): Promise<PipelineCounts> {
-  // Load all txns of this statement that still need categorization.
-  const { data: txns, error: txErr } = await supabase
+  return runPipeline(supabase, userId, { statementId });
+}
+
+export async function runPipelineForUserPending(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<PipelineCounts> {
+  return runPipeline(supabase, userId, {});
+}
+
+async function runPipeline(
+  supabase: SupabaseClient,
+  userId: string,
+  scope: { statementId?: string },
+): Promise<PipelineCounts> {
+  // Load all txns (in scope) that still need categorization.
+  let query = supabase
     .from('transactions')
     .select('id, vendor, amount, notes, vendor_key')
     .eq('user_id', userId)
-    .eq('statement_id', statementId)
     .eq('categorization_status', 'pending');
+  if (scope.statementId) query = query.eq('statement_id', scope.statementId);
+  const { data: txns, error: txErr } = await query;
 
   if (txErr) throw txErr;
   const inputs: RuleInput[] = (txns ?? []).map((t) => ({

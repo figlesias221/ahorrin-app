@@ -1,5 +1,8 @@
-// Re-runs the sharded-raven pipeline against existing transactions, either
-// scoped to a statement (most common) or to an explicit txn id list.
+// Re-runs the sharded-raven pipeline against existing transactions. Three
+// scopes:
+//   { statement_id }            → all non-verified rows in that statement
+//   { scope: 'unmatched' }      → all unmatched rows for the user (no scope id)
+//   { scope: 'all' }            → all non-verified rows for the user
 
 import { NextRequest, NextResponse } from 'next/server';
 import { after } from 'next/server';
@@ -11,6 +14,7 @@ export const maxDuration = 30;
 
 interface Body {
   statement_id?: string;
+  scope?: 'unmatched' | 'all';
 }
 
 export async function POST(request: NextRequest) {
@@ -27,19 +31,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid json' }, { status: 400 });
   }
 
-  if (!body.statement_id) {
-    return NextResponse.json({ error: 'statement_id required' }, { status: 400 });
+  if (!body.statement_id && !body.scope) {
+    return NextResponse.json(
+      { error: 'statement_id or scope required' },
+      { status: 400 },
+    );
   }
 
-  // Reset target rows to 'pending' so the pipeline reprocesses them. RLS
-  // ensures we can only touch rows owned by the user. Never overwrite
-  // user-verified rows.
-  const { count, error: resetErr } = await supabase
+  // Build the reset query. RLS pins us to the user; we additionally never
+  // overwrite rows the user has manually verified.
+  let resetQuery = supabase
     .from('transactions')
     .update({ categorization_status: 'pending' }, { count: 'exact' })
     .eq('user_id', user.id)
-    .eq('statement_id', body.statement_id)
     .neq('is_manually_verified', true);
+
+  if (body.statement_id) {
+    resetQuery = resetQuery.eq('statement_id', body.statement_id);
+  } else if (body.scope === 'unmatched') {
+    resetQuery = resetQuery.in('categorization_status', ['unmatched', 'pending']);
+  }
+  // scope === 'all' has no extra filter — already user-scoped.
+
+  const { count, error: resetErr } = await resetQuery;
   if (resetErr) {
     return NextResponse.json({ error: resetErr.message }, { status: 500 });
   }
