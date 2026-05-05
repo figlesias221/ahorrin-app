@@ -156,26 +156,21 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
       aria-label="Estado de categorización"
       className="rounded-xl border border-border bg-background p-6"
     >
-      {/* Header — single primary moment, label in mono caps */}
+      {/* Header — single primary moment, H3 alone carries the heading */}
       <div className="flex items-baseline justify-between gap-4">
-        <div className="flex items-baseline gap-3">
-          <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-muted-foreground">
-            Extracto
-          </span>
-          <h3 className="text-base font-semibold tracking-tight text-foreground">
-            {isFailed
-              ? 'Error de categorización'
-              : isWorking
-                ? 'Categorizando…'
-                : status === 'completed'
-                  ? 'Listo'
-                  : 'En cola'}
-          </h3>
-        </div>
+        <h3 className="text-base font-semibold tracking-tight text-foreground">
+          {isFailed
+            ? 'Error de categorización'
+            : isWorking
+              ? 'Categorizando…'
+              : status === 'completed'
+                ? 'Listo'
+                : 'En cola'}
+        </h3>
         <button
           onClick={handleRecategorize}
           disabled={recategorizing || isWorking}
-          className="text-[11px] font-mono uppercase tracking-widest text-primary transition-opacity duration-150 ease-out hover:opacity-70 disabled:opacity-30 disabled:hover:opacity-30"
+          className="text-[11px] font-mono uppercase tracking-widest text-primary transition-opacity duration-150 ease-out hover:opacity-70 disabled:opacity-40 disabled:hover:opacity-40"
         >
           {recategorizing ? 'Reprocesando' : 'Re-categorizar'}
         </button>
@@ -216,8 +211,7 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
                 </span>
                 {current && isWorking && (
                   <span
-                    className="h-1 w-1 rounded-full bg-primary"
-                    style={{ animation: 'raven-pulse 1.4s ease-out infinite' }}
+                    className="raven-pulse-dot h-1 w-1 rounded-full bg-primary [animation:raven-pulse_1.4s_ease-out_infinite]"
                     aria-hidden
                   />
                 )}
@@ -249,35 +243,65 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
             </span>
           </div>
 
-          {/* Breakdown — clean grid of mono labels + tabular numbers, no
-              colored pills. Unmatched is the only one allowed to lean primary
-              when it's actionable. */}
-          <dl className="mt-6 grid grid-cols-5 divide-x divide-border border-y border-border">
-            {STAT_ORDER.map(({ key, label }) => {
-              const value = counts[key];
-              const isUnmatched = key === 'unmatched';
-              const isActionable = isUnmatched && value > 0;
-              return (
-                <div
-                  key={key}
-                  className="flex flex-col gap-1 px-3 py-3 first:pl-0 last:pr-0"
+          {/* Tier 1 — single sentence-line summary in brand voice. */}
+          {(() => {
+            const categorized = counts.total - counts.unmatched - counts.pending;
+            const unmatchedActionable = counts.unmatched > 0;
+            return (
+              <p className="mt-6 text-[13px] text-muted-foreground">
+                <span className="font-mono tabular-nums text-foreground">{categorized}</span>{' '}
+                categorizadas ·{' '}
+                <span
+                  className={[
+                    'font-mono tabular-nums',
+                    unmatchedActionable ? 'text-primary' : 'text-foreground',
+                  ].join(' ')}
                 >
-                  <dt className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                    {label}
-                  </dt>
-                  <dd
-                    className={[
-                      'font-mono text-lg font-medium tabular-nums',
-                      isActionable ? 'text-primary' : 'text-foreground',
-                    ].join(' ')}
-                    style={{ fontVariantNumeric: 'tabular-nums' }}
+                  {counts.unmatched}
+                </span>{' '}
+                sin categorizar
+                {counts.pending > 0 && (
+                  <>
+                    {' · '}
+                    <span className="font-mono tabular-nums">{counts.pending}</span> en proceso
+                  </>
+                )}
+              </p>
+            );
+          })()}
+
+          {/* Tier 2 — collapsible breakdown. Same brand styling as before. */}
+          <details className="mt-4 group">
+            <summary className="cursor-pointer text-[11px] font-mono uppercase tracking-widest text-muted-foreground transition-opacity duration-150 ease-out hover:opacity-70 [&::-webkit-details-marker]:hidden [&::marker]:hidden">
+              Ver detalle
+            </summary>
+            <dl className="mt-4 grid grid-cols-5 divide-x divide-border border-y border-border">
+              {STAT_ORDER.map(({ key, label }) => {
+                const value = counts[key];
+                const isUnmatched = key === 'unmatched';
+                const isActionable = isUnmatched && value > 0;
+                return (
+                  <div
+                    key={key}
+                    className="flex flex-col gap-1 px-3 py-3 first:pl-0 last:pr-0"
                   >
-                    {value}
-                  </dd>
-                </div>
-              );
-            })}
-          </dl>
+                    <dt className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                      {label}
+                    </dt>
+                    <dd
+                      className={[
+                        'font-mono text-lg font-medium tabular-nums',
+                        isActionable ? 'text-primary' : 'text-foreground',
+                      ].join(' ')}
+                      style={{ fontVariantNumeric: 'tabular-nums' }}
+                    >
+                      {value}
+                    </dd>
+                  </div>
+                );
+              })}
+            </dl>
+          </details>
         </>
       )}
 
@@ -291,23 +315,6 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
         </p>
       )}
 
-      <style jsx>{`
-        @keyframes raven-pulse {
-          0%, 100% {
-            opacity: 1;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.4;
-            transform: scale(1.6);
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          ol li div[style*='raven-pulse'] {
-            animation: none !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

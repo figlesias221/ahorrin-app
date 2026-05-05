@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Transaction, Category, TransactionFilters, BankStatement } from '@/types';
-import { Plus, Filter, Search, Download, Eye, EyeOff, X, Edit2, Check, Trash2, AlertCircle, Sparkles } from 'lucide-react';
+import { Plus, Filter, Search, Download, Eye, EyeOff, X, Edit2, Check, Trash2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { AlertModal } from '@/components/ui/alert-modal';
@@ -34,6 +34,7 @@ export default function TransactionsPage() {
   const [deletingAll, setDeletingAll] = useState(false);
   const [uncategorizedCount, setUncategorizedCount] = useState(0);
   const [applyingRules, setApplyingRules] = useState(false);
+  const [applyResult, setApplyResult] = useState<string | null>(null);
   const [alertModal, setAlertModal] = useState<{
     isOpen: boolean;
     title: string;
@@ -299,26 +300,19 @@ export default function TransactionsPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        showAlert('No se pudo aplicar', json.error ?? 'Error desconocido');
+        setApplyResult(`Error: ${json.error ?? 'desconocido'}`);
       } else if (json.reset === 0) {
-        showAlert(
-          'Nada que reprocesar',
-          'No hay transacciones sin categorizar pendientes de reglas',
-          'info',
-        );
+        setApplyResult('Nada para reprocesar');
       } else {
-        showAlert(
-          'Aplicando reglas',
-          `${json.reset} transacciones en cola. Las verás categorizadas en unos segundos.`,
-          'success',
-        );
+        setApplyResult(`${json.reset} en cola`);
         // Refresh shortly so the count updates as the worker progresses.
         setTimeout(() => fetchTransactions(), 4000);
       }
     } catch (err) {
-      showAlert('Error', String(err));
+      setApplyResult(`Error: ${String(err)}`);
     } finally {
       setApplyingRules(false);
+      setTimeout(() => setApplyResult(null), 4000);
     }
   };
 
@@ -441,9 +435,8 @@ export default function TransactionsPage() {
                 className="flex items-center gap-1.5 h-9 px-2.5 text-primary hover:bg-primary/5 disabled:opacity-50"
                 title="Aplicar reglas y memoria a las transacciones sin categorizar"
               >
-                <Sparkles className={`h-3.5 w-3.5 ${applyingRules ? 'animate-pulse' : ''}`} />
                 <span className="text-[11px] font-mono uppercase tracking-widest">
-                  {applyingRules ? 'Aplicando' : 'Aplicar reglas'}
+                  {applyingRules ? 'Recategorizando' : 'Recategorizar'}
                 </span>
               </Button>
             )}
@@ -582,20 +575,19 @@ export default function TransactionsPage() {
             <button
               onClick={handleApplyRulesToUnmatched}
               disabled={applyingRules}
-              className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-widest text-primary transition-opacity duration-150 ease-out hover:opacity-70 disabled:opacity-40"
+              className="text-[11px] font-mono uppercase tracking-widest text-primary transition-opacity duration-150 ease-out hover:opacity-70 disabled:opacity-40"
             >
-              <Sparkles className={`h-3.5 w-3.5 ${applyingRules ? 'animate-pulse' : ''}`} />
-              {applyingRules ? 'Aplicando' : 'Aplicar reglas'}
+              {applyingRules ? 'Recategorizando' : 'Recategorizar'}
             </button>
-            <span className="text-border" aria-hidden>
-              ·
-            </span>
-            <button
-              onClick={() => setShowUncategorized(true)}
-              className="text-sm font-medium text-primary hover:underline"
-            >
-              Categorizar ahora
-            </button>
+            {applyResult && (
+              <span
+                className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground"
+                role="status"
+                aria-live="polite"
+              >
+                {applyResult}
+              </span>
+            )}
           </div>
         </div>
       )}

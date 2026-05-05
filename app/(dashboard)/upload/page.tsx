@@ -104,6 +104,10 @@ export default function UploadPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [previewFile, setPreviewFile] = useState<File | null>(null);
 
+  // Recategorize per-row inline status (keyed by statement id)
+  const [recategorizingStatus, setRecategorizingStatus] = useState<Record<string, string>>({});
+  const [recategorizingInFlight, setRecategorizingInFlight] = useState<Record<string, boolean>>({});
+
   const supabase = createClient();
   const toast = useToast();
 
@@ -1896,6 +1900,14 @@ export default function UploadPage() {
                             variant="ghost"
                             size="sm"
                             onClick={async () => {
+                              setRecategorizingInFlight(s => ({ ...s, [statement.id]: true }));
+                              const clearStatusLater = () => {
+                                setTimeout(() => setRecategorizingStatus(s => {
+                                  const c = { ...s };
+                                  delete c[statement.id];
+                                  return c;
+                                }), 4000);
+                              };
                               try {
                                 const res = await fetch('/api/transactions/recategorize', {
                                   method: 'POST',
@@ -1903,28 +1915,29 @@ export default function UploadPage() {
                                   body: JSON.stringify({ statement_id: statement.id }),
                                 });
                                 const json = await res.json();
-                                if (json.ok) {
-                                  toast.success(
-                                    `${json.reset} transacciones en cola para recategorizar`,
-                                    'Re-categorizando'
-                                  );
+                                if (json.ok && json.reset > 0) {
+                                  setRecategorizingStatus(s => ({ ...s, [statement.id]: `${json.reset} en cola` }));
                                   fetchData?.();
                                 } else if (json.reset === 0) {
-                                  toast.info(
-                                    'No hay transacciones para recategorizar (todas están verificadas manualmente)',
-                                    'Nada que hacer'
-                                  );
+                                  setRecategorizingStatus(s => ({ ...s, [statement.id]: 'Nada que reprocesar' }));
                                 } else {
-                                  toast.error(json.error ?? 'Error', 'Re-categorización falló');
+                                  setRecategorizingStatus(s => ({ ...s, [statement.id]: 'Error' }));
                                 }
-                              } catch (err) {
-                                toast.error(String(err), 'Error');
+                              } catch {
+                                setRecategorizingStatus(s => ({ ...s, [statement.id]: 'Error' }));
+                              } finally {
+                                setRecategorizingInFlight(s => {
+                                  const c = { ...s };
+                                  delete c[statement.id];
+                                  return c;
+                                });
+                                clearStatusLater();
                               }
                             }}
                             className="h-6 w-6 p-0 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:text-emerald-600"
                             title="Re-categorizar con la memoria actual"
                           >
-                            <RefreshCw className="h-3 w-3" />
+                            <RefreshCw className={`h-3 w-3 ${recategorizingInFlight[statement.id] ? 'animate-spin' : ''}`} />
                           </Button>
                           <Button
                             variant="ghost"
@@ -1937,6 +1950,15 @@ export default function UploadPage() {
                             <Trash2 className="h-3 w-3" />
                           </Button>
                         </div>
+                        {recategorizingStatus[statement.id] && (
+                          <div
+                            role="status"
+                            aria-live="polite"
+                            className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mt-1"
+                          >
+                            {recategorizingStatus[statement.id]}
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}

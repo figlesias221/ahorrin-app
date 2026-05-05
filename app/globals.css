@@ -692,3 +692,21 @@ html {
     margin-bottom: 1rem;
   }
 }
+
+/* sharded-raven */
+@keyframes raven-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raven-pulse-dot {
+    animation: none !important;
+  }
+}
