@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Camera, Zap, CheckCircle, AlertCircle } from 'lucide-react';
+import { Camera, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
@@ -92,41 +92,26 @@ export function ReceiptScannerSection({
             </div>
           )}
 
-          <div className="grid md:grid-cols-3 gap-4 pt-4 border-t">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Camera className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm">Captura clara</h4>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Asegurate que el ticket este bien iluminado y enfocado
-                </p>
-              </div>
+          <div className="grid md:grid-cols-3 gap-6 pt-4 border-t">
+            <div>
+              <h4 className="font-semibold text-sm">Captura clara</h4>
+              <p className="text-xs text-muted-foreground mt-1">
+                Asegurate que el ticket este bien iluminado y enfocado
+              </p>
             </div>
 
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Zap className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm">IA precisa</h4>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Nuestra IA extrae fecha, comercio, monto y categoria
-                </p>
-              </div>
+            <div>
+              <h4 className="font-semibold text-sm">IA precisa</h4>
+              <p className="text-xs text-muted-foreground mt-1">
+                Nuestra IA extrae fecha, comercio, monto y categoria
+              </p>
             </div>
 
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm">Revision final</h4>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Siempre podras editar los datos antes de guardar
-                </p>
-              </div>
+            <div>
+              <h4 className="font-semibold text-sm">Revision final</h4>
+              <p className="text-xs text-muted-foreground mt-1">
+                Siempre podras editar los datos antes de guardar
+              </p>
             </div>
           </div>
         </div>

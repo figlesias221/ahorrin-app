@@ -980,42 +980,25 @@ export default function UploadPage() {
 
       {/* Upload Area */}
       <Card className="p-4">
-        <motion.div
+        <div
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          animate={{
-            scale: dragging ? 1.02 : 1,
-            borderColor: dragging ? 'var(--primary)' : 'var(--border)',
-            backgroundColor: dragging ? 'rgba(var(--primary-rgb, 59, 130, 246), 0.05)' : 'transparent'
-          }}
-          whileHover={!dragging && files.length === 0 ? { scale: 1.01, borderColor: 'var(--primary)' } : {}}
-          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
           className={`
-            border-2 border-dashed rounded-xl p-8 text-center transition-colors duration-200
-            ${dragging ? 'border-primary shadow-lg shadow-primary/20' : 'border-border bg-muted/20'}
+            border-2 border-dashed rounded-xl p-12 text-center transition-colors duration-150 ease-out
+            ${dragging ? 'border-primary bg-primary/5' : 'border-border'}
             ${files.length > 0 ? 'bg-muted/30 border-border' : ''}
             ${parsing ? 'bg-muted/30 border-primary' : ''}
           `}
         >
           {files.length === 0 ? (
             <>
-              <motion.div
-                className="inline-flex w-16 h-16 rounded-xl mb-4 bg-muted items-center justify-center"
-                animate={dragging ? {
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 5, -5, 0]
-                } : {}}
-                transition={{ duration: 0.5, repeat: dragging ? Infinity : 0 }}
-              >
-                <UploadIcon className="h-10 w-10 text-foreground" />
-              </motion.div>
-              <motion.h3
-                className="text-lg font-bold text-foreground mb-2"
-                animate={dragging ? { scale: 1.05 } : { scale: 1 }}
-              >
-                {dragging ? '¡Suelta aquí!' : 'Arrastra tus extractos aquí'}
-              </motion.h3>
+              <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-3">
+                {dragging ? 'Soltá para subir' : 'Arrastrá archivos'}
+              </p>
+              <h3 className="text-lg font-bold text-foreground mb-2">
+                {dragging ? 'Suelta aquí' : 'Arrastra tus extractos aquí'}
+              </h3>
               <p className="text-sm text-muted-foreground mb-1">
                 o haz clic para seleccionar
               </p>
@@ -1145,16 +1128,13 @@ export default function UploadPage() {
               )}
             </div>
           )}
-        </motion.div>
+        </div>
       </Card>
 
       {/* Bank Selector */}
       {parsedFiles.some(f => f.transactions.length > 0) && (
         <Card className="p-4">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Building2 className="h-5 w-5 text-primary" />
-            </div>
             <div className="flex-1">
               <label className="block text-sm font-semibold text-foreground mb-1">
                 Banco del Extracto
@@ -1513,12 +1493,7 @@ export default function UploadPage() {
       {statements.length > 0 && (
         <Card className="p-4">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-                <FileText className="h-4 w-4 text-primary" />
-              </div>
-              <h3 className="text-sm font-semibold text-foreground">Distribución por Banco</h3>
-            </div>
+            <h3 className="text-sm font-semibold text-foreground">Distribución por Banco</h3>
             <Button
               variant="outline"
               size="sm"
@@ -1725,9 +1700,6 @@ export default function UploadPage() {
                     </td>
                     <td className="py-2 px-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-                            <FileText className="h-3.5 w-3.5 text-primary" />
-                          </div>
                           {editingId === statement.id ? (
                             <div className="flex-1 flex items-center gap-1">
                               <input
@@ -2221,14 +2193,9 @@ export default function UploadPage() {
       {showBulkEditModal && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <Card className="max-w-md w-full p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Building2 className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold text-foreground">
-                Editar Bancos en Lote
-              </h3>
-            </div>
+            <h3 className="text-lg font-semibold text-foreground">
+              Editar Bancos en Lote
+            </h3>
 
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">
