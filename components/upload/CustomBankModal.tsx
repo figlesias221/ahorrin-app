@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Building2, ChevronDown } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
@@ -169,15 +169,10 @@ export function CustomBankModal({ isOpen, onClose, onBankCreated, bank, existing
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <Card className="max-w-md w-full p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Building2 className="h-5 w-5 text-primary" />
-            </div>
-            <h3 className="text-lg font-semibold text-foreground">
-              {bank ? 'Editar Banco' : 'Agregar Banco Personalizado'}
-            </h3>
-          </div>
+        <div className="flex items-start justify-between mb-6">
+          <h3 className="text-base font-semibold tracking-tight text-foreground">
+            {bank ? 'Editar banco' : 'Agregar banco personalizado'}
+          </h3>
           <button
             onClick={handleClose}
             disabled={creating}
@@ -315,10 +310,7 @@ export function CustomBankModal({ isOpen, onClose, onBankCreated, bank, existing
                   {bank ? 'Guardando...' : 'Creando...'}
                 </>
               ) : (
-                <>
-                  <Building2 className="h-4 w-4 mr-2" />
-                  {bank ? 'Guardar Cambios' : 'Crear Banco'}
-                </>
+                bank ? 'Guardar cambios' : 'Crear banco'
               )}
             </Button>
           </div>

@@ -215,8 +215,8 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
       <div className="w-full max-w-2xl rounded-lg bg-card text-card-foreground p-6 shadow-xl">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-foreground">
-            {transaction ? 'Editar Transacción' : 'Nueva Transacción'}
+          <h2 className="text-base font-semibold tracking-tight text-foreground">
+            {transaction ? 'Editar transacción' : 'Nueva transacción'}
           </h2>
           <button
             onClick={onClose}
@@ -236,7 +236,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
 
           {/* Type */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
+            <label className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
               Tipo
             </label>
             <div className="flex gap-4">
@@ -297,8 +297,8 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
           <div className="grid grid-cols-2 gap-3">
             {/* Date */}
             <div>
-              <label htmlFor="date" className="block text-sm font-medium text-foreground mb-2">
-                {formData.isInstallment ? 'Fecha Primera Cuota *' : 'Fecha *'}
+              <label htmlFor="date" className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+                {formData.isInstallment ? 'Fecha primera cuota *' : 'Fecha *'}
               </label>
               <input
                 id="date"
@@ -312,8 +312,8 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
 
             {/* Amount with Currency Toggle */}
             <div>
-              <label htmlFor="amount" className="block text-sm font-medium text-foreground mb-2">
-                {formData.isInstallment ? 'Monto Total *' : 'Monto *'}
+              <label htmlFor="amount" className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+                {formData.isInstallment ? 'Monto total *' : 'Monto *'}
               </label>
               <div className="flex gap-2">
                 <input
@@ -366,8 +366,8 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
               <div className="grid grid-cols-2 gap-3">
                 {/* Number of installments */}
                 <div>
-                  <label htmlFor="installmentTotal" className="block text-sm font-medium text-foreground mb-2">
-                    Número de Cuotas *
+                  <label htmlFor="installmentTotal" className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+                    Número de cuotas *
                   </label>
                   <input
                     id="installmentTotal"
@@ -388,8 +388,8 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
 
                 {/* Calculated amount per installment */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Monto por Cuota
+                  <label className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+                    Monto por cuota
                   </label>
                   <div className="w-full px-3 py-2 rounded-lg border border-border bg-muted text-foreground font-medium text-sm">
                     {formData.currency === 'USD' ? 'US$' : '$U'} {formData.installmentAmount?.toFixed(2) || '0.00'}
@@ -405,7 +405,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
 
           {/* Vendor */}
           <div>
-            <label htmlFor="vendor" className="block text-sm font-medium text-foreground mb-2">
+            <label htmlFor="vendor" className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
               Vendor / Origen *
             </label>
             <input
@@ -422,7 +422,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
           {/* Category */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="category" className="block text-sm font-medium text-foreground">
+              <label htmlFor="category" className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
                 Categoría *
               </label>
               <button
@@ -441,7 +441,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
             {showNewCategory ? (
               <div className="space-y-2 p-3 rounded-lg border border-border bg-muted/30">
                 <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">
+                  <label className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
                     Nombre de la categoría
                   </label>
                   <input
@@ -454,7 +454,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">
+                  <label className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-1">
                     Color
                   </label>
                   <div className="flex gap-2">
@@ -531,7 +531,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
               <div className="space-y-3">
                 {/* Description */}
                 <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-foreground mb-2">
+                  <label htmlFor="description" className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
                     Descripción
                   </label>
                   <input
@@ -546,7 +546,7 @@ export function TransactionModal({ transaction, categories, onClose, onSave }: T
 
                 {/* Notes */}
                 <div>
-                  <label htmlFor="notes" className="block text-sm font-medium text-foreground mb-2">
+                  <label htmlFor="notes" className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
                     Notas
                   </label>
                   <textarea

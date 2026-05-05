@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -29,22 +29,11 @@ export function ConfirmModal({
 }: ConfirmModalProps) {
   if (!isOpen) return null;
 
-  const variantStyles = {
-    danger: 'bg-error/10 text-error',
-    warning: 'bg-warning/10 text-warning',
-    info: 'bg-primary/10 text-primary',
-  };
-
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-xl flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-md p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${variantStyles[variant]}`}>
-              <AlertTriangle className="h-5 w-5" />
-            </div>
-            <h2 className="text-xl font-bold text-foreground">{title}</h2>
-          </div>
+        <div className="flex items-start justify-between mb-6">
+          <h2 className="text-base font-semibold tracking-tight text-foreground">{title}</h2>
           <button
             onClick={onClose}
             disabled={loading}

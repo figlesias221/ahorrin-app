@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { Upload as UploadIcon, FileText, CheckCircle, AlertCircle, Calendar, Plus, Zap, Trash2, Edit2, Check, X, Trash, Clock, ChevronDown, ChevronUp, History, Building2, Search, Camera, RefreshCw } from 'lucide-react';
+import { Upload as UploadIcon, FileText, CheckCircle, AlertCircle, Calendar, Plus, Zap, Trash2, Edit2, Check, X, Trash, Clock, ChevronDown, ChevronUp, Building2, Search, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -926,70 +926,46 @@ export default function UploadPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-border">
+      <div className="flex gap-6 border-b border-border">
         <button
           onClick={() => setActiveTab('upload')}
-          className={`px-4 py-2 font-medium transition-colors relative ${
+          className={`px-1 py-3 text-[11px] font-mono uppercase tracking-widest transition-colors border-b-2 -mb-px ${
             activeTab === 'upload'
-              ? 'text-primary'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'text-foreground border-primary'
+              : 'text-muted-foreground border-transparent hover:text-foreground'
           }`}
         >
-          <div className="flex items-center gap-2">
-            <UploadIcon className="h-4 w-4" />
-            Subir Extractos
-          </div>
-          {activeTab === 'upload' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
-          )}
+          Subir extractos
         </button>
         <button
           onClick={() => setActiveTab('receipt')}
-          className={`px-4 py-2 font-medium transition-colors relative ${
+          className={`px-1 py-3 text-[11px] font-mono uppercase tracking-widest transition-colors border-b-2 -mb-px ${
             activeTab === 'receipt'
-              ? 'text-primary'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'text-foreground border-primary'
+              : 'text-muted-foreground border-transparent hover:text-foreground'
           }`}
         >
-          <div className="flex items-center gap-2">
-            <Camera className="h-4 w-4" />
-            Escanear Ticket
-          </div>
-          {activeTab === 'receipt' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
-          )}
+          Escanear ticket
         </button>
         <button
           onClick={() => setActiveTab('history')}
-          className={`px-4 py-2 font-medium transition-colors relative ${
+          className={`px-1 py-3 text-[11px] font-mono uppercase tracking-widest transition-colors border-b-2 -mb-px ${
             activeTab === 'history'
-              ? 'text-primary'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'text-foreground border-primary'
+              : 'text-muted-foreground border-transparent hover:text-foreground'
           }`}
         >
-          <div className="flex items-center gap-2">
-            <History className="h-4 w-4" />
-            Historial de Extractos ({statements.length})
-          </div>
-          {activeTab === 'history' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
-          )}
+          Historial ({statements.length})
         </button>
         <button
           onClick={() => setActiveTab('banks')}
-          className={`px-4 py-2 font-medium transition-colors relative ${
+          className={`px-1 py-3 text-[11px] font-mono uppercase tracking-widest transition-colors border-b-2 -mb-px ${
             activeTab === 'banks'
-              ? 'text-primary'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'text-foreground border-primary'
+              : 'text-muted-foreground border-transparent hover:text-foreground'
           }`}
         >
-          <div className="flex items-center gap-2">
-            <Building2 className="h-4 w-4" />
-            Gestión de Bancos ({customBanks.length})
-          </div>
-          {activeTab === 'banks' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
-          )}
+          Bancos ({customBanks.length})
         </button>
       </div>
 
