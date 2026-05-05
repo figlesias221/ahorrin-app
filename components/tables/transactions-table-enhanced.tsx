@@ -175,6 +175,7 @@ export function TransactionsTableEnhanced({
     }
 
     const updates: Array<{ id: string; changes: Partial<Transaction> }> = [];
+    let learnedFromUnmatched = 0;
 
     // Build updates array
     editedData.forEach((changes, transactionId) => {
@@ -186,7 +187,12 @@ export function TransactionsTableEnhanced({
 
       if (changes.category_id !== undefined && changes.category_id !== transaction.category_id) {
         updateData.category_id = changes.category_id;
+        // Mark as manually verified so the merchant_cache trigger learns this
+        // mapping and future imports auto-categorize the same vendor.
+        (updateData as any).is_manually_verified = true;
         hasChanges = true;
+        // Count rows where the user is teaching the system a new vendor.
+        if (!transaction.category_id) learnedFromUnmatched++;
       }
 
       if (changes.notes !== undefined && changes.notes !== (transaction.notes || '')) {
@@ -229,7 +235,14 @@ export function TransactionsTableEnhanced({
       setCategorySearchText(new Map());
       setIsEditMode(false);
       onUpdate();
-      showAlert('Éxito', `${updates.length} transacciones actualizadas correctamente`, 'success');
+      const learnedSuffix = learnedFromUnmatched > 0
+        ? ` · ${learnedFromUnmatched} aprendido para próximas importaciones`
+        : '';
+      showAlert(
+        'Éxito',
+        `${updates.length} transacciones actualizadas correctamente${learnedSuffix}`,
+        'success'
+      );
     } catch (error) {
       console.error('Error saving changes:', error);
       showAlert('Error', 'Error al guardar algunos cambios');

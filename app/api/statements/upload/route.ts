@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { after } from 'next/server';
+import { createHash } from 'node:crypto';
 import { createClient } from '@/lib/supabase/server';
 import { parseTransactionFile, validateTransactions, isSupportedExtension } from '@/lib/parsers';
+import { dedupAgainstHistory } from '@/lib/parsers/dedup';
 import { checkLimit, incrementUsage } from '@/lib/subscriptions';
+import { triggerWorker } from '@/lib/categorization/worker-client';
 
 // File upload and parsing requires Node.js runtime
 // export const runtime = 'edge';
 
 type BankType = 'bbva' | 'scotia' | 'itau-master' | 'itau-visa' | 'itau-xls';
+
+const RAVEN_ENABLED = process.env.RAVEN_ENABLED === 'true';
 
 export async function POST(request: NextRequest) {
   try {
@@ -112,6 +118,164 @@ export async function POST(request: NextRequest) {
 
     // Get bank name from metadata or bankType parameter
     const bankName = result.metadata?.accountName || (bankType ? bankNames[bankType] : undefined) || 'Desconocido';
+
+    // ---- Sharded Raven branch: deterministic, async, idempotent ----------
+    if (RAVEN_ENABLED) {
+      const fileBytes = Buffer.from(await file.arrayBuffer());
+      const fileHash = createHash('sha256').update(fileBytes).digest('hex');
+
+      // Idempotency: if this user already uploaded this exact file, return the
+      // existing statement instead of creating a duplicate.
+      const { data: existingStatement } = await supabase
+        .from('bank_statements')
+        .select('id, status, transactions_count, upload_date')
+        .eq('user_id', user.id)
+        .eq('file_hash', fileHash)
+        .maybeSingle();
+
+      if (existingStatement) {
+        return NextResponse.json({
+          success: true,
+          duplicate_upload: true,
+          statement_id: existingStatement.id,
+          existing_upload_date: existingStatement.upload_date,
+          imported: 0,
+          duplicates: valid.length,
+          total: valid.length,
+          message: 'Este archivo ya fue subido anteriormente.',
+        });
+      }
+
+      const { data: statement, error: statementError } = await supabase
+        .from('bank_statements')
+        .insert({
+          user_id: user.id,
+          file_path: `uploads/${user.id}/${file.name}`,
+          file_name: file.name,
+          period_start: dateRange.start,
+          period_end: dateRange.end,
+          status: 'parsed',
+          transactions_count: valid.length,
+          bank: bankName,
+          format,
+          currency: result.metadata?.currency || currency,
+          file_hash: fileHash,
+        })
+        .select()
+        .single();
+
+      if (statementError || !statement) {
+        console.error('Error creating statement:', statementError);
+        return NextResponse.json(
+          { error: 'Error al crear registro de extracto' },
+          { status: 500 }
+        );
+      }
+
+      // Sharded dedup against history (no full-table scan).
+      const dedupResult = await dedupAgainstHistory(
+        supabase,
+        user.id,
+        valid.map((tx) => ({
+          date: tx.date,
+          vendor: tx.vendor,
+          amount: tx.amount,
+          type: tx.type,
+          currency: tx.currency,
+          // Carry along extra fields by index.
+          __orig: tx,
+        })) as Array<{
+          date: string; vendor: string; amount: number; type: string; currency: string; __orig: typeof valid[number];
+        }>,
+      );
+
+      if (dedupResult.fresh.length === 0) {
+        await supabase
+          .from('bank_statements')
+          .update({ status: 'completed', transactions_count: 0 })
+          .eq('id', statement.id);
+
+        return NextResponse.json({
+          success: false,
+          statement_id: statement.id,
+          message: 'Todas las transacciones ya existen en el sistema',
+          duplicates: dedupResult.duplicates.length,
+        });
+      }
+
+      // Insert as pending (no category yet). vendor_key auto-populated by trigger.
+      const rowsToInsert = dedupResult.fresh.map((row) => {
+        const tx = row.__orig;
+        return {
+          user_id: user.id,
+          category_id: null,
+          date: tx.date,
+          vendor: tx.vendor,
+          amount: tx.amount,
+          type: tx.type,
+          currency: tx.currency,
+          statement_id: statement.id,
+          is_manually_verified: false,
+          confidence_score: 0,
+          notes: tx.reference || null,
+          categorization_status: 'pending',
+        };
+      });
+
+      const { data: inserted, error: insertError } = await supabase
+        .from('transactions')
+        .insert(rowsToInsert)
+        .select('id');
+
+      if (insertError) {
+        console.error('Error inserting transactions:', insertError);
+        await supabase
+          .from('bank_statements')
+          .update({ status: 'failed' })
+          .eq('id', statement.id);
+        return NextResponse.json(
+          { error: 'Error al importar transacciones', details: insertError.message },
+          { status: 500 }
+        );
+      }
+
+      // Enqueue the categorization job.
+      const { data: job, error: jobErr } = await supabase
+        .from('categorization_jobs')
+        .insert({ user_id: user.id, statement_id: statement.id, status: 'queued' })
+        .select('id')
+        .single();
+      if (jobErr || !job) {
+        console.error('Error enqueuing job:', jobErr);
+        // Statement is still useful; cron drain may not pick it up though.
+        // Surface the issue but do not fail the user-facing upload.
+      }
+
+      // Track upload usage.
+      await incrementUsage(user.id, 'uploads_count');
+
+      // Trigger worker after responding.
+      if (job?.id) {
+        const jobId = job.id as string;
+        after(async () => {
+          await triggerWorker(jobId);
+        });
+      }
+
+      return NextResponse.json({
+        success: true,
+        statement_id: statement.id,
+        imported: inserted?.length ?? 0,
+        duplicates: dedupResult.duplicates.length,
+        total: valid.length,
+        async_categorization: true,
+        date_range: dateRange,
+        parsingMethod: (result as any).usedLLM ? 'ai' : 'specific',
+        detectedBank: (result as any).detectedBank,
+        confidence: (result as any).detectionConfidence,
+      });
+    }
+    // ---- /Sharded Raven branch -------------------------------------------
 
     // Create bank statement record
     const { data: statement, error: statementError } = await supabase

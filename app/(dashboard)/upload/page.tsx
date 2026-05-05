@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { Upload as UploadIcon, FileText, CheckCircle, AlertCircle, Calendar, Plus, Zap, Trash2, Edit2, Check, X, Trash, Clock, ChevronDown, ChevronUp, History, Building2, Search, Camera } from 'lucide-react';
+import { Upload as UploadIcon, FileText, CheckCircle, AlertCircle, Calendar, Plus, Zap, Trash2, Edit2, Check, X, Trash, Clock, ChevronDown, ChevronUp, History, Building2, Search, Camera, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -1891,16 +1891,52 @@ export default function UploadPage() {
                         {getStatusBadge(statement.status)}
                       </td>
                       <td className="py-2 px-3 text-center">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteClick(statement.id, statement.file_name)}
-                          disabled={deleting}
-                          className="h-6 w-6 p-0 hover:bg-red-50 dark:hover:bg-red-950 hover:text-red-600"
-                          title="Eliminar"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
+                        <div className="flex items-center justify-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={async () => {
+                              try {
+                                const res = await fetch('/api/transactions/recategorize', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ statement_id: statement.id }),
+                                });
+                                const json = await res.json();
+                                if (json.ok) {
+                                  toast.success(
+                                    `${json.reset} transacciones en cola para recategorizar`,
+                                    'Re-categorizando'
+                                  );
+                                  fetchData?.();
+                                } else if (json.reset === 0) {
+                                  toast.info(
+                                    'No hay transacciones para recategorizar (todas están verificadas manualmente)',
+                                    'Nada que hacer'
+                                  );
+                                } else {
+                                  toast.error(json.error ?? 'Error', 'Re-categorización falló');
+                                }
+                              } catch (err) {
+                                toast.error(String(err), 'Error');
+                              }
+                            }}
+                            className="h-6 w-6 p-0 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:text-emerald-600"
+                            title="Re-categorizar con la memoria actual"
+                          >
+                            <RefreshCw className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteClick(statement.id, statement.file_name)}
+                            disabled={deleting}
+                            className="h-6 w-6 p-0 hover:bg-red-50 dark:hover:bg-red-950 hover:text-red-600"
+                            title="Eliminar"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}

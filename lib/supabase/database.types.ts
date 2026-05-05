@@ -114,9 +114,11 @@ export interface Database {
           id: string
           user_id: string
           account_id: string | null
-          category_id: string
+          category_id: string | null
+          statement_id: string | null
           date: string
           vendor: string
+          vendor_key: string | null
           description: string | null
           amount: number
           type: 'expense' | 'income'
@@ -126,6 +128,13 @@ export interface Database {
           is_manually_verified: boolean
           is_ignored: boolean
           notes: string | null
+          categorization_status:
+            | 'pending'
+            | 'rules'
+            | 'cache'
+            | 'similar'
+            | 'manual'
+            | 'unmatched'
           installment_group_id: string | null
           installment_number: number | null
           installment_total: number | null
@@ -137,9 +146,11 @@ export interface Database {
           id?: string
           user_id: string
           account_id?: string | null
-          category_id: string
+          category_id?: string | null
+          statement_id?: string | null
           date: string
           vendor: string
+          vendor_key?: string | null
           description?: string | null
           amount: number
           type: 'expense' | 'income'
@@ -149,6 +160,13 @@ export interface Database {
           is_manually_verified?: boolean
           is_ignored?: boolean
           notes?: string | null
+          categorization_status?:
+            | 'pending'
+            | 'rules'
+            | 'cache'
+            | 'similar'
+            | 'manual'
+            | 'unmatched'
           installment_group_id?: string | null
           installment_number?: number | null
           installment_total?: number | null
@@ -160,9 +178,11 @@ export interface Database {
           id?: string
           user_id?: string
           account_id?: string | null
-          category_id?: string
+          category_id?: string | null
+          statement_id?: string | null
           date?: string
           vendor?: string
+          vendor_key?: string | null
           description?: string | null
           amount?: number
           type?: 'expense' | 'income'
@@ -172,6 +192,13 @@ export interface Database {
           is_manually_verified?: boolean
           is_ignored?: boolean
           notes?: string | null
+          categorization_status?:
+            | 'pending'
+            | 'rules'
+            | 'cache'
+            | 'similar'
+            | 'manual'
+            | 'unmatched'
           installment_group_id?: string | null
           installment_number?: number | null
           installment_total?: number | null
@@ -260,10 +287,11 @@ export interface Database {
           account_id: string | null
           file_path: string
           file_name: string
+          file_hash: string | null
           upload_date: string
           period_start: string | null
           period_end: string | null
-          status: 'processing' | 'completed' | 'failed'
+          status: 'processing' | 'parsed' | 'categorizing' | 'completed' | 'failed'
           transactions_count: number
           format: string | null
           bank: string | null
@@ -276,10 +304,11 @@ export interface Database {
           account_id?: string | null
           file_path: string
           file_name: string
+          file_hash?: string | null
           upload_date?: string
           period_start?: string | null
           period_end?: string | null
-          status?: 'processing' | 'completed' | 'failed'
+          status?: 'processing' | 'parsed' | 'categorizing' | 'completed' | 'failed'
           transactions_count?: number
           format?: string | null
           bank?: string | null
@@ -292,15 +321,80 @@ export interface Database {
           account_id?: string | null
           file_path?: string
           file_name?: string
+          file_hash?: string | null
           upload_date?: string
           period_start?: string | null
           period_end?: string | null
-          status?: 'processing' | 'completed' | 'failed'
+          status?: 'processing' | 'parsed' | 'categorizing' | 'completed' | 'failed'
           transactions_count?: number
           format?: string | null
           bank?: string | null
           currency?: string | null
           created_at?: string
+        }
+      }
+      categorization_jobs: {
+        Row: {
+          id: string
+          user_id: string
+          statement_id: string | null
+          status: 'queued' | 'running' | 'done' | 'failed' | 'dead'
+          shard_count: number | null
+          attempts: number
+          last_error: string | null
+          claimed_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          statement_id?: string | null
+          status?: 'queued' | 'running' | 'done' | 'failed' | 'dead'
+          shard_count?: number | null
+          attempts?: number
+          last_error?: string | null
+          claimed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          statement_id?: string | null
+          status?: 'queued' | 'running' | 'done' | 'failed' | 'dead'
+          shard_count?: number | null
+          attempts?: number
+          last_error?: string | null
+          claimed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      merchant_cache: {
+        Row: {
+          user_id: string
+          vendor_key: string
+          category_id: string
+          hit_count: number
+          source: 'rule' | 'manual' | 'observed'
+          last_seen_at: string
+        }
+        Insert: {
+          user_id: string
+          vendor_key: string
+          category_id: string
+          hit_count?: number
+          source?: 'rule' | 'manual' | 'observed'
+          last_seen_at?: string
+        }
+        Update: {
+          user_id?: string
+          vendor_key?: string
+          category_id?: string
+          hit_count?: number
+          source?: 'rule' | 'manual' | 'observed'
+          last_seen_at?: string
         }
       }
       custom_banks: {
