@@ -169,7 +169,7 @@ export async function parseItauXLS(file: File): Promise<ParserResult> {
     }
 
     // Default to UYU if not recognized
-    if (!['UYU', 'USD', 'EUR', 'ARS', 'BRL'].includes(currency)) {
+    if (!['UYU', 'USD', 'EUR', 'BRL'].includes(currency)) {
       console.warn(`Moneda no reconocida: "${currency}", usando UYU por defecto`);
       currency = 'UYU';
     }

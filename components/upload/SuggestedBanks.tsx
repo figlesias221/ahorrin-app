@@ -1,9 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Building2, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/contexts/toast-context';
 
@@ -81,48 +79,39 @@ export function SuggestedBanks({ onBankCreated, existingBanks }: SuggestedBanksP
   }
 
   return (
-    <Card className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-      <div className="flex items-start gap-3 mb-3">
-        <div className="flex-shrink-0 mt-0.5">
-          <Sparkles className="h-5 w-5 text-primary" />
-        </div>
-        <div className="flex-1">
-          <h3 className="text-sm font-semibold text-foreground mb-1">
-            Bancos sugeridos
-          </h3>
-          <p className="text-xs text-muted-foreground">
-            Agrega rápidamente bancos comunes con un click. También puedes crear bancos personalizados.
-          </p>
-        </div>
-      </div>
+    <div className="border border-border rounded-lg p-4">
+      <h3 className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-3">
+        SUGERIDOS
+      </h3>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+      <ul className="grid gap-0 sm:grid-cols-2 sm:gap-x-6 divide-y divide-border sm:divide-y-0">
         {availableBanks.map((bank) => (
-          <Button
-            key={bank.name}
-            variant="outline"
-            size="sm"
-            onClick={() => handleAddBank(bank)}
-            disabled={adding === bank.name}
-            className="h-auto py-2 px-3 flex flex-col items-center gap-1.5 hover:border-primary/40 hover:bg-primary/5 transition-colors"
-          >
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: bank.color }}
+          <li key={bank.name} className="sm:border-b sm:border-border sm:[&:nth-last-child(-n+2)]:border-b-0">
+            <button
+              type="button"
+              onClick={() => handleAddBank(bank)}
+              disabled={adding === bank.name}
+              className="w-full flex items-center gap-3 p-3 text-left transition-colors hover:text-primary disabled:opacity-50 group"
             >
-              <Building2 className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-xs font-medium text-center leading-tight">
-              {bank.displayName}
-            </span>
-            {adding === bank.name ? (
-              <span className="text-xs text-muted-foreground">Agregando...</span>
-            ) : (
-              <Plus className="h-3 w-3 text-muted-foreground" />
-            )}
-          </Button>
+              <span
+                className="h-2 w-2 rounded-full flex-shrink-0"
+                style={{ backgroundColor: bank.color }}
+                aria-hidden="true"
+              />
+              <span className="flex-1 text-sm font-medium truncate">
+                {bank.displayName}
+              </span>
+              {adding === bank.name ? (
+                <span className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
+                  AGREGANDO
+                </span>
+              ) : (
+                <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+              )}
+            </button>
+          </li>
         ))}
-      </div>
-    </Card>
+      </ul>
+    </div>
   );
 }

@@ -6,6 +6,7 @@
 
 import type { ParsedTransaction, ParserResult } from './bank-statements';
 import { parsePDFWithLLM } from './llm-pdf-parser';
+import { detectCurrencyFromText } from './detect-currency';
 
 /**
  * Parse PDF buffer and extract text using pdfjs-serverless
@@ -508,6 +509,10 @@ export async function parseItauBankAccountPDF(buffer: Buffer): Promise<ParserRes
     const transactions: ParsedTransaction[] = [];
     const errors: string[] = [];
 
+    // Itaú Link statements are typically UYU, but USD accounts exist. Sniff the
+    // full PDF text for explicit markers before falling back to UYU.
+    const detectedCurrency = detectCurrencyFromText(text) ?? 'UYU';
+
     // Pattern: DD-MM-YY at beginning (Itaú bank account format)
     const datePattern = /^(\d{2}-\d{2}-\d{2,4})\s+(.+)/;
 
@@ -550,7 +555,7 @@ export async function parseItauBankAccountPDF(buffer: Buffer): Promise<ParserRes
               vendor: normalizeVendor(concept),
               amount: firstAmount,
               type,
-              currency: 'UYU', // Itaú Link accounts typically in UYU
+              currency: detectedCurrency, // Itaú Link accounts typically in UYU; sniff text for USD markers.
             });
           }
         }
@@ -590,6 +595,10 @@ export async function parseSantanderPDF(buffer: Buffer): Promise<ParserResult> {
 
     const transactions: ParsedTransaction[] = [];
     const errors: string[] = [];
+
+    // Santander UY statements are typically USD-denominated, but UYU accounts
+    // exist. Sniff the full PDF text first; fall back to USD when ambiguous.
+    const detectedCurrency = detectCurrencyFromText(text) ?? 'USD';
 
     // Pattern to detect transaction start: DD/MM/YY at beginning
     const datePattern = /^(\d{2}\/\d{2}\/\d{2,4})\s+/;
@@ -654,7 +663,7 @@ export async function parseSantanderPDF(buffer: Buffer): Promise<ParserResult> {
               vendor: normalizeVendor(description),
               amount,
               type,
-              currency: 'USD', // Santander Uruguay typically uses USD
+              currency: detectedCurrency, // Santander UY typically USD; sniff text for UYU markers.
             });
           }
 

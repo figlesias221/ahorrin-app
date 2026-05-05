@@ -6,8 +6,6 @@ import { createClient } from '@/lib/supabase/client';
 
 export interface ExchangeRates {
   USD_TO_UYU: number;
-  USD_TO_ARS: number;
-  UYU_TO_ARS: number;
 }
 
 interface CurrencyContextType {
@@ -23,11 +21,9 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 const CURRENCY_STORAGE_KEY = 'ahorrin_display_currency';
-const DEFAULT_ENABLED_CURRENCIES: Currency[] = ['UYU', 'USD', 'ARS'];
+const DEFAULT_ENABLED_CURRENCIES: Currency[] = ['UYU', 'USD'];
 const DEFAULT_EXCHANGE_RATES: ExchangeRates = {
   USD_TO_UYU: EXCHANGE_RATES.USD_TO_UYU,
-  USD_TO_ARS: EXCHANGE_RATES.USD_TO_ARS,
-  UYU_TO_ARS: EXCHANGE_RATES.UYU_TO_ARS,
 };
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
@@ -55,7 +51,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
           // Load display currency from localStorage
           const stored = localStorage.getItem(CURRENCY_STORAGE_KEY);
-          if (stored && (stored === 'USD' || stored === 'UYU' || stored === 'ARS')) {
+          if (stored && (stored === 'USD' || stored === 'UYU')) {
             // Only set if the stored currency is enabled
             if (enabled.includes(stored as Currency)) {
               setDisplayCurrencyState(stored as Currency);
@@ -69,7 +65,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
         } else {
           // No preferences saved, use defaults
           const stored = localStorage.getItem(CURRENCY_STORAGE_KEY);
-          if (stored === 'USD' || stored === 'UYU' || stored === 'ARS') {
+          if (stored === 'USD' || stored === 'UYU') {
             setDisplayCurrencyState(stored);
           }
         }

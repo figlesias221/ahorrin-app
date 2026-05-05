@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test lib/categorization/__tests__/*.test.ts",
+    "test": "tsx --test lib/*/__tests__/*.test.ts",
     "request-indexing": "tsx scripts/request-indexing.ts",
     "request-indexnow": "tsx scripts/indexnow.ts"
   },

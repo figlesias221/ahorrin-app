@@ -98,12 +98,20 @@ REGLAS DE EXTRACCIÓN:
    - Para tickets: usa el nombre del comercio del encabezado
    - Mantén mayúsculas y limpia espacios extras
 
-4. **Detección de moneda**:
-   - $, PESOS, UYU, $U, URUGUAYOS → UYU
-   - U$S, US$, USD, DÓLARES, DOLARES → USD
-   - €, EUR, EUROS → EUR
-   - Para tickets uruguayos: UYU por defecto
-   - Si no está claro: UYU por defecto
+4. **Detección de moneda** (CRÍTICO — solo UYU o USD):
+   - Ejemplos:
+     * "U$S 1.234,50" → USD
+     * "$ 1.234,50" → UYU
+     * "$U 1.234,50" → UYU
+     * "USD 50" → USD
+     * "US$ 200" → USD
+     * "PESOS" / "MONEDA NACIONAL" / "$U" → UYU
+     * "DÓLARES" / "DOLARES" / "USD" → USD
+   - Si una fila no tiene marcador propio pero el encabezado o pie de la
+     sección dice "MONEDA: DÓLARES" o "MONEDA: PESOS", aplica esa moneda
+     a TODAS las filas de esa sección.
+   - Solo se permiten 'UYU' o 'USD'. NO uses 'ARS', 'EUR' ni 'BRL'.
+     Si tienes dudas, usa 'UYU' (Uruguay focus).
 
 5. **Tipo de transacción**:
    - Compras, cargos, débitos, gastos, ítems → expense
@@ -138,18 +146,18 @@ Responde SOLO con el JSON estructurado, sin explicaciones adicionales.`,
     // 3. Validate and return results
     const { transactions, metadata } = result.object;
 
-    // Filter out invalid transactions
-    const validTransactions = transactions.filter(tx => {
-      // Basic validation
-      if (!tx.date || !tx.vendor || !tx.amount || tx.amount <= 0) {
-        return false;
-      }
-      // Date format validation
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(tx.date)) {
-        return false;
-      }
-      return true;
-    });
+    // Filter out invalid transactions and coerce currency to UYU/USD only
+    // (Uruguay focus — reject ARS/EUR/BRL even if the model returns them).
+    const validTransactions = transactions
+      .filter(tx => {
+        if (!tx.date || !tx.vendor || !tx.amount || tx.amount <= 0) return false;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(tx.date)) return false;
+        return true;
+      })
+      .map(tx => ({
+        ...tx,
+        currency: tx.currency === 'USD' ? 'USD' : 'UYU',
+      }));
 
     if (validTransactions.length === 0 && metadata.confidence < 0.5) {
       return {

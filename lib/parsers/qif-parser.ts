@@ -4,6 +4,7 @@
  */
 
 import type { ParsedTransaction, ParserResult } from './bank-statements';
+import { detectCurrencyFromText } from './detect-currency';
 
 /**
  * Normalize vendor name
@@ -77,6 +78,9 @@ export async function parseQIF(file: File): Promise<ParserResult> {
     const qif2json = (await import('qif2json')).default;
 
     const text = await file.text();
+    // Sniff the raw QIF body for currency markers (USD vs UYU). Fall back to
+    // UYU since the vast majority of Uruguayan exports default to local currency.
+    const detectedCurrency = detectCurrencyFromText(text) ?? 'UYU';
 
     return new Promise((resolve) => {
       qif2json.parse(text, (error: Error | null, qifData: Record<string, unknown>) => {
@@ -95,7 +99,7 @@ export async function parseQIF(file: File): Promise<ParserResult> {
 
           // QIF can contain multiple transaction types
           const txTypes = ['transactions', 'investments', 'bank', 'cash', 'creditCard'];
-          const currency = 'UYU';
+          const currency = detectedCurrency;
           let accountName: string | undefined;
 
           // Process each transaction type

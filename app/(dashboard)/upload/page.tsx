@@ -1982,9 +1982,12 @@ export default function UploadPage() {
       {activeTab === 'banks' && (
         <>
           {/* Header */}
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex items-end justify-between mb-6">
             <div>
-              <p className="text-sm text-muted-foreground">
+              <span className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
+                BANCOS
+              </span>
+              <p className="text-sm text-muted-foreground mt-1">
                 Administra las instituciones bancarias disponibles
               </p>
             </div>
@@ -1999,42 +2002,39 @@ export default function UploadPage() {
           </div>
 
           {/* Search */}
-          <Card className="p-4 mb-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Buscar banco..."
-                value={banks.searchQuery}
-                onChange={(e) => banks.setSearchQuery(e.target.value)}
-                className="w-full h-10 pl-10 pr-10 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-              />
-              {banks.searchQuery && (
-                <button
-                  onClick={() => banks.setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-          </Card>
+          <div className="relative mb-6">
+            <Search className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Buscar banco..."
+              value={banks.searchQuery}
+              onChange={(e) => banks.setSearchQuery(e.target.value)}
+              className="w-full h-10 pl-7 pr-8 bg-transparent border-0 border-b border-border text-sm focus:outline-none focus:border-primary transition-colors"
+            />
+            {banks.searchQuery && (
+              <button
+                onClick={() => banks.setSearchQuery('')}
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
 
           {/* Banks Grid */}
           {customBanks.length === 0 ? (
-            <Card className="p-12 text-center">
-              <Building2 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                No hay bancos personalizados
-              </h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Crea tu primer banco personalizado para comenzar
+            <div className="border border-border rounded-lg p-12 text-center">
+              <span className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
+                SIN BANCOS
+              </span>
+              <p className="text-sm text-muted-foreground mt-2 mb-6">
+                Crea tu primer banco personalizado para comenzar.
               </p>
               <Button variant="primary" onClick={banks.handleCreate}>
                 <Plus className="h-4 w-4 mr-2" />
                 Crear Banco
               </Button>
-            </Card>
+            </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {customBanks
@@ -2044,70 +2044,63 @@ export default function UploadPage() {
                   return matchesSearch;
                 })
                 .map((bank) => (
-                  <Card
+                  <div
                     key={bank.id}
-                    className="p-4 hover:shadow-lg transition-shadow relative group"
+                    className="rounded-lg border border-border p-6"
                   >
-                    {/* Bank Color Indicator */}
-                    <div
-                      className="absolute top-0 left-0 right-0 h-1 rounded-t-lg"
-                      style={{ backgroundColor: bank.color }}
-                    />
-
-                    {/* Actions */}
-                    <div className="flex items-start justify-end mb-3 mt-2">
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => banks.handleEdit(bank)}
-                          className="p-1.5 hover:bg-primary/10 rounded text-primary transition-colors"
-                          title="Editar"
-                        >
-                          <Edit2 className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          onClick={() => banks.handleDelete(bank)}
-                          className="p-1.5 hover:bg-red-50 dark:hover:bg-red-950 rounded text-red-600 transition-colors"
-                          title="Eliminar"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </div>
-
                     {/* Bank Info */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: `${bank.color}20` }}
-                      >
-                        <Building2 className="h-6 w-6" style={{ color: bank.color }} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground truncate">
-                          {bank.displayName}
-                        </h3>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {bank.name}
-                        </p>
-                      </div>
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="h-2 w-2 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: bank.color }}
+                        aria-hidden="true"
+                      />
+                      <h3 className="text-base font-semibold tracking-tight text-foreground truncate">
+                        {bank.displayName}
+                      </h3>
                     </div>
+                    {bank.name !== bank.displayName && (
+                      <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground mt-1 truncate">
+                        {bank.name}
+                      </p>
+                    )}
 
                     {/* Stats */}
-                    <div className="space-y-2 pt-3 border-t border-border">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">Extractos:</span>
-                        <span className="font-semibold text-foreground">
+                    <dl className="mt-4 grid grid-cols-2 divide-x divide-border border-t border-border pt-3">
+                      <div className="pr-3">
+                        <dt className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                          EXTRACTOS
+                        </dt>
+                        <dd className="font-mono text-base tabular-nums text-foreground mt-1">
                           {(bankStats[bank.displayName]?.statementsCount || 0)}
-                        </span>
+                        </dd>
                       </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">Transacciones:</span>
-                        <span className="font-semibold text-foreground">
+                      <div className="pl-3">
+                        <dt className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                          TRANSACCIONES
+                        </dt>
+                        <dd className="font-mono text-base tabular-nums text-foreground mt-1">
                           {(bankStats[bank.displayName]?.transactionsCount || 0).toLocaleString()}
-                        </span>
+                        </dd>
                       </div>
+                    </dl>
+
+                    {/* Actions */}
+                    <div className="mt-4 pt-3 border-t border-border flex items-center gap-4">
+                      <button
+                        onClick={() => banks.handleEdit(bank)}
+                        className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        EDITAR
+                      </button>
+                      <button
+                        onClick={() => banks.handleDelete(bank)}
+                        className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground hover:text-error transition-colors"
+                      >
+                        ELIMINAR
+                      </button>
                     </div>
-                  </Card>
+                  </div>
                 ))}
             </div>
           )}

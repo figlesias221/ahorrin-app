@@ -60,14 +60,11 @@ export default function SettingsPage() {
 
   const [ratesFormData, setRatesFormData] = useState({
     USD_TO_UYU: exchangeRates.USD_TO_UYU.toString(),
-    USD_TO_ARS: exchangeRates.USD_TO_ARS.toString(),
-    UYU_TO_ARS: exchangeRates.UYU_TO_ARS.toString(),
   });
 
   const AVAILABLE_CURRENCIES = [
     { code: 'UYU' as Currency, name: 'Peso Uruguayo', flag: '🇺🇾', symbol: '$U' },
     { code: 'USD' as Currency, name: 'Dólar Estadounidense', flag: '🇺🇸', symbol: '$' },
-    { code: 'ARS' as Currency, name: 'Peso Argentino', flag: '🇦🇷', symbol: '$' },
   ];
 
   useEffect(() => {
@@ -79,8 +76,6 @@ export default function SettingsPage() {
   useEffect(() => {
     setRatesFormData({
       USD_TO_UYU: exchangeRates.USD_TO_UYU.toString(),
-      USD_TO_ARS: exchangeRates.USD_TO_ARS.toString(),
-      UYU_TO_ARS: exchangeRates.UYU_TO_ARS.toString(),
     });
   }, [exchangeRates]);
 
@@ -370,12 +365,10 @@ export default function SettingsPage() {
     try {
       const newRates: ExchangeRates = {
         USD_TO_UYU: parseFloat(ratesFormData.USD_TO_UYU),
-        USD_TO_ARS: parseFloat(ratesFormData.USD_TO_ARS),
-        UYU_TO_ARS: parseFloat(ratesFormData.UYU_TO_ARS),
       };
 
       // Validate all rates are positive numbers
-      if (newRates.USD_TO_UYU <= 0 || newRates.USD_TO_ARS <= 0 || newRates.UYU_TO_ARS <= 0) {
+      if (newRates.USD_TO_UYU <= 0) {
         toast.error('Las tasas deben ser números positivos', 'Error de validación');
         return;
       }
@@ -582,57 +575,12 @@ export default function SettingsPage() {
                 1 UYU = ${(1 / parseFloat(ratesFormData.USD_TO_UYU || '1')).toFixed(4)} USD
               </p>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                1 USD = ? ARS
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  step="1"
-                  min="1"
-                  value={ratesFormData.USD_TO_ARS}
-                  onChange={(e) => setRatesFormData({ ...ratesFormData, USD_TO_ARS: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="1000"
-                  required
-                />
-                <span className="absolute right-3 top-2.5 text-sm text-muted-foreground">$ ARS</span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                1 ARS = ${(1 / parseFloat(ratesFormData.USD_TO_ARS || '1')).toFixed(6)} USD
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                1 UYU = ? ARS
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  value={ratesFormData.UYU_TO_ARS}
-                  onChange={(e) => setRatesFormData({ ...ratesFormData, UYU_TO_ARS: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="25"
-                  required
-                />
-                <span className="absolute right-3 top-2.5 text-sm text-muted-foreground">$ ARS</span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                1 ARS = $U {(1 / parseFloat(ratesFormData.UYU_TO_ARS || '1')).toFixed(4)}
-              </p>
-            </div>
           </div>
 
           <div className="p-3 bg-warning/10 border border-warning/30 rounded-lg flex items-start gap-2">
             <AlertCircle className="h-4 w-4 text-warning mt-0.5 flex-shrink-0" />
             <div className="text-xs text-warning">
               <p className="font-medium mb-1">Actualiza estas tasas regularmente</p>
-              <p>Para Argentina, considera usar el tipo de cambio oficial o blue según tu preferencia.</p>
             </div>
           </div>
 

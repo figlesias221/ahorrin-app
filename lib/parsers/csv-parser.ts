@@ -4,6 +4,7 @@
  */
 
 import type { ParsedTransaction, ParserResult } from './bank-statements';
+import { detectCurrencyFromText } from './detect-currency';
 
 /**
  * Normalize vendor name for consistent matching
@@ -232,6 +233,14 @@ export async function parseCSVEnhanced(file: File): Promise<ParserResult> {
             const transactions: ParsedTransaction[] = [];
             const errors: string[] = [];
 
+            // When the CSV has no explicit currency column, fall back to
+            // sniffing the header + first few rows for currency markers
+            // (USD/UYU). This catches statements that print the currency
+            // in the title or first transaction line. Default to UYU only
+            // when nothing is detected.
+            const sniffSource = [firstRow.join(' '), ...dataRows.slice(0, 10).map((r) => r.join(' '))].join('\n');
+            const fallbackCurrency = detectCurrencyFromText(sniffSource) ?? 'UYU';
+
             dataRows.forEach((row: string[], idx: number) => {
               try {
                 // Skip rows that don't have enough columns
@@ -263,11 +272,12 @@ export async function parseCSVEnhanced(file: File): Promise<ParserResult> {
                   type = 'expense';
                 }
 
-                // Get currency
-                let currency = 'UYU';
+                // Get currency. Prefer an explicit per-row column; otherwise
+                // use the sniffed fallback (USD/UYU only — Uruguay focus).
+                let currency: 'USD' | 'UYU' = fallbackCurrency;
                 if (mapping.currencyCol !== undefined && row[mapping.currencyCol]) {
                   const currStr = row[mapping.currencyCol].toString().toUpperCase();
-                  if (['USD', 'EUR', 'ARS', 'BRL'].includes(currStr)) {
+                  if (currStr === 'USD' || currStr === 'UYU') {
                     currency = currStr;
                   }
                 }

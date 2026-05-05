@@ -66,7 +66,7 @@ export function autoFixAmount(amountStr: string): { fixed: number; changed: bool
   let cleaned = amountStr.toString().trim();
 
   // Remove currency symbols and whitespace
-  const currencyPattern = /[$\sUYUUSDEUR€£ARS]/gi;
+  const currencyPattern = /[$\sUYUUSDEUR€£]/gi;
   cleaned = cleaned.replace(currencyPattern, '');
 
   // Handle negative amounts (preserve sign)
@@ -192,7 +192,7 @@ export function autoFixCurrency(currencyStr: string | undefined): { fixed: strin
   }
 
   // Validate standard ISO codes
-  const validCodes = ['UYU', 'USD', 'EUR', 'ARS', 'BRL', 'GBP', 'JPY', 'CNY'];
+  const validCodes = ['UYU', 'USD', 'EUR', 'BRL', 'GBP', 'JPY', 'CNY'];
   if (validCodes.includes(upper)) {
     return { fixed: upper, changed: false };
   }

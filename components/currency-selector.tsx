@@ -8,7 +8,6 @@ import { Currency } from '@/lib/utils/currency';
 const CURRENCIES = [
   { value: 'UYU' as Currency, label: 'UYU', symbol: '$U', flag: '🇺🇾' },
   { value: 'USD' as Currency, label: 'USD', symbol: '$', flag: '🇺🇸' },
-  { value: 'ARS' as Currency, label: 'ARS', symbol: '$', flag: '🇦🇷' },
 ];
 
 export function CurrencySelector() {

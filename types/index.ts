@@ -130,7 +130,7 @@ export interface TransactionFormData {
   description?: string;
   amount: number;
   type: TransactionType;
-  currency: string; // UYU, USD, ARS
+  currency: string; // UYU, USD
   categoryId: string;
   accountId?: string;
   notes?: string;

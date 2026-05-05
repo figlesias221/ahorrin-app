@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Building2, Check, ChevronDown } from 'lucide-react';
+import { X, Building2, ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/contexts/toast-context';
-import { BANKS } from '@/lib/constants/banks';
 
 interface CustomBankModalProps {
   isOpen: boolean;
@@ -192,8 +191,8 @@ export function CustomBankModal({ isOpen, onClose, onBankCreated, bank, existing
           {/* Existing Banks Selector */}
           {existingBanks.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Bancos Creados
+              <label className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+                COPIAR DE
               </label>
               <button
                 type="button"
@@ -206,7 +205,7 @@ export function CustomBankModal({ isOpen, onClose, onBankCreated, bank, existing
               </button>
 
               {showBankSelector && (
-                <div className="mt-2 max-h-48 overflow-y-auto border border-border rounded-lg bg-background">
+                <div className="mt-2 max-h-48 overflow-y-auto border border-border rounded-lg bg-background divide-y divide-border">
                   {existingBanks
                     .filter(existingBank => !bank || existingBank.id !== bank.id) // Filter out current bank when editing
                     .map((existingBank) => (
@@ -217,15 +216,14 @@ export function CustomBankModal({ isOpen, onClose, onBankCreated, bank, existing
                         className="w-full flex items-center gap-3 px-3 py-2 hover:bg-muted transition-colors text-left"
                         disabled={creating}
                       >
-                        <div
-                          className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: `${existingBank.color}20` }}
-                        >
-                          <Building2 className="h-4 w-4" style={{ color: existingBank.color }} />
-                        </div>
+                        <span
+                          className="h-2 w-2 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: existingBank.color }}
+                          aria-hidden="true"
+                        />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">{existingBank.displayName}</p>
-                          <p className="text-xs text-muted-foreground truncate">{existingBank.name}</p>
+                          <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground truncate">{existingBank.name}</p>
                         </div>
                       </button>
                     ))}
@@ -238,8 +236,8 @@ export function CustomBankModal({ isOpen, onClose, onBankCreated, bank, existing
           )}
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Nombre del Banco *
+            <label className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+              NOMBRE
             </label>
             <input
               type="text"
@@ -256,8 +254,8 @@ export function CustomBankModal({ isOpen, onClose, onBankCreated, bank, existing
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Nombre para Mostrar *
+            <label className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+              NOMBRE PARA MOSTRAR
             </label>
             <input
               type="text"
@@ -273,27 +271,24 @@ export function CustomBankModal({ isOpen, onClose, onBankCreated, bank, existing
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Color *
+            <label className="block text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-2">
+              COLOR
             </label>
-            <div className="grid grid-cols-5 gap-2">
+            <div className="flex flex-wrap gap-3">
               {DEFAULT_COLORS.map((color) => (
                 <button
                   key={color}
                   type="button"
                   onClick={() => setFormData(prev => ({ ...prev, color }))}
                   disabled={creating}
+                  aria-label={`Color ${color}`}
                   className={`
-                    h-10 rounded-lg transition-all
-                    ${formData.color === color ? 'ring-2 ring-primary ring-offset-2 ring-offset-background scale-110' : 'hover:scale-105'}
+                    h-6 w-6 rounded-full transition-all
+                    ${formData.color === color ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}
                     disabled:opacity-50
                   `}
                   style={{ backgroundColor: color }}
-                >
-                  {formData.color === color && (
-                    <Check className="h-5 w-5 text-white mx-auto" />
-                  )}
-                </button>
+                />
               ))}
             </div>
           </div>

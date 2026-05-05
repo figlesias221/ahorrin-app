@@ -253,7 +253,7 @@ export function TransactionFiltersPanel({
         <div className="flex items-center gap-2.5">
           <label className="text-xs text-foreground/60 font-semibold uppercase tracking-wider">Moneda:</label>
           <div className="flex items-center gap-1.5">
-            {['UYU', 'USD', 'EUR', 'ARS'].map((currency) => {
+            {['UYU', 'USD', 'EUR'].map((currency) => {
               const isSelected = filters.currencies?.includes(currency) || false;
               return (
                 <label
