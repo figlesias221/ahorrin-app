@@ -22,12 +22,12 @@ export async function POST(request: NextRequest) {
   try {
     body = (await request.json()) as Body;
   } catch {
-    return NextResponse.json({ error: 'invalid json' }, { status: 400 });
+    return NextResponse.json({ error: 'JSON inválido' }, { status: 400 });
   }
 
   if (!body.statement_id && !body.scope) {
     return NextResponse.json(
-      { error: 'statement_id or scope required' },
+      { error: 'Especificá un extracto o un alcance' },
       { status: 400 },
     );
   }
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
 
   if (jobErr || !job) {
     return NextResponse.json(
-      { error: 'failed to enqueue', detail: jobErr?.message },
+      { error: 'No se pudo encolar el trabajo', detail: jobErr?.message },
       { status: 500 },
     );
   }

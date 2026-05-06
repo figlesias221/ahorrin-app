@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const isManual =
     request.headers.get('x-worker-secret') === process.env.RAVEN_WORKER_SECRET;
   if (!isCron && !isManual) {
-    return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+    return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 });
   }
 
   const supabase = createServiceRoleClient();

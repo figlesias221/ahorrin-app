@@ -174,7 +174,7 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
       if (!res.ok) {
         setInlineNote(json.error ?? 'Error al re-categorizar');
       } else if (json.reset === 0) {
-        setInlineNote('No hay transacciones para reprocesar');
+        setInlineNote('Nada para reprocesar');
       } else {
         setInlineNote(`${json.reset} en cola`);
       }
@@ -217,7 +217,7 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
           disabled={recategorizing || isWorking}
           className="text-[11px] font-mono uppercase tracking-widest text-primary transition-opacity duration-150 ease-out hover:opacity-70 disabled:opacity-40 disabled:hover:opacity-40"
         >
-          {recategorizing ? 'Reprocesando' : 'Re-categorizar'}
+          {recategorizing ? 'Recategorizando' : 'Recategorizar'}
         </button>
       </div>
 
@@ -250,7 +250,7 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
 
       {isFailed && (
         <p className="mt-6 text-[13px] text-foreground">
-          La categorización falló. Probá <span className="font-medium">Re-categorizar</span>.
+          La categorización falló. Probá <span className="font-medium">Recategorizar</span>.
         </p>
       )}
 
@@ -262,7 +262,7 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
               <span className="text-2xl text-muted-foreground">%</span>
             </span>
             <span className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground">
-              categorizado · {counts.total} mov.
+              categorizado
             </span>
           </div>
 

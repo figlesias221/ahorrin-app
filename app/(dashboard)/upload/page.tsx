@@ -1867,7 +1867,7 @@ export default function UploadPage() {
                                   setRecategorizingStatus(s => ({ ...s, [statement.id]: `${json.reset} en cola` }));
                                   fetchData?.();
                                 } else if (json.reset === 0) {
-                                  setRecategorizingStatus(s => ({ ...s, [statement.id]: 'Nada que reprocesar' }));
+                                  setRecategorizingStatus(s => ({ ...s, [statement.id]: 'Nada para reprocesar' }));
                                 } else {
                                   setRecategorizingStatus(s => ({ ...s, [statement.id]: 'Error' }));
                                 }
@@ -1883,7 +1883,7 @@ export default function UploadPage() {
                               }
                             }}
                             className="h-6 w-6 p-0 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:text-emerald-600"
-                            title="Re-categorizar con la memoria actual"
+                            title="Recategorizar con las reglas y memoria actuales"
                           >
                             <RefreshCw className={`h-3 w-3 ${recategorizingInFlight[statement.id] ? 'animate-spin' : ''}`} />
                           </Button>

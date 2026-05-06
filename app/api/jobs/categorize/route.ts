@@ -12,17 +12,17 @@ const RETRY_MAX = parseInt(process.env.RAVEN_RETRY_MAX ?? '3', 10);
 
 export async function POST(request: NextRequest) {
   if (request.headers.get('x-worker-secret') !== workerSecret()) {
-    return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+    return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 });
   }
 
   let body: { job_id?: string };
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: 'invalid json' }, { status: 400 });
+    return NextResponse.json({ error: 'JSON inválido' }, { status: 400 });
   }
   if (!body.job_id) {
-    return NextResponse.json({ error: 'job_id required' }, { status: 400 });
+    return NextResponse.json({ error: 'Falta job_id' }, { status: 400 });
   }
 
   const supabase = createServiceRoleClient();
