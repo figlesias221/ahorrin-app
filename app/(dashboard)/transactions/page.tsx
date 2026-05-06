@@ -303,16 +303,24 @@ export default function TransactionsPage() {
         setApplyResult(`Error: ${json.error ?? 'desconocido'}`);
       } else if (json.reset === 0) {
         setApplyResult('Nada para reprocesar');
-      } else {
+      } else if (json.async) {
         setApplyResult(`${json.reset} en cola`);
-        // Refresh shortly so the count updates as the worker progresses.
         setTimeout(() => fetchTransactions(), 4000);
+      } else {
+        const c = json.counts ?? { rules: 0, cache: 0, similar: 0, unmatched: 0 };
+        const matched = (c.rules ?? 0) + (c.cache ?? 0) + (c.similar ?? 0);
+        setApplyResult(
+          matched > 0
+            ? `${matched} categorizadas · ${c.unmatched ?? 0} sin match`
+            : `0 categorizadas — revisá tus reglas`,
+        );
+        await fetchTransactions();
       }
     } catch (err) {
       setApplyResult(`Error: ${String(err)}`);
     } finally {
       setApplyingRules(false);
-      setTimeout(() => setApplyResult(null), 4000);
+      setTimeout(() => setApplyResult(null), 6000);
     }
   };
 

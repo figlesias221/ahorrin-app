@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { after } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { triggerWorker } from '@/lib/categorization/worker-client';
+import { runPipelineForUserPending } from '@/lib/categorization/pipeline';
 
 export const runtime = 'nodejs';
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 interface Body {
   statement_id?: string;
@@ -32,8 +33,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Build the reset query. RLS pins us to the user; we additionally never
-  // overwrite rows the user has manually verified.
+  // RLS pins us to the user; never overwrite manually-verified rows.
   let resetQuery = supabase
     .from('transactions')
     .update({ categorization_status: 'pending' }, { count: 'exact' })
@@ -45,7 +45,6 @@ export async function POST(request: NextRequest) {
   } else if (body.scope === 'unmatched') {
     resetQuery = resetQuery.in('categorization_status', ['unmatched', 'pending']);
   }
-  // scope === 'all' has no extra filter — already user-scoped.
 
   const { count, error: resetErr } = await resetQuery;
   if (resetErr) {
@@ -57,27 +56,48 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true, reset: 0, job_id: null });
   }
 
-  const { data: job, error: jobErr } = await supabase
-    .from('categorization_jobs')
-    .insert({
-      user_id: user.id,
-      statement_id: body.statement_id ?? null,
-      status: 'queued',
-    })
-    .select('id')
-    .single();
+  // Statement-scoped: enqueue + async worker. The UI subscribes to Realtime
+  // for that statement and shows progress as it completes.
+  if (body.statement_id) {
+    const { data: job, error: jobErr } = await supabase
+      .from('categorization_jobs')
+      .insert({
+        user_id: user.id,
+        statement_id: body.statement_id,
+        status: 'queued',
+      })
+      .select('id')
+      .single();
 
-  if (jobErr || !job) {
-    return NextResponse.json(
-      { error: 'No se pudo encolar el trabajo', detail: jobErr?.message },
-      { status: 500 },
-    );
+    if (jobErr || !job) {
+      return NextResponse.json(
+        { error: 'No se pudo encolar el trabajo', detail: jobErr?.message },
+        { status: 500 },
+      );
+    }
+
+    const jobId = job.id as string;
+    after(async () => {
+      await triggerWorker(jobId);
+    });
+
+    return NextResponse.json({ ok: true, reset: resetCount, job_id: jobId, async: true });
   }
 
-  const jobId = job.id as string;
-  after(async () => {
-    await triggerWorker(jobId);
-  });
-
-  return NextResponse.json({ ok: true, reset: resetCount, job_id: jobId });
+  // User-scoped (scope='unmatched' or 'all'): run the pipeline inline so the
+  // user sees the actual outcome instead of a "queued" placeholder. Pipeline
+  // works with the user-scoped client (RLS pins everything to user_id).
+  try {
+    const counts = await runPipelineForUserPending(supabase, user.id);
+    return NextResponse.json({
+      ok: true,
+      reset: resetCount,
+      job_id: null,
+      async: false,
+      counts,
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
+  }
 }
