@@ -1,8 +1,3 @@
-// Sharded dedup probe. Replaces the legacy full-table scan in upload/route.ts
-// (`SELECT vendor,date,amount,type,currency FROM transactions WHERE user_id=$1`)
-// with an index-driven probe scoped to the (date, vendor_key) pairs in the
-// new batch.
-
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { vendorKey } from '@/lib/categorization/vendor-key';
 

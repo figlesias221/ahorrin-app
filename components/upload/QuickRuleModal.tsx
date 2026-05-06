@@ -39,10 +39,8 @@ export function QuickRuleModal({
 
   const supabase = createClient();
 
-  // Update form data when modal opens or props change
   useEffect(() => {
     if (isOpen) {
-      console.log('QuickRuleModal abierto con:', { vendor, selectedCategoryId, categoriesCount: categories.length });
       setFormData({
         category_id: selectedCategoryId || '',
         rule_type: 'vendor_contains',
@@ -55,8 +53,6 @@ export function QuickRuleModal({
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    console.log('Intentando guardar regla:', formData);
 
     if (!formData.category_id) {
       setError('Debes seleccionar una categoría');
@@ -75,26 +71,21 @@ export function QuickRuleModal({
         throw new Error('No hay usuario autenticado');
       }
 
-      const insertData = {
-        user_id: user.id,
-        category_id: formData.category_id,
-        rule_type: formData.rule_type,
-        match_value: formData.match_value.trim(),
-        is_active: true,
-      };
-      
-      console.log('Insertando regla en DB:', insertData);
-
       const { error: insertError } = await supabase
         .from('categorization_rules')
-        .insert(insertData);
+        .insert({
+          user_id: user.id,
+          category_id: formData.category_id,
+          rule_type: formData.rule_type,
+          match_value: formData.match_value.trim(),
+          is_active: true,
+        });
 
       if (insertError) {
         console.error('Error creating rule:', insertError);
         throw insertError;
       }
 
-      console.log('Regla creada exitosamente!');
       onRuleCreated();
       onClose();
     } catch (err) {
@@ -106,12 +97,7 @@ export function QuickRuleModal({
     }
   };
 
-  if (!isOpen) {
-    console.log('QuickRuleModal: Modal cerrado, isOpen =', isOpen);
-    return null;
-  }
-
-  console.log('QuickRuleModal: Renderizando modal con:', { vendor, selectedCategoryId, categoriesCount: categories.length, formData });
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-xl flex items-center justify-center z-50 p-4">

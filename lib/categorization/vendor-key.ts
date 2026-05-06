@@ -1,6 +1,6 @@
-// Mirrors the SQL `raven_vendor_key()` function from
-// supabase/migrations/20260505_sharded_raven.sql. Both must produce the same
-// output for the merchant_cache to hit. If you change one, change both.
+// Must stay in sync with the `raven_vendor_key()` SQL function in
+// supabase/migrations/20260505_sharded_raven.sql — both produce the merchant
+// cache key.
 
 const COMBINING_MARKS = /[̀-ͯ]/g;
 

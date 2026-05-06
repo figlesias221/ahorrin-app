@@ -1,12 +1,3 @@
-// Sharded-raven categorization worker.
-//
-// Invoked by:
-//   - upload route via next/after() right after responding to the client
-//   - /api/jobs/drain (Vercel cron) for retry / lost-trigger recovery
-//   - /api/transactions/recategorize for manual reprocess
-//
-// Auth: shared-secret header. No user cookie is involved.
-
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceRoleClient, workerSecret } from '@/lib/categorization/worker-client';
 import {
@@ -36,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   const supabase = createServiceRoleClient();
 
-  // Atomically claim the job: only the first caller wins.
+  // Atomically claim: only the first caller wins.
   const { data: claimed, error: claimErr } = await supabase
     .from('categorization_jobs')
     .update({ status: 'running', claimed_at: new Date().toISOString() })
@@ -52,7 +43,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Mark statement as categorizing for the UI.
   if (claimed.statement_id) {
     await supabase
       .from('bank_statements')
@@ -69,21 +59,21 @@ export async function POST(request: NextRequest) {
         )
       : await runPipelineForUserPending(supabase, claimed.user_id as string);
 
+    const finalUpdates: Array<Promise<unknown>> = [
+      supabase
+        .from('categorization_jobs')
+        .update({ status: 'done', last_error: null, shard_count: 1 })
+        .eq('id', claimed.id),
+    ];
     if (claimed.statement_id) {
-      await supabase
-        .from('bank_statements')
-        .update({ status: 'completed', transactions_count: counts.total })
-        .eq('id', claimed.statement_id);
+      finalUpdates.push(
+        supabase
+          .from('bank_statements')
+          .update({ status: 'completed', transactions_count: counts.total })
+          .eq('id', claimed.statement_id),
+      );
     }
-
-    await supabase
-      .from('categorization_jobs')
-      .update({
-        status: 'done',
-        last_error: null,
-        shard_count: 1,
-      })
-      .eq('id', claimed.id);
+    await Promise.all(finalUpdates);
 
     return NextResponse.json({ ok: true, counts });
   } catch (err) {
@@ -91,22 +81,26 @@ export async function POST(request: NextRequest) {
     const attempts = (claimed.attempts as number) + 1;
     const dead = attempts >= RETRY_MAX;
 
-    await supabase
-      .from('categorization_jobs')
-      .update({
-        status: dead ? 'dead' : 'queued',
-        attempts,
-        last_error: msg.slice(0, 1000),
-        claimed_at: null,
-      })
-      .eq('id', claimed.id);
-
+    const failureUpdates: Array<Promise<unknown>> = [
+      supabase
+        .from('categorization_jobs')
+        .update({
+          status: dead ? 'dead' : 'queued',
+          attempts,
+          last_error: msg.slice(0, 1000),
+          claimed_at: null,
+        })
+        .eq('id', claimed.id),
+    ];
     if (dead && claimed.statement_id) {
-      await supabase
-        .from('bank_statements')
-        .update({ status: 'failed' })
-        .eq('id', claimed.statement_id);
+      failureUpdates.push(
+        supabase
+          .from('bank_statements')
+          .update({ status: 'failed' })
+          .eq('id', claimed.statement_id),
+      );
     }
+    await Promise.all(failureUpdates);
 
     return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }

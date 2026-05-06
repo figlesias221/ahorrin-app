@@ -1,6 +1,3 @@
-// merchant_cache: per-user normalized vendor → category memory.
-// Read in one batched SELECT, written via upsert that bumps hit_count.
-
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export type CacheSource = 'rule' | 'manual' | 'observed';
@@ -53,10 +50,6 @@ export async function recordCacheHits(
     last_seen_at: new Date().toISOString(),
   }));
 
-  // Upsert with on-conflict bumps last_seen_at + source. hit_count is
-  // incremented via a follow-up RPC-free atomic update for rows that already
-  // existed: we re-select to know which were inserts vs updates is overkill,
-  // so we just count the touch and let observed=>manual override on conflict.
   const { error } = await supabase
     .from('merchant_cache')
     .upsert(rows, { onConflict: 'user_id,vendor_key' });

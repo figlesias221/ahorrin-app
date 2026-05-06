@@ -1,7 +1,3 @@
-// Stage 3: trigram nearest-neighbor over the user's own manually-verified
-// history. One round-trip, regardless of input size, via the
-// raven_find_similar() Postgres function.
-
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export async function findSimilar(

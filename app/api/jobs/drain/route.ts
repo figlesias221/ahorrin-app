@@ -1,6 +1,3 @@
-// Vercel-cron drain: re-trigger jobs queued or stuck-in-running. Acts as the
-// safety net for lost next/after() invocations.
-
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceRoleClient, triggerWorker } from '@/lib/categorization/worker-client';
 
@@ -11,7 +8,6 @@ const STUCK_AFTER_MIN = 5;
 const BATCH = 20;
 
 export async function GET(request: NextRequest) {
-  // Vercel sets this when invoking via configured cron.
   const isCron = request.headers.get('x-vercel-cron') === '1';
   const isManual =
     request.headers.get('x-worker-secret') === process.env.RAVEN_WORKER_SECRET;
@@ -22,35 +18,34 @@ export async function GET(request: NextRequest) {
   const supabase = createServiceRoleClient();
   const stuckBefore = new Date(Date.now() - STUCK_AFTER_MIN * 60_000).toISOString();
 
-  const { data: queued } = await supabase
-    .from('categorization_jobs')
-    .select('id')
-    .eq('status', 'queued')
-    .order('created_at', { ascending: true })
-    .limit(BATCH);
+  const [queuedRes, stuckRes] = await Promise.all([
+    supabase
+      .from('categorization_jobs')
+      .select('id')
+      .eq('status', 'queued')
+      .order('created_at', { ascending: true })
+      .limit(BATCH),
+    supabase
+      .from('categorization_jobs')
+      .select('id')
+      .eq('status', 'running')
+      .lt('claimed_at', stuckBefore)
+      .order('created_at', { ascending: true })
+      .limit(BATCH),
+  ]);
 
-  const { data: stuck } = await supabase
-    .from('categorization_jobs')
-    .select('id')
-    .eq('status', 'running')
-    .lt('claimed_at', stuckBefore)
-    .order('created_at', { ascending: true })
-    .limit(BATCH);
+  const queued = queuedRes.data ?? [];
+  const stuck = stuckRes.data ?? [];
 
-  // Reset stuck jobs back to queued so the worker will accept them.
-  if (stuck && stuck.length > 0) {
+  if (stuck.length > 0) {
     await supabase
       .from('categorization_jobs')
       .update({ status: 'queued', claimed_at: null })
-      .in(
-        'id',
-        stuck.map((j) => j.id),
-      );
+      .in('id', stuck.map((j) => j.id));
   }
 
-  const ids = [...(queued ?? []), ...(stuck ?? [])].map((j) => j.id as string);
+  const ids = [...queued, ...stuck].map((j) => j.id as string);
   for (const id of ids) {
-    // Fire-and-forget; each invocation is independent.
     triggerWorker(id);
   }
 

@@ -1,10 +1,3 @@
-// Pipeline orchestrator. Loads inputs once, runs rules → cache → similar in
-// memory, writes results in chunked UPDATEs, and feeds the merchant_cache.
-//
-// Used by:
-//  - app/api/jobs/categorize/route.ts (worker, called from upload + cron drain)
-//  - lib/services/recategorize.ts (manual reprocess)
-
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { applyRules, type CategorizationRule, type RuleInput } from './rules';
 import { lookupCache, recordCacheHits } from './cache';
@@ -52,16 +45,36 @@ async function runPipeline(
   userId: string,
   scope: { statementId?: string },
 ): Promise<PipelineCounts> {
-  // Load all txns (in scope) that still need categorization.
-  let query = supabase
+  let txQuery = supabase
     .from('transactions')
     .select('id, vendor, amount, notes, vendor_key')
     .eq('user_id', userId)
     .eq('categorization_status', 'pending');
-  if (scope.statementId) query = query.eq('statement_id', scope.statementId);
-  const { data: txns, error: txErr } = await query;
+  if (scope.statementId) txQuery = txQuery.eq('statement_id', scope.statementId);
+
+  const [
+    { data: txns, error: txErr },
+    { data: rules, error: rulesErr },
+    { data: cats, error: catErr },
+  ] = await Promise.all([
+    txQuery,
+    supabase
+      .from('categorization_rules')
+      .select('id, category_id, rule_type, match_value, is_active')
+      .eq('user_id', userId)
+      .eq('is_active', true)
+      .order('created_at', { ascending: true }),
+    supabase
+      .from('categories')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('is_active', true),
+  ]);
 
   if (txErr) throw txErr;
+  if (rulesErr) throw rulesErr;
+  if (catErr) throw catErr;
+
   const inputs: RuleInput[] = (txns ?? []).map((t) => ({
     id: t.id as string,
     vendor: (t.vendor as string) ?? '',
@@ -74,47 +87,29 @@ async function runPipeline(
     return { rules: 0, cache: 0, similar: 0, unmatched: 0, total: 0 };
   }
 
-  // Load rules + active categories once.
-  const { data: rules, error: rulesErr } = await supabase
-    .from('categorization_rules')
-    .select('id, category_id, rule_type, match_value, is_active')
-    .eq('user_id', userId)
-    .eq('is_active', true)
-    .order('created_at', { ascending: true });
-  if (rulesErr) throw rulesErr;
-
-  const { data: cats, error: catErr } = await supabase
-    .from('categories')
-    .select('id')
-    .eq('user_id', userId)
-    .eq('is_active', true);
-  if (catErr) throw catErr;
   const validCategoryIds = new Set((cats ?? []).map((c) => c.id as string));
+  const vendorKeyByTxId = new Map<string, string>();
+  for (const tx of inputs) {
+    const k = vendorKey(tx.vendor);
+    if (k) vendorKeyByTxId.set(tx.id, k);
+  }
 
-  // Stage 1: rules.
   const { matched: ruleMatched, unmatched: postRules } = applyRules(
     inputs,
     (rules ?? []) as unknown as CategorizationRule[],
   );
 
-  // Build vendor_key list for stages 2/3 over rules-unmatched.
-  const keyByTxId = new Map<string, string>();
   const keysNeeded: string[] = [];
   for (const tx of postRules) {
-    const k = (tx as RuleInput).vendor ? vendorKey(tx.vendor) : null;
-    if (k) {
-      keyByTxId.set(tx.id, k);
-      keysNeeded.push(k);
-    }
+    const k = vendorKeyByTxId.get(tx.id);
+    if (k) keysNeeded.push(k);
   }
 
-  // Stage 2: merchant_cache.
   const cacheMap =
     keysNeeded.length > 0
       ? await lookupCache(supabase, userId, keysNeeded)
       : new Map<string, string>();
 
-  // Stage 3: trigram similarity for whatever cache missed.
   const stillMissing: string[] = [];
   for (const k of keysNeeded) if (!cacheMap.has(k)) stillMissing.push(k);
   const similarMap =
@@ -122,7 +117,6 @@ async function runPipeline(
       ? await findSimilar(supabase, userId, stillMissing, SIMILARITY_THRESHOLD)
       : new Map<string, string>();
 
-  // Build write-set.
   type Update = {
     id: string;
     category_id: string | null;
@@ -130,7 +124,7 @@ async function runPipeline(
   };
   const updates: Update[] = [];
   const ruleHits: Array<{ vendor_key: string; category_id: string }> = [];
-  let counts: PipelineCounts = { rules: 0, cache: 0, similar: 0, unmatched: 0, total: inputs.length };
+  const counts: PipelineCounts = { rules: 0, cache: 0, similar: 0, unmatched: 0, total: inputs.length };
 
   for (const m of ruleMatched) {
     if (!validCategoryIds.has(m.category_id)) {
@@ -138,20 +132,14 @@ async function runPipeline(
       counts.unmatched++;
       continue;
     }
-    updates.push({
-      id: m.id,
-      category_id: m.category_id,
-      categorization_status: 'rules',
-    });
+    updates.push({ id: m.id, category_id: m.category_id, categorization_status: 'rules' });
     counts.rules++;
-    // Feed cache for future short-circuit.
-    const tx = inputs.find((t) => t.id === m.id);
-    const k = tx ? vendorKey(tx.vendor) : null;
+    const k = vendorKeyByTxId.get(m.id);
     if (k) ruleHits.push({ vendor_key: k, category_id: m.category_id });
   }
 
   for (const tx of postRules) {
-    const k = keyByTxId.get(tx.id);
+    const k = vendorKeyByTxId.get(tx.id);
     let categoryId: string | null = null;
     let status: CategorizationStatus = 'unmatched';
 
@@ -175,10 +163,9 @@ async function runPipeline(
     updates.push({ id: tx.id, category_id: categoryId, categorization_status: status });
   }
 
-  // Write updates in chunks. Supabase has no batch update by id; we issue one
-  // UPDATE per distinct (category_id, status) pair, which keeps round-trips
-  // bounded by the number of stages (max 4: rules / cache / similar / unmatched
-  // × distinct categories). For typical inputs this is well under 50 calls.
+  // One UPDATE per distinct (status, category_id) keeps round-trips bounded
+  // by stages × distinct categories. Without grouping it would be one round-
+  // trip per row.
   const grouped = new Map<string, string[]>();
   for (const u of updates) {
     const key = `${u.categorization_status}|${u.category_id ?? ''}`;
@@ -187,25 +174,32 @@ async function runPipeline(
     grouped.set(key, arr);
   }
 
+  const updateOps: Array<Promise<unknown>> = [];
   for (const [key, ids] of grouped) {
     const [status, catId] = key.split('|') as [CategorizationStatus, string];
     for (let i = 0; i < ids.length; i += UPDATE_CHUNK) {
       const slice = ids.slice(i, i + UPDATE_CHUNK);
-      const { error: upErr } = await supabase
-        .from('transactions')
-        .update({
-          category_id: catId === '' ? null : catId,
-          categorization_status: status,
-        })
-        .in('id', slice);
-      if (upErr) throw upErr;
+      updateOps.push(
+        supabase
+          .from('transactions')
+          .update({
+            category_id: catId === '' ? null : catId,
+            categorization_status: status,
+          })
+          .in('id', slice)
+          .then((res) => {
+            if (res.error) throw res.error;
+            return res;
+          }),
+      );
     }
   }
 
-  // Feed merchant_cache from rule matches (so future uploads short-circuit).
   if (ruleHits.length > 0) {
-    await recordCacheHits(supabase, userId, ruleHits, 'rule');
+    updateOps.push(recordCacheHits(supabase, userId, ruleHits, 'rule'));
   }
+
+  await Promise.all(updateOps);
 
   return counts;
 }

@@ -1,13 +1,6 @@
 'use client';
 
-// Live status panel for a sharded-raven statement. Subscribes to
-// bank_statements + the related transaction rows so the UI updates as the
-// worker progresses.
-//
-// Visual language follows BRAND.md: DM Sans body, Space Mono for labels &
-// data, emerald primary as the single moment of color, borders over shadows.
-
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 export type StatementStatus =
@@ -56,12 +49,53 @@ const STAT_ORDER: Array<{ key: keyof CountsRow; label: string }> = [
   { key: 'unmatched', label: 'Sin categorizar' },
 ];
 
+const HEADING_BY_STATUS: Record<StatementStatus, string> = {
+  processing: 'En cola',
+  parsed: 'En cola',
+  categorizing: 'Categorizando…',
+  completed: 'Listo',
+  failed: 'Error de categorización',
+};
+
+type StepState = 'past' | 'current' | 'future' | 'failed';
+
+const STEP_RAIL_BG: Record<StepState, string> = {
+  past: 'bg-foreground',
+  current: 'bg-primary',
+  future: 'bg-border',
+  failed: 'bg-error',
+};
+
+const STEP_LABEL_COLOR: Record<StepState, string> = {
+  past: 'text-foreground',
+  current: 'text-primary',
+  future: 'text-muted-foreground',
+  failed: 'text-muted-foreground',
+};
+
+const sameCounts = (a: CountsRow, b: CountsRow): boolean =>
+  a.pending === b.pending &&
+  a.rules === b.rules &&
+  a.cache === b.cache &&
+  a.similar === b.similar &&
+  a.unmatched === b.unmatched &&
+  a.manual === b.manual &&
+  a.total === b.total;
+
 export function RavenStatementStatus({ statementId, onComplete }: Props) {
-  const supabase = createClient();
-  const [status, setStatus] = useState<StatementStatus>('parsed');
-  const [counts, setCounts] = useState<CountsRow>(ZERO_COUNTS);
+  const supabase = useMemo(() => createClient(), []);
+  const [status, setStatusState] = useState<StatementStatus>('parsed');
+  const [counts, setCountsState] = useState<CountsRow>(ZERO_COUNTS);
   const [recategorizing, setRecategorizing] = useState(false);
   const [inlineNote, setInlineNote] = useState<string | null>(null);
+
+  const updateStatus = useCallback((next: StatementStatus) => {
+    setStatusState((prev) => (prev === next ? prev : next));
+  }, []);
+
+  const updateCounts = useCallback((next: CountsRow) => {
+    setCountsState((prev) => (sameCounts(prev, next) ? prev : next));
+  }, []);
 
   const refreshCounts = useCallback(async () => {
     const { data } = await supabase
@@ -74,11 +108,19 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
       const k = r.categorization_status;
       if (k && k in next) (next[k] as number) += 1;
     }
-    setCounts(next);
-  }, [supabase, statementId]);
+    updateCounts(next);
+  }, [supabase, statementId, updateCounts]);
 
   useEffect(() => {
     let cancelled = false;
+    let pendingTimer: ReturnType<typeof setTimeout> | null = null;
+    const debouncedRefresh = () => {
+      if (pendingTimer) return;
+      pendingTimer = setTimeout(() => {
+        pendingTimer = null;
+        if (!cancelled) refreshCounts();
+      }, 250);
+    };
 
     (async () => {
       const { data } = await supabase
@@ -86,7 +128,7 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
         .select('status')
         .eq('id', statementId)
         .single();
-      if (!cancelled && data?.status) setStatus(data.status as StatementStatus);
+      if (!cancelled && data?.status) updateStatus(data.status as StatementStatus);
       await refreshCounts();
     })();
 
@@ -97,22 +139,23 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
         { event: 'UPDATE', schema: 'public', table: 'bank_statements', filter: `id=eq.${statementId}` },
         (payload) => {
           const next = (payload.new as { status?: StatementStatus }).status;
-          if (next) setStatus(next);
-          if (next === 'completed' || next === 'failed') refreshCounts();
+          if (next) updateStatus(next);
+          if (next === 'completed' || next === 'failed') debouncedRefresh();
         },
       )
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'transactions', filter: `statement_id=eq.${statementId}` },
-        () => refreshCounts(),
+        debouncedRefresh,
       )
       .subscribe();
 
     return () => {
       cancelled = true;
+      if (pendingTimer) clearTimeout(pendingTimer);
       supabase.removeChannel(channel);
     };
-  }, [statementId, supabase, refreshCounts]);
+  }, [statementId, supabase, refreshCounts, updateStatus]);
 
   useEffect(() => {
     if (status === 'completed' && onComplete) onComplete(counts);
@@ -150,22 +193,24 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
     counts.total > 0
       ? Math.round(((counts.total - counts.unmatched - counts.pending) / counts.total) * 100)
       : 0;
+  const categorized = counts.total - counts.unmatched - counts.pending;
+  const unmatchedActionable = counts.unmatched > 0;
+
+  const stepStateAt = (i: number): StepState => {
+    if (isFailed) return 'failed';
+    if (stepIndex > i) return 'past';
+    if (stepIndex === i) return 'current';
+    return 'future';
+  };
 
   return (
     <section
       aria-label="Estado de categorización"
       className="rounded-xl border border-border bg-background p-6"
     >
-      {/* Header — single primary moment, H3 alone carries the heading */}
       <div className="flex items-baseline justify-between gap-4">
         <h3 className="text-base font-semibold tracking-tight text-foreground">
-          {isFailed
-            ? 'Error de categorización'
-            : isWorking
-              ? 'Categorizando…'
-              : status === 'completed'
-                ? 'Listo'
-                : 'En cola'}
+          {HEADING_BY_STATUS[status]}
         </h3>
         <button
           onClick={handleRecategorize}
@@ -176,40 +221,22 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
         </button>
       </div>
 
-      {/* Step rail — three notches; the active one is filled emerald, past steps are muted-foreground, future steps are border-only */}
       <ol className="mt-6 grid grid-cols-3 gap-2">
         {STEPS.map((step, i) => {
-          const past = !isFailed && stepIndex > i;
-          const current = !isFailed && stepIndex === i;
-          const future = !isFailed && stepIndex < i;
+          const state = stepStateAt(i);
+          const isCurrent = state === 'current';
           return (
             <li key={step.key} className="flex flex-col gap-2">
               <div
-                className={[
-                  'h-px w-full transition-colors duration-300 ease-out',
-                  isFailed
-                    ? 'bg-error'
-                    : past
-                      ? 'bg-foreground'
-                      : current
-                        ? 'bg-primary'
-                        : 'bg-border',
-                ].join(' ')}
+                className={`h-px w-full transition-colors duration-300 ease-out ${STEP_RAIL_BG[state]}`}
               />
               <div className="flex items-center justify-between">
                 <span
-                  className={[
-                    'text-[10px] font-mono uppercase tracking-widest',
-                    current
-                      ? 'text-primary'
-                      : past
-                        ? 'text-foreground'
-                        : 'text-muted-foreground',
-                  ].join(' ')}
+                  className={`text-[10px] font-mono uppercase tracking-widest ${STEP_LABEL_COLOR[state]}`}
                 >
                   {step.label}
                 </span>
-                {current && isWorking && (
+                {isCurrent && isWorking && (
                   <span
                     className="raven-pulse-dot h-1 w-1 rounded-full bg-primary [animation:raven-pulse_1.4s_ease-out_infinite]"
                     aria-hidden
@@ -229,12 +256,8 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
 
       {showStats && (
         <>
-          {/* Big primary — the % categorized. One number, oversized, mono. */}
           <div className="mt-8 flex items-baseline gap-3">
-            <span
-              className="font-mono text-5xl font-medium tracking-tight tabular-nums text-foreground"
-              style={{ fontVariantNumeric: 'tabular-nums' }}
-            >
+            <span className="font-mono text-5xl font-medium tracking-tight tabular-nums text-foreground">
               {completionPct}
               <span className="text-2xl text-muted-foreground">%</span>
             </span>
@@ -243,34 +266,25 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
             </span>
           </div>
 
-          {/* Tier 1 — single sentence-line summary in brand voice. */}
-          {(() => {
-            const categorized = counts.total - counts.unmatched - counts.pending;
-            const unmatchedActionable = counts.unmatched > 0;
-            return (
-              <p className="mt-6 text-[13px] text-muted-foreground">
-                <span className="font-mono tabular-nums text-foreground">{categorized}</span>{' '}
-                categorizadas ·{' '}
-                <span
-                  className={[
-                    'font-mono tabular-nums',
-                    unmatchedActionable ? 'text-primary' : 'text-foreground',
-                  ].join(' ')}
-                >
-                  {counts.unmatched}
-                </span>{' '}
-                sin categorizar
-                {counts.pending > 0 && (
-                  <>
-                    {' · '}
-                    <span className="font-mono tabular-nums">{counts.pending}</span> en proceso
-                  </>
-                )}
-              </p>
-            );
-          })()}
+          <p className="mt-6 text-[13px] text-muted-foreground">
+            <span className="font-mono tabular-nums text-foreground">{categorized}</span>{' '}
+            categorizadas ·{' '}
+            <span
+              className={`font-mono tabular-nums ${
+                unmatchedActionable ? 'text-primary' : 'text-foreground'
+              }`}
+            >
+              {counts.unmatched}
+            </span>{' '}
+            sin categorizar
+            {counts.pending > 0 && (
+              <>
+                {' · '}
+                <span className="font-mono tabular-nums">{counts.pending}</span> en proceso
+              </>
+            )}
+          </p>
 
-          {/* Tier 2 — collapsible breakdown. Same brand styling as before. */}
           <details className="mt-4 group">
             <summary className="cursor-pointer text-[11px] font-mono uppercase tracking-widest text-muted-foreground transition-opacity duration-150 ease-out hover:opacity-70 [&::-webkit-details-marker]:hidden [&::marker]:hidden">
               Ver detalle
@@ -278,8 +292,7 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
             <dl className="mt-4 grid grid-cols-5 divide-x divide-border border-y border-border">
               {STAT_ORDER.map(({ key, label }) => {
                 const value = counts[key];
-                const isUnmatched = key === 'unmatched';
-                const isActionable = isUnmatched && value > 0;
+                const isActionable = key === 'unmatched' && value > 0;
                 return (
                   <div
                     key={key}
@@ -289,11 +302,9 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
                       {label}
                     </dt>
                     <dd
-                      className={[
-                        'font-mono text-lg font-medium tabular-nums',
-                        isActionable ? 'text-primary' : 'text-foreground',
-                      ].join(' ')}
-                      style={{ fontVariantNumeric: 'tabular-nums' }}
+                      className={`font-mono text-lg font-medium tabular-nums ${
+                        isActionable ? 'text-primary' : 'text-foreground'
+                      }`}
                     >
                       {value}
                     </dd>
@@ -314,7 +325,6 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
           {inlineNote}
         </p>
       )}
-
     </section>
   );
 }

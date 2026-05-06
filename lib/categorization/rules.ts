@@ -1,7 +1,3 @@
-// Deterministic rules pass. Extracted verbatim from the original synchronous
-// path in app/api/statements/upload/route.ts, generalized to a pure function
-// that returns matched + unmatched partitions instead of mutating in place.
-
 import { vendorKey } from './vendor-key';
 
 export interface CategorizationRule {
@@ -40,45 +36,65 @@ export interface RulesResult {
 const norm = (s: string | null | undefined): string =>
   vendorKey(s ?? '') ?? '';
 
+interface PreparedRule {
+  id: string;
+  category_id: string;
+  rule_type: CategorizationRule['rule_type'];
+  normValues: string[];
+  numericValue: number;
+}
+
+function prepare(rules: CategorizationRule[]): PreparedRule[] {
+  return rules
+    .filter((r) => r.is_active)
+    .map((r) => {
+      const tokens = r.match_value
+        .split(',')
+        .map((v) => v.trim())
+        .filter(Boolean);
+      return {
+        id: r.id,
+        category_id: r.category_id,
+        rule_type: r.rule_type,
+        normValues: tokens.map(norm),
+        numericValue: parseFloat(tokens[0] ?? 'NaN'),
+      };
+    });
+}
+
 export function applyRules(
   txns: RuleInput[],
   rules: CategorizationRule[],
 ): RulesResult {
   const matched: RuleMatch[] = [];
   const unmatched: RuleInput[] = [];
-
-  const activeRules = rules.filter((r) => r.is_active);
+  const prepared = prepare(rules);
 
   for (const tx of txns) {
     const vKey = norm(tx.vendor);
     const refKey = norm(tx.reference ?? tx.notes ?? '');
     let hit: { category_id: string; rule_id: string } | null = null;
 
-    for (const rule of activeRules) {
-      const values = rule.match_value
-        .split(',')
-        .map((v) => v.trim())
-        .filter(Boolean);
+    for (const rule of prepared) {
       let ok = false;
-
       switch (rule.rule_type) {
         case 'vendor_contains':
-          ok = values.some((v) => vKey.includes(norm(v)));
+          ok = rule.normValues.some((v) => vKey.includes(v));
           break;
         case 'vendor_equals':
-          ok = values.some((v) => vKey === norm(v));
+          ok = rule.normValues.some((v) => vKey === v);
           break;
         case 'description_contains':
-          ok = values.some((v) => refKey.includes(norm(v)));
+          ok = rule.normValues.some((v) => refKey.includes(v));
           break;
         case 'amount_greater':
-          ok = tx.amount > parseFloat(values[0] ?? 'NaN');
+          ok = tx.amount > rule.numericValue;
           break;
         case 'amount_less':
-          ok = tx.amount < parseFloat(values[0] ?? 'NaN');
+          ok = tx.amount < rule.numericValue;
           break;
         case 'amount_equals':
-          ok = tx.amount === parseFloat(values[0] ?? 'NaN');
+          ok = tx.amount === rule.numericValue;
           break;
       }
 

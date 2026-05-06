@@ -1,9 +1,3 @@
-// Re-runs the sharded-raven pipeline against existing transactions. Three
-// scopes:
-//   { statement_id }            → all non-verified rows in that statement
-//   { scope: 'unmatched' }      → all unmatched rows for the user (no scope id)
-//   { scope: 'all' }            → all non-verified rows for the user
-
 import { NextRequest, NextResponse } from 'next/server';
 import { after } from 'next/server';
 import { createClient } from '@/lib/supabase/server';

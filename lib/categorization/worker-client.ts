@@ -1,5 +1,3 @@
-// Helpers shared by enqueue (upload route, recategorize) and drain (cron).
-
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 export function createServiceRoleClient(): SupabaseClient {
@@ -35,11 +33,10 @@ export async function triggerWorker(jobId: string): Promise<void> {
         'X-Worker-Secret': workerSecret(),
       },
       body: JSON.stringify({ job_id: jobId }),
-      // Fire-and-forget; the cron drain is the safety net.
+      // Fire-and-forget; the cron drain at /api/jobs/drain is the safety net.
       cache: 'no-store',
     });
   } catch (err) {
-    // Swallow — the cron drain will pick it up. Surface in logs only.
     console.warn('[raven] failed to trigger worker', { jobId, err });
   }
 }
