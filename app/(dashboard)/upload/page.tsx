@@ -1992,11 +1992,7 @@ export default function UploadPage() {
                   return matchesSearch;
                 })
                 .map((bank) => (
-                  <div
-                    key={bank.id}
-                    className="rounded-lg border border-border p-6"
-                  >
-                    {/* Bank Info */}
+                  <Card key={bank.id} variant="default">
                     <div className="flex items-center gap-3">
                       <span
                         className="h-2 w-2 rounded-full flex-shrink-0"
@@ -2048,7 +2044,7 @@ export default function UploadPage() {
                         ELIMINAR
                       </button>
                     </div>
-                  </div>
+                  </Card>
                 ))}
             </div>
           )}

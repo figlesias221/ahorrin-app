@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { Card } from '@/components/ui/card';
 
 export type StatementStatus =
   | 'processing'
@@ -204,10 +205,7 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
   };
 
   return (
-    <section
-      aria-label="Estado de categorización"
-      className="rounded-xl border border-border bg-background p-6"
-    >
+    <Card variant="default">
       <div className="flex items-baseline justify-between gap-4">
         <h3 className="text-base font-semibold tracking-tight text-foreground">
           {HEADING_BY_STATUS[status]}
@@ -325,6 +323,6 @@ export function RavenStatementStatus({ statementId, onComplete }: Props) {
           {inlineNote}
         </p>
       )}
-    </section>
+    </Card>
   );
 }
