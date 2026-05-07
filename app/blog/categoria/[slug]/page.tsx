@@ -7,6 +7,7 @@ import {
   getCategoryBySlug,
   getPostsByCategorySlug,
 } from '@/lib/mdx';
+import { getCategoryProfile } from '@/lib/blog-categories';
 
 export async function generateStaticParams() {
   return getAllCategories().map((c) => ({ slug: c.slug }));
@@ -21,15 +22,20 @@ export async function generateMetadata({
   const category = getCategoryBySlug(slug);
   if (!category) return { title: 'Categoría no encontrada' };
 
+  const profile = getCategoryProfile(slug);
+  const description =
+    profile?.description ??
+    `Todos los artículos sobre ${category.name.toLowerCase()} en Uruguay. ${category.count} guías y análisis prácticos sobre finanzas personales.`;
+
   return {
     title: `${category.name} | Blog Ahorrin`,
-    description: `Todos los artículos sobre ${category.name.toLowerCase()} en Uruguay. ${category.count} guías y análisis prácticos sobre finanzas personales.`,
+    description,
     alternates: {
       canonical: `https://www.ahorrin.app/blog/categoria/${slug}`,
     },
     openGraph: {
       title: `${category.name} - Blog Ahorrin`,
-      description: `${category.count} artículos sobre ${category.name.toLowerCase()} en Uruguay`,
+      description,
       url: `https://www.ahorrin.app/blog/categoria/${slug}`,
       type: 'website',
     },
@@ -47,6 +53,7 @@ export default async function CategoryPage({
 
   const posts = getPostsByCategorySlug(slug);
   const otherCategories = getAllCategories().filter((c) => c.slug !== slug);
+  const profile = getCategoryProfile(slug);
 
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -118,6 +125,16 @@ export default async function CategoryPage({
           </p>
         </div>
       </section>
+
+      {profile && (
+        <section className="py-10 sm:py-12 border-b border-border">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+              {profile.intro}
+            </p>
+          </div>
+        </section>
+      )}
 
       <section className="py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
