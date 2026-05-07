@@ -11,6 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           '/dashboard/',
           '/api/',
+          '/auth/',
           '/onboarding/',
           '/settings/',
           '/transactions/',
@@ -19,6 +20,10 @@ export default function robots(): MetadataRoute.Robots {
           '/summary/',
           '/rules/',
           '/ai/',
+          '/login',
+          '/signup',
+          '/forgot-password',
+          '/reset-password',
         ],
       },
       {

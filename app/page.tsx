@@ -72,12 +72,6 @@ export default async function Home() {
       priceValidUntil: '2026-12-31',
       category: 'Free'
     },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      ratingCount: '127',
-      reviewCount: '89'
-    },
     description: 'Control total de tus finanzas personales en Uruguay. Importá extractos de cualquier banco uruguayo (BBVA, Itaú, Scotiabank, BROU). Categorización automática. 100% gratis y sin conectar tu banco.',
     featureList: [
       'Importación extractos bancarios CSV/Excel de todos los bancos uruguayos',

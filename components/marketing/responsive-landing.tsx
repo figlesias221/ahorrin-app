@@ -14,7 +14,6 @@ const CategoriesShowcase = dynamic(() => import('./categories-showcase').then(m 
 const ChartsShowcase = dynamic(() => import('./charts-showcase').then(m => ({ default: m.ChartsShowcase })), { loading: () => <div className="py-24" /> });
 const AIAssistantShowcase = dynamic(() => import('./ai-assistant-showcase').then(m => ({ default: m.AIAssistantShowcase })), { loading: () => <div className="py-24" /> });
 const StatsShowcase = dynamic(() => import('./stats-showcase').then(m => ({ default: m.StatsShowcase })), { loading: () => <div className="py-24" /> });
-const Testimonials = dynamic(() => import('./testimonials').then(m => ({ default: m.Testimonials })), { loading: () => <div className="py-24" /> });
 const BlogSection = dynamic(() => import('./blog-section').then(m => ({ default: m.BlogSection })), { loading: () => <div className="py-24" /> });
 const FAQReal = dynamic(() => import('./faq-real').then(m => ({ default: m.FAQReal })), { loading: () => <div className="py-24" /> });
 const FeaturesMobile = dynamic(() => import('./features-mobile').then(m => ({ default: m.FeaturesMobile })), { loading: () => <div className="py-24" /> });
@@ -54,7 +53,6 @@ export function ResponsiveLanding() {
         <ShowcaseMobile />
         <FreeToolsShowcase />
         <StatsShowcase />
-        <Testimonials />
         <BlogSection />
         <FAQReal />
       </>

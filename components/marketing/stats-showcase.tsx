@@ -2,7 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
-import { Users, TrendingUp, FileText, Clock } from 'lucide-react';
+import { Building2, Calculator, BookOpen, Clock } from 'lucide-react';
 
 // Counter animation hook
 function useCounter(end: number, duration: number = 2000) {
@@ -29,29 +29,29 @@ function useCounter(end: number, duration: number = 2000) {
 
 const stats = [
   {
-    icon: Users,
-    value: 150,
-    suffix: '+',
-    label: 'Usuarios activos',
-    description: 'Confían en Ahorrin para sus finanzas',
+    icon: Building2,
+    value: 6,
+    suffix: '',
+    label: 'Bancos uruguayos',
+    description: 'BBVA, Itaú, Scotiabank, BROU, Santander, Heritage',
     color: 'text-blue-500',
     bgColor: 'bg-blue-500/10'
   },
   {
-    icon: FileText,
-    value: 3200,
-    suffix: '+',
-    label: 'Transacciones procesadas',
-    description: 'Categorizadas automáticamente',
+    icon: Calculator,
+    value: 4,
+    suffix: '',
+    label: 'Calculadoras gratuitas',
+    description: 'Salario líquido, presupuesto, inflación, conversor',
     color: 'text-purple-500',
     bgColor: 'bg-purple-500/10'
   },
   {
-    icon: TrendingUp,
-    value: 18,
-    suffix: '%',
-    label: 'Ahorro promedio descubierto',
-    description: 'Identificando gastos innecesarios',
+    icon: BookOpen,
+    value: 43,
+    suffix: '+',
+    label: 'Guías publicadas',
+    description: 'IRPF, BPS, FONASA, inversiones, monotributo',
     color: 'text-green-500',
     bgColor: 'bg-green-500/10'
   },
@@ -59,8 +59,8 @@ const stats = [
     icon: Clock,
     value: 2,
     suffix: ' min',
-    label: 'Tiempo promedio de setup',
-    description: 'Desde registro hasta primer insight',
+    label: 'Setup en',
+    description: 'Subís el extracto y listo, sin claves bancarias',
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10'
   }
@@ -131,10 +131,11 @@ export function StatsShowcase() {
           className="text-center mb-12 sm:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-            Números que hablan por sí solos
+            Hecho específicamente para Uruguay
           </h2>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Ahorrin está ayudando a uruguayos a tomar control de sus finanzas
+            Compatible con todos los bancos uruguayos. Calculadoras y guías que
+            entienden cómo funciona realmente IRPF, BPS y FONASA.
           </p>
         </motion.div>
 
