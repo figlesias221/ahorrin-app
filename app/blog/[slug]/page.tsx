@@ -10,6 +10,8 @@ import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { BlogAdTop, BlogAdBottom } from '@/components/ads/blog-ads';
+import { AuthorBio } from '@/components/blog/author-bio';
+import { SourcesBlock } from '@/components/blog/sources-block';
 
 const mdxComponents = {
   ComparisonTable,
@@ -243,6 +245,9 @@ export default async function BlogPostPage({
               }}
             />
           </div>
+
+          <SourcesBlock sources={metadata.sources} />
+          <AuthorBio author={author} />
         </div>
       </article>
 

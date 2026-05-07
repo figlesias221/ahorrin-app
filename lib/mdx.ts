@@ -4,6 +4,11 @@ import matter from 'gray-matter';
 
 const contentDirectory = path.join(process.cwd(), 'content/blog');
 
+export interface BlogPostSource {
+  name: string;
+  url: string;
+}
+
 export interface BlogPostMetadata {
   title: string;
   excerpt: string;
@@ -16,6 +21,7 @@ export interface BlogPostMetadata {
     avatar: string;
   };
   keywords: string[];
+  sources?: BlogPostSource[];
   slug?: string;
 }
 

@@ -4,8 +4,10 @@ import { ArrowLeft } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Términos y Condiciones | Ahorrin',
-  description: 'Términos y condiciones de uso de Ahorrin - Plataforma de gestión de finanzas personales',
-  robots: 'noindex, nofollow',
+  description:
+    'Términos y condiciones de uso de Ahorrin: descargo de responsabilidad financiera, uso aceptable, propiedad intelectual, planes y pagos, jurisdicción uruguaya.',
+  alternates: { canonical: 'https://www.ahorrin.app/terminos' },
+  robots: { index: true, follow: true },
 };
 
 export default function TermsPage() {
