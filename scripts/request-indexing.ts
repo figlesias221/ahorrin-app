@@ -51,6 +51,8 @@ const STATIC_PAGES = [
   '/sobre-nosotros',
   '/metodologia',
   '/contacto',
+  '/privacidad',
+  '/terminos',
   '/herramientas/calculadora-salario-liquido',
   '/herramientas/calculadora-presupuesto',
   '/herramientas/conversor-extractos',
