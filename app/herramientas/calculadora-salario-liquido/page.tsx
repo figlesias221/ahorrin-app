@@ -2,33 +2,33 @@ import { SalaryCalculator } from '@/components/free-tools/salary-calculator';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Calculadora de Salario Líquido Uruguay 2025 | Herramienta Gratuita | Ahorrin',
-  description: '¿Cuánto te queda después de impuestos? Calculá tu salario líquido en Uruguay 2025. IRPF, BPS, Fonasa actualizados. Compará escenarios. 100% gratis.',
+  title: 'Calculadora de Salario Líquido Uruguay 2026 | Herramienta Gratuita | Ahorrin',
+  description: '¿Cuánto te queda después de impuestos? Calculá tu salario líquido en Uruguay 2026. IRPF, BPS, Fonasa con la escala oficial BPS R 5/2026. Compará escenarios. 100% gratis.',
   keywords: [
     'calculadora sueldo liquido uruguay',
-    'salario liquido uruguay 2025',
+    'salario liquido uruguay 2026',
     'calculadora irpf uruguay',
     'calcular impuestos sueldo uruguay',
     'cuanto me queda de sueldo uruguay',
     'sueldo neto uruguay',
     'calculadora bps uruguay',
     'fonasa calculadora uruguay',
-    'impuestos sueldo uruguay 2025',
+    'impuestos sueldo uruguay 2026',
     'cuanto gano liquido uruguay',
     'calcular aporte bps',
     'irpf sueldo uruguay',
     'sueldo en mano uruguay'
   ],
   openGraph: {
-    title: 'Calculadora de Salario Líquido Uruguay 2025 | Ahorrin',
-    description: '¿Cuánto te queda realmente después de impuestos? Calculá tu salario líquido con IRPF, BPS y Fonasa actualizados 2025.',
+    title: 'Calculadora de Salario Líquido Uruguay 2026 | Ahorrin',
+    description: '¿Cuánto te queda realmente después de impuestos? Calculá tu salario líquido con IRPF, BPS y Fonasa con la escala BPS R 5/2026.',
     type: 'website',
     url: 'https://www.ahorrin.app/herramientas/calculadora-salario-liquido',
     locale: 'es_UY',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Calculadora de Salario Líquido Uruguay 2025',
+    title: 'Calculadora de Salario Líquido Uruguay 2026',
     description: '¿Cuánto te queda después de IRPF, BPS y Fonasa? Calculalo gratis.',
   },
   alternates: {
@@ -41,7 +41,7 @@ export default function CalculadoraSalarioLiquidoPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    name: 'Calculadora de Salario Líquido Uruguay 2025',
+    name: 'Calculadora de Salario Líquido Uruguay 2026',
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
     offers: {
@@ -49,9 +49,9 @@ export default function CalculadoraSalarioLiquidoPage() {
       price: '0',
       priceCurrency: 'UYU',
     },
-    description: 'Calculadora gratuita de salario líquido para Uruguay 2025. Ingresá tu salario nominal y obtené tu sueldo neto después de IRPF, BPS y Fonasa con las tasas actualizadas.',
+    description: 'Calculadora gratuita de salario líquido para Uruguay 2026. Ingresá tu salario nominal y obtené tu sueldo neto después de IRPF, BPS y Fonasa con la escala oficial BPS R 5/2026 (BPC $6.864).',
     featureList: [
-      'Cálculo de IRPF según franjas DGI 2025',
+      'Cálculo de IRPF según escala BPS R 5/2026',
       'Aportes BPS actualizados (15%)',
       'Fonasa según carga familiar',
       'Comparador de escenarios (aumentos de sueldo)',
@@ -77,7 +77,7 @@ export default function CalculadoraSalarioLiquidoPage() {
         name: '¿Cómo se calcula el salario líquido en Uruguay?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'El salario líquido es tu sueldo nominal menos los descuentos obligatorios: BPS (15%), Fonasa (3-8% según carga familiar) e IRPF (0-36% según franjas de ingreso). Las franjas de IRPF 2025 van desde 0% para ingresos hasta $60,596 hasta 36% para montos superiores a $456,768.'
+          text: 'El salario líquido es tu sueldo nominal menos los descuentos obligatorios: BPS (15%), Fonasa (3-8% según carga familiar) e IRPF (0-36% según franjas de ingreso). En 2026 las franjas de IRPF van desde 0% para base imponible hasta $48.048 hasta 36% para montos superiores a $789.360, con franja intermedia del 31% entre $514.800 y $789.360 (escala oficial BPS R 5/2026, BPC $6.864).'
         }
       },
       {
@@ -85,12 +85,12 @@ export default function CalculadoraSalarioLiquidoPage() {
         name: '¿Qué es el IRPF y cuánto me descuentan?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'El IRPF (Impuesto a la Renta de las Personas Físicas) es un impuesto progresivo que va de 0% a 36%. Tenés una deducción mínima no imponible de $60,596. Sobre el excedente se aplican franjas: 10% hasta $86,566, 15% hasta $119,890, 24% hasta $177,416, 25% hasta $239,698, 27% hasta $456,768 y 36% sobre lo que supere ese monto.'
+          text: 'El IRPF (Impuesto a la Renta de las Personas Físicas) es un impuesto progresivo que va de 0% a 36%. En 2026 tenés un mínimo no imponible mensual de $48.048 (7 BPC). Sobre el excedente se aplican franjas: 10% hasta $68.640, 15% hasta $102.960, 24% hasta $205.920, 25% hasta $343.200, 27% hasta $514.800, 31% hasta $789.360 y 36% sobre lo que supere ese monto.'
         }
       },
       {
         '@type': 'Question',
-        name: '¿Cuánto es el aporte a BPS en 2025?',
+        name: '¿Cuánto es el aporte a BPS en 2026?',
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'El aporte al BPS (Banco de Previsión Social) es del 15% de tu salario nominal para trabajadores en relación de dependencia. Este porcentaje está vigente desde hace varios años y se descuenta automáticamente de tu recibo de sueldo.'
@@ -195,47 +195,69 @@ export default function CalculadoraSalarioLiquidoPage() {
             siguiente al nacimiento (si registrás la carga ante BPS).
           </p>
 
-          <h3 className="text-2xl font-semibold mb-4">IRPF (Categoría II — escala progresiva)</h3>
+          <h3 className="text-2xl font-semibold mb-4">IRPF (Categoría II — escala progresiva 2026)</h3>
           <p className="text-muted-foreground leading-relaxed mb-4">
             El IRPF de Categoría II se aplica solo sobre el excedente del mínimo no imponible y
-            por escalas progresivas. Para 2026, las franjas referenciales (sujetas a ajuste por
-            BPC) son aproximadamente:
+            por escalas progresivas. Para 2026, con BPC = $6.864 (Decreto MEF 11/026), la escala
+            mensual publicada por BPS en el{' '}
+            <a
+              href="https://www.bps.gub.uy/bps/file/23860/3/2026---comunicado-r-5---valores-escalas-irpf-2026.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Comunicado R 5/2026
+            </a>{' '}
+            es:
           </p>
           <div className="overflow-x-auto mb-6">
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left p-2">Tramo del nominal</th>
+                  <th className="text-left p-2">Rango BPC</th>
+                  <th className="text-left p-2">Base imponible mensual</th>
                   <th className="text-left p-2">Tasa marginal</th>
                 </tr>
               </thead>
               <tbody className="text-muted-foreground">
                 <tr className="border-b border-border">
-                  <td className="p-2">Hasta el mínimo no imponible</td>
+                  <td className="p-2">Hasta 7 BPC</td>
+                  <td className="p-2">$0 a $48.048</td>
                   <td className="p-2">0%</td>
                 </tr>
                 <tr className="border-b border-border">
-                  <td className="p-2">Tramo siguiente</td>
+                  <td className="p-2">Más de 7 a 10 BPC</td>
+                  <td className="p-2">$48.049 a $68.640</td>
                   <td className="p-2">10%</td>
                 </tr>
                 <tr className="border-b border-border">
-                  <td className="p-2">Tramo siguiente</td>
+                  <td className="p-2">Más de 10 a 15 BPC</td>
+                  <td className="p-2">$68.641 a $102.960</td>
                   <td className="p-2">15%</td>
                 </tr>
                 <tr className="border-b border-border">
-                  <td className="p-2">Tramo siguiente</td>
+                  <td className="p-2">Más de 15 a 30 BPC</td>
+                  <td className="p-2">$102.961 a $205.920</td>
                   <td className="p-2">24%</td>
                 </tr>
                 <tr className="border-b border-border">
-                  <td className="p-2">Tramo siguiente</td>
+                  <td className="p-2">Más de 30 a 50 BPC</td>
+                  <td className="p-2">$205.921 a $343.200</td>
                   <td className="p-2">25%</td>
                 </tr>
                 <tr className="border-b border-border">
-                  <td className="p-2">Tramo siguiente</td>
+                  <td className="p-2">Más de 50 a 75 BPC</td>
+                  <td className="p-2">$343.201 a $514.800</td>
                   <td className="p-2">27%</td>
                 </tr>
+                <tr className="border-b border-border">
+                  <td className="p-2">Más de 75 a 115 BPC</td>
+                  <td className="p-2">$514.801 a $789.360</td>
+                  <td className="p-2">31%</td>
+                </tr>
                 <tr>
-                  <td className="p-2">Tramo más alto</td>
+                  <td className="p-2">Más de 115 BPC</td>
+                  <td className="p-2">$789.361 en adelante</td>
                   <td className="p-2">36%</td>
                 </tr>
               </tbody>
@@ -322,9 +344,26 @@ export default function CalculadoraSalarioLiquidoPage() {
             <li>Aguinaldo neto estimado para junio y diciembre.</li>
           </ul>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            La calculadora usa las tasas vigentes a la fecha de última actualización. Las franjas
-            del IRPF se ajustan anualmente por BPC, así que pueden variar levemente respecto a
-            tu recibo. Para información oficial, consultá el sitio de la{' '}
+            La calculadora usa la escala oficial del{' '}
+            <a
+              href="https://www.bps.gub.uy/bps/file/23860/3/2026---comunicado-r-5---valores-escalas-irpf-2026.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Comunicado R 5/2026 del BPS
+            </a>{' '}
+            con BPC $6.864 (fijada por el{' '}
+            <a
+              href="https://www.gub.uy/ministerio-economia-finanzas/institucional/normativa/decreto-4022-fijacion-del-valor-base-prestaciones-contribuciones-bpc"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Decreto MEF 11/026
+            </a>
+            ). Las franjas se ajustan anualmente, así que pueden variar levemente respecto a tu
+            recibo si el cálculo cambia mid-year. Para información oficial, consultá también la{' '}
             <a
               href="https://www.dgi.gub.uy"
               target="_blank"
@@ -332,15 +371,6 @@ export default function CalculadoraSalarioLiquidoPage() {
               className="text-primary hover:underline"
             >
               DGI
-            </a>{' '}
-            y del{' '}
-            <a
-              href="https://www.bps.gub.uy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              BPS
             </a>
             .
           </p>

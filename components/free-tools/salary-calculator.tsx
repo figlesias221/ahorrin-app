@@ -28,15 +28,18 @@ interface SalaryBreakdown {
   deductionPercentage: number;
 }
 
-// IRPF 2025 brackets (DGI Uruguay)
+// IRPF 2026 brackets (BPS Comunicado R 5/2026, BPC = $6.864, vigencia 1/2026).
+// Source: https://www.bps.gub.uy/bps/file/23860/3/2026---comunicado-r-5---valores-escalas-irpf-2026.pdf
+// Bracket values are monthly, applied to base imponible = nominal - BPS - Fonasa.
 const IRPF_BRACKETS = [
-  { min: 0, max: 60596, rate: 0 },
-  { min: 60596, max: 86566, rate: 0.10 },
-  { min: 86566, max: 119890, rate: 0.15 },
-  { min: 119890, max: 177416, rate: 0.24 },
-  { min: 177416, max: 239698, rate: 0.25 },
-  { min: 239698, max: 456768, rate: 0.27 },
-  { min: 456768, max: Infinity, rate: 0.36 },
+  { min: 0, max: 48048, rate: 0 },           // Hasta 7 BPC
+  { min: 48048, max: 68640, rate: 0.10 },    // Más de 7 a 10 BPC
+  { min: 68640, max: 102960, rate: 0.15 },   // Más de 10 a 15 BPC
+  { min: 102960, max: 205920, rate: 0.24 },  // Más de 15 a 30 BPC
+  { min: 205920, max: 343200, rate: 0.25 },  // Más de 30 a 50 BPC
+  { min: 343200, max: 514800, rate: 0.27 },  // Más de 50 a 75 BPC
+  { min: 514800, max: 789360, rate: 0.31 },  // Más de 75 a 115 BPC
+  { min: 789360, max: Infinity, rate: 0.36 }, // Más de 115 BPC
 ];
 
 const BPS_RATE = 0.15; // 15% BPS deduction
@@ -164,7 +167,7 @@ export function SalaryCalculator() {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg mb-8">
             <Calculator className="w-4 h-4 text-emerald-600" />
             <span className="text-sm font-semibold text-emerald-700">
-              Actualizado 2025
+              Actualizado 2026 · BPS R 5/2026
             </span>
           </div>
 
@@ -173,7 +176,7 @@ export function SalaryCalculator() {
           </h1>
 
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Calculá tu salario líquido en Uruguay con las tasas de IRPF, BPS y Fonasa actualizadas para 2025.
+            Calculá tu salario líquido en Uruguay con las tasas de IRPF, BPS y Fonasa vigentes en 2026 (BPC $6.864).
             Compará escenarios y descubrí cuánto te queda realmente en mano.
           </p>
         </motion.div>
@@ -441,9 +444,9 @@ export function SalaryCalculator() {
             <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center mb-4">
               <Info className="w-5 h-5 text-blue-600" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">IRPF 2025</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">IRPF 2026</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              Impuesto progresivo de 0% a 36%. Deducción mínima de $60,596.
+              Impuesto progresivo de 0% a 36% (con franja intermedia del 31%). Mínimo no imponible de $48.048 (7 BPC).
               Se calcula sobre tu salario después de BPS y Fonasa.
             </p>
           </div>
@@ -514,11 +517,11 @@ export function SalaryCalculator() {
             {[
               {
                 q: '¿Cómo se calcula el salario líquido en Uruguay?',
-                a: 'El salario líquido es tu sueldo nominal menos los descuentos obligatorios: BPS (15%), Fonasa (3-8% según carga familiar) e IRPF (0-36% según franjas de ingreso). Las franjas de IRPF 2025 van desde 0% para ingresos hasta $60,596 hasta 36% para montos superiores a $456,768.'
+                a: 'El salario líquido es tu sueldo nominal menos los descuentos obligatorios: BPS (15%), Fonasa (3-8% según carga familiar) e IRPF (0-36% según franjas de ingreso). En 2026 las franjas de IRPF van desde 0% para base imponible hasta $48.048 hasta 36% para montos superiores a $789.360, con una franja intermedia del 31% entre $514.800 y $789.360 (escala oficial BPS R 5/2026).'
               },
               {
                 q: '¿Qué es el IRPF y cuánto me descuentan?',
-                a: 'El IRPF (Impuesto a la Renta de las Personas Físicas) es un impuesto progresivo que va de 0% a 36%. Tenés una deducción mínima no imponible de $60,596. Sobre el excedente se aplican franjas progresivas según tu ingreso.'
+                a: 'El IRPF (Impuesto a la Renta de las Personas Físicas) es un impuesto progresivo que va de 0% a 36%. En 2026 tenés un mínimo no imponible de $48.048 (7 BPC mensuales). Sobre el excedente se aplican franjas progresivas según tu ingreso.'
               },
               {
                 q: '¿El aguinaldo también tiene descuentos?',
