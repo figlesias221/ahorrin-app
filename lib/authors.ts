@@ -31,6 +31,7 @@ const AUTHORS: Record<string, Author> = {
     ],
     avatar: '/logo.svg',
     email: 'federico@larsonlabs.xyz',
+    github: 'https://github.com/figlesias221',
     url: 'https://www.ahorrin.app/autor/federico-iglesias',
   },
   'equipo-ahorrin': {

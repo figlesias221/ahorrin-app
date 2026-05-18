@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Mail, MapPin, Heart } from 'lucide-react';
+import { ArrowLeft, Mail, MapPin, Heart, ShieldCheck, ExternalLink } from 'lucide-react';
+import { getAuthor } from '@/lib/authors';
 
 export const metadata: Metadata = {
   title: 'Sobre Nosotros | Ahorrin',
@@ -16,6 +17,13 @@ export const metadata: Metadata = {
 };
 
 export default function SobreNosotrosPage() {
+  const federico = getAuthor('federico-iglesias');
+  const sameAs = federico
+    ? [federico.linkedin, federico.twitter, federico.github].filter(
+        (u): u is string => Boolean(u)
+      )
+    : [];
+
   return (
     <div className="min-h-screen bg-background pt-28 sm:pt-36 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
@@ -99,6 +107,74 @@ export default function SobreNosotrosPage() {
           </p>
         </section>
 
+        <section id="politica-editorial" className="mb-10 border border-border rounded-lg p-6 bg-muted/20">
+          <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-primary" />
+            Política editorial
+          </h2>
+          <p className="text-muted-foreground leading-relaxed mb-4">
+            Las guías del blog y las herramientas tocan temas que afectan tu plata real
+            (IRPF, BPS, FONASA, inversiones, créditos). Por eso seguimos reglas explícitas
+            antes de publicar y mientras el contenido sigue vivo.
+          </p>
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li className="flex gap-3">
+              <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2" />
+              <span>
+                <strong className="text-foreground">Fuentes primarias siempre.</strong>{' '}
+                Cada cifra (tramos IRPF, alícuotas FONASA, tasas BCU, BPS) se contrasta
+                contra el documento oficial — no contra un blog ajeno — antes de
+                publicarse, y se enlaza en el bloque de fuentes al final del artículo.
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2" />
+              <span>
+                <strong className="text-foreground">No duplicamos a DGI/BPS.</strong>{' '}
+                Cuando la fuente oficial ya explica algo bien, linkeamos y agregamos
+                contexto, ejemplos numéricos o comparaciones — no reescribimos para sumar
+                palabras.
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2" />
+              <span>
+                <strong className="text-foreground">Revisión real, fecha real.</strong>{' '}
+                Cuando revisamos un artículo, estampamos la fecha del día que lo hicimos.
+                No batch-actualizamos fechas como señal artificial de frescura.
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2" />
+              <span>
+                <strong className="text-foreground">No somos asesores financieros.</strong>{' '}
+                Damos información para que decidas mejor; no recomendamos productos
+                financieros específicos. Cuando hablamos de un banco, broker o tarjeta, lo
+                hacemos sobre datos públicos y aclaramos si hay programa de afiliados.
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2" />
+              <span>
+                <strong className="text-foreground">Errores corregibles.</strong> Si
+                encontrás un dato desactualizado o un error,{' '}
+                <Link href="/contacto" className="text-primary hover:underline">
+                  escribinos
+                </Link>{' '}
+                — lo corregimos y dejamos constancia en el artículo.
+              </span>
+            </li>
+          </ul>
+          <p className="text-sm text-muted-foreground mt-5">
+            Para los detalles operativos —qué fuentes usamos para qué tema, cómo
+            verificamos las calculadoras—{' '}
+            <Link href="/metodologia" className="text-primary hover:underline font-medium">
+              leé nuestra metodología completa
+            </Link>
+            .
+          </p>
+        </section>
+
         <section className="mb-10">
           <h2 className="text-2xl font-bold mb-4">Nuestros principios</h2>
           <ul className="space-y-3 text-muted-foreground">
@@ -175,6 +251,7 @@ export default function SobreNosotrosPage() {
                 '@type': 'Person',
                 name: 'Federico Iglesias',
                 url: 'https://www.ahorrin.app/autor/federico-iglesias',
+                ...(sameAs.length ? { sameAs } : {}),
               },
               foundingLocation: {
                 '@type': 'Place',
@@ -185,10 +262,42 @@ export default function SobreNosotrosPage() {
                 },
               },
               areaServed: { '@type': 'Country', name: 'Uruguay' },
-              sameAs: [],
+              ...(sameAs.length ? { sameAs } : {}),
             }),
           }}
         />
+
+        {federico && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'Person',
+                name: federico.name,
+                url: federico.url,
+                image: `https://www.ahorrin.app${federico.avatar}`,
+                jobTitle: federico.role,
+                description: federico.bio,
+                worksFor: {
+                  '@type': 'Organization',
+                  name: 'Ahorrin',
+                  url: 'https://www.ahorrin.app',
+                },
+                knowsAbout: [
+                  'Finanzas personales en Uruguay',
+                  'IRPF',
+                  'BPS',
+                  'FONASA',
+                  'Inversiones',
+                  'Bancos uruguayos',
+                ],
+                ...(federico.email ? { email: `mailto:${federico.email}` } : {}),
+                ...(sameAs.length ? { sameAs } : {}),
+              }),
+            }}
+          />
+        )}
       </div>
     </div>
   );
