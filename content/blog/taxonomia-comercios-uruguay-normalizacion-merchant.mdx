@@ -1,0 +1,201 @@
+---
+title: 'Taxonomía de Comercios Uruguay: Cómo Normalizamos los Nombres que Aparecen en Tu Extracto'
+excerpt: >-
+  "DISCO 142", "DISCO MVD", "disco montevideo carrasco": para tu banco son tres
+  comercios distintos. Para vos es Disco. Cómo Ahorrin normaliza los nombres de
+  comercios uruguayos para que la categorización funcione realmente.
+category: Tecnología y Producto
+date: '2026-05-19'
+readTime: 9 min
+author:
+  name: Equipo Ahorrin
+  avatar: /logo.svg
+keywords:
+  - normalizacion merchants uruguay
+  - taxonomia comercios uruguay
+  - vendor key categorizacion
+  - como categoriza ahorrin
+  - merchants uruguay normalizar
+  - disco supermercado normalizar
+  - parser comercios extracto
+  - similar comercios fuzzy match
+  - reglas categorizacion uruguay
+  - ahorrin merchant cache
+lastReviewed: '2026-05-19'
+---
+
+Mirá una página de tu extracto bancario. Vas a ver cosas como:
+
+```
+DISCO 142 PUNTA CARRETAS MONTEVIDEO UY
+DISCO 287 POCITOS MONT
+disco 451 carrasco
+Disco MVD - Casa Matriz
+```
+
+Para tu banco, eso son cuatro comercios distintos. Para vos como persona, **es Disco**. Si querés ver "cuánto gasté en Disco este mes", esperás que el sistema sume las cuatro líneas, no que te muestre cuatro filas separadas.
+
+Esto es el problema de la **normalización de comercios** (merchant normalization en inglés). Suena obvio que se debería resolver; en la práctica es una de las partes más interesantes del backend de cualquier herramienta seria de finanzas personales. Te muestro cómo lo resolvemos en Ahorrin y por qué la solución es más sutil de lo que parece.
+
+## Por qué los nombres de comercios vienen así de sucios
+
+Tres razones que se combinan:
+
+### 1. Los bancos usan códigos internos
+
+Cada terminal de pago (POS) está asociada a un "comercio" técnico en la red Visa/Mastercard. Una cadena como Disco tiene **decenas de POSs**, cada uno con su identificador único. El banco te muestra ese identificador tal como llega de la red de pago.
+
+### 2. No hay normalización en origen
+
+La red Visa/Mastercard no dicta cómo se debe escribir el nombre del comercio. Cada banco emisor decide qué texto te muestra. Algunos lo abrevian, otros lo completan, algunos agregan ubicación, otros no.
+
+### 3. Cada banco uruguayo lo hace distinto
+
+BROU te muestra `"DISCO LOC NO. 24"`. BBVA te muestra `"DISCO PUNTA CARRETAS"`. Itaú lo abrevia diferente. Ninguno está mal — solo son convenciones distintas. Pero si vos cobrás en un banco y te mudaste de otro, tus históricos quedan inconsistentes.
+
+## La función vendorKey: el corazón del sistema
+
+En Ahorrin tenemos una función chiquita pero crítica que llamamos `vendorKey`. Convierte cualquier string de comercio en una **clave canonical**. La idea es: dos comercios que para un humano son "lo mismo" deberían producir la misma vendorKey.
+
+La versión simplificada (es lo que está en el código de producción):
+
+```ts
+function vendorKey(input: string): string {
+  const stripped = input
+    .normalize('NFD')          // descompone acentos (DÍSCO → DI+◌́+SCO)
+    .replace(/[acentos]/g, ''); // los elimina
+
+  return stripped
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ')     // colapsa espacios múltiples
+    .slice(0, 80);
+}
+```
+
+Esa función tiene 5 líneas y resuelve el 70% del problema:
+
+- "DISCO 142" y "disco 142" producen la misma key: `"disco 142"`.
+- "Disco  Punta  Carretas" (espacios dobles) y "Disco Punta Carretas" producen la misma key.
+- Variantes con/sin acento (no muy frecuente en bancos pero pasa) se normalizan.
+
+Pero todavía no agrupa "DISCO 142" con "DISCO 287". Para eso necesitamos otra capa.
+
+## El siguiente nivel: similitud difusa con pg_trgm
+
+Después de calcular la `vendorKey` cruda, cruzamos contra una **tabla cache** de comercios ya conocidos (`merchant_cache`). En esa tabla, cada entrada agrupa varias variaciones del nombre bajo un **comercio canónico**.
+
+Por ejemplo:
+
+| vendor_key crudo | Comercio canónico |
+|------------------|-------------------|
+| `disco 142 punta carretas` | Disco |
+| `disco 287 pocitos` | Disco |
+| `disco mvd casa matriz` | Disco |
+| `disco loc no 24` | Disco |
+
+¿Cómo decidimos que todas esas variantes pertenecen al mismo comercio canónico? Acá entra **pg_trgm** (índices de trigramas en PostgreSQL). Calcula similitud entre dos strings basándose en cuántos triagramas (secuencias de 3 caracteres) comparten.
+
+Para `"disco 142"` vs `"disco 287"`:
+- Comparten los trigramas: `dis`, `isc`, `sco`, `co `, etc.
+- Similitud: ~75%.
+
+Para `"disco 142"` vs `"mcdonalds"`:
+- Comparten muy pocos trigramas.
+- Similitud: ~10%.
+
+Si la similitud entre el nombre nuevo y alguno de los conocidos supera un umbral (típicamente 70%), los agrupamos como el mismo comercio canónico.
+
+## El caso difícil: comercios con nombres parecidos pero distintos
+
+La parte difícil es cuando dos comercios distintos tienen nombres muy parecidos. Por ejemplo:
+
+- `"FARMACIA PRADO"` y `"FARMACIA PRADO MONTEVIDEO"` → mismo comercio? **Sí**.
+- `"FARMACIA PRADO"` y `"FARMACIA TIENDA INGLESA"` → mismo? **No** (son cadenas distintas, ambas se llaman "Farmacia").
+
+El primer trigram match supera el 70% en muchos pares falsos positivos. La solución: **complementamos pg_trgm con reglas de palabras significativas**. Identificamos cuál es el "núcleo" del nombre (la marca propiamente dicha) y exigimos coincidencia exacta en ese núcleo antes de agrupar.
+
+Resultado en producción: el sistema aprende a distinguir "DISCO" de "TIENDA INGLESA" aunque ambos sean supermercados, y a distinguir "Farmacia Prado" de "Farmacia Tienda Inglesa" aunque la palabra "Farmacia" coincida.
+
+## El usuario también enseña: aprendizaje continuo
+
+El sistema no es infalible. Si dos variantes de un mismo comercio no se agrupan automáticamente, el usuario puede hacerlo manualmente desde la UI:
+
+1. El usuario marca dos transacciones como "mismo comercio".
+2. El sistema lo aprende y crea una entrada en `merchant_cache` que conecta ambas variantes.
+3. Próxima vez que aparezca cualquiera de las dos, se agrupan automáticamente.
+
+Este aprendizaje es **por usuario** (cada usuario tiene su tabla de merchant cache propia), no global. Esto significa que si vos clasificás "Bar X" y "Pub X" como el mismo comercio, el sistema lo respeta. Si otro usuario los ve como distintos, también lo respeta.
+
+## Por qué esto importa para la categorización
+
+La normalización de comercios no es un fin en sí mismo. Es el **paso 1 para que la categorización funcione realmente**.
+
+Si tu sistema no agrupa "DISCO 142" con "DISCO 287", entonces:
+
+- **Las reglas no escalan**: si creás una regla "Disco 142 → Supermercado", solo aplica a esa POS. Tu próximo movimiento en "Disco 287" queda sin categorizar.
+- **El motor de aprendizaje confunde patrones**: cuando el sistema busca "transacciones parecidas a esta para sugerir categoría", la búsqueda se basa en vendorKey. Si no agrupás bien, no encuentra patrones reales.
+- **Los totales por comercio son inútiles**: "Cuánto gasté en Disco este mes" devuelve un número incompleto.
+
+Por eso, aunque el problema parece chico, dedicamos mucho tiempo a hacerlo bien. La diferencia entre una categorización que "funciona el 60% de las veces" y una que funciona el 95%+ generalmente está en este nivel de detalle.
+
+## Un dato curioso: los 80 comercios más frecuentes
+
+Por la naturaleza concentrada del comercio uruguayo (mercado chico, pocas cadenas grandes), **alrededor de 80 nombres de comercios cubren más del 50% de los movimientos** que pasan por Ahorrin. Si tenés tu vendor_cache poblado con esas 80 normalizaciones, la mayoría de tus categorización futura es automática.
+
+Algunos de los comercios más frecuentes que normalizamos:
+
+- **Supermercados**: Disco, Tienda Inglesa, Devoto, Multi Ahorro, Macromercado, Geant, Ta-Ta.
+- **Farmacias**: Farmashop, Farmacia Tienda Inglesa, Farmacia La Roche.
+- **Combustible**: ANCAP, Esso, Petrobras (Axion), Disa.
+- **Delivery**: PedidosYa, Rappi (todavía presente), Uber Eats.
+- **Streaming**: Netflix, Spotify, Disney+, HBO Max.
+- **Bancos / transferencias**: BROU, Itaú, BBVA, MiDinero.
+- **Estado**: BPS, DGI, OSE, UTE, ANTEL, Intendencia.
+- **Restaurantes / cafés**: Starbucks, McDonalds, Burger King, locales y bares varios.
+
+Cada cadena puede aparecer con decenas de variantes textuales en distintos POSs. El sistema las agrupa progresivamente y aprende.
+
+## La parte fea: los comercios que rompen el sistema
+
+No todo es lindo. Algunos casos siguen rompiendo el sistema:
+
+### Pagos a marketplaces (Mercado Libre, PayPal)
+
+Si comprás un libro a "Vendedor X" en Mercado Libre, el cargo te aparece como "Mercado Libre" o "Mercado Pago", no como el vendedor real. Para el sistema, todos los pagos a través de marketplace son el mismo comercio. Esto distorsiona el análisis de categorías: "compras varias" termina siendo todo Mercado Libre.
+
+### Pagos en cuotas o suscripciones renombradas
+
+Algunas suscripciones cambian nombre cada renovación. "Netflix 2026/05" un mes, "NETFLIX" el siguiente, "NFLX*ABC123" otro. El sistema agrupa la mayoría pero a veces se pierde.
+
+### Locales muy chicos sin identificador estable
+
+Comercios pequeños a veces no tienen identificador consistente: hoy aparecen como "BAR JUAN MONTEVIDEO", mañana como "BAR DE JUAN". Sin marca registrada y sin patrón estable, el agrupado falla.
+
+Para estos casos, el camino es **dejar que el usuario los unifique manualmente** y que el sistema aprenda de esa decisión.
+
+## ¿Qué podés hacer vos como usuario?
+
+Si usás Ahorrin, dos cosas:
+
+1. **Cuando veas dos movimientos del mismo comercio sin agrupar, marcalos manualmente.** Lleva 10 segundos y el sistema lo aprende para siempre.
+
+2. **Si tenés sugerencias de comercios frecuentes que el sistema no reconoce, escribinos.** Cada caso que agreguemos a la lista canónica mejora la experiencia para todos los usuarios uruguayos.
+
+## En síntesis
+
+- Los bancos uruguayos exponen los nombres de comercios **sin normalizar**: misma cadena, decenas de variantes.
+- Ahorrin usa una **función `vendorKey`** para canonicalizar nombres y luego **pg_trgm + reglas de palabras significativas** para agrupar variantes.
+- Los **80 comercios más frecuentes** cubren ~50% de los movimientos.
+- La normalización es **paso 1** para que la categorización funcione. Sin esto, todo lo demás colapsa.
+- El usuario también enseña: cada unificación manual mejora el sistema para próximas transacciones.
+
+Detrás del botón "categorizar automáticamente" hay capas de heurísticas que parecen invisibles pero hacen la diferencia entre una herramienta usable y un dump de datos sin sentido. Esperamos que esto te dé una idea de la complejidad oculta de algo que se ve simple.
+
+---
+
+**Lectura relacionada:**
+
+- [Cómo Detectamos USD/UYU en Extractos](/blog/usd-uyu-deteccion-extractos-bancarios-uruguay) — Otro problema técnico de los parsers bancarios.
+- [Por Qué Eliminamos ARS de Ahorrin](/blog/por-que-ahorrin-elimino-ars-decision-producto) — Decisión de producto sobre simplificación.
+- [Bancos Uruguayos: Formatos de Extracto](/blog/bancos-uruguay-formatos-extracto-csv-pdf-comparativa) — Cómo se exporta el extracto en cada banco.

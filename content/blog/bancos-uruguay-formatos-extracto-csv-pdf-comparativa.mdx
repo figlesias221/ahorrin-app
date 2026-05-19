@@ -1,0 +1,225 @@
+---
+title: 'Formatos de Extracto de los Bancos Uruguayos: Comparativa Técnica'
+excerpt: >-
+  Qué formato te exporta cada banco uruguayo, qué columnas trae, qué pierde, y
+  cuál es el "menos malo" si tu objetivo es analizar tus finanzas. Comparativa
+  CSV, Excel, PDF y OFX de 6 bancos uruguayos.
+category: Tecnología y Producto
+date: '2026-05-19'
+readTime: 10 min
+author:
+  name: Equipo Ahorrin
+  avatar: /logo.svg
+keywords:
+  - extracto bancario uruguay
+  - csv brou exportar
+  - pdf extracto santander uruguay
+  - excel itau extracto
+  - formato bancos uruguay comparativa
+  - exportar movimientos banco
+  - como bajar extracto banco
+  - banco home banking exportar
+  - ofx uruguay bancos
+  - parser extractos uruguay
+lastReviewed: '2026-05-19'
+---
+
+Si querés analizar tus finanzas por fuera del home banking, lo primero que tenés que hacer es **bajar tus movimientos**. Cada banco uruguayo te ofrece distintos formatos para exportar el extracto, y cada formato tiene **fortalezas y debilidades muy distintas**. La diferencia entre un CSV bien estructurado y un PDF mal extraído es enorme: el primero te permite trabajar de manera limpia, el segundo te genera horas de limpieza manual.
+
+Este post es una **comparativa técnica** de los formatos que exportan los principales bancos uruguayos en 2026, basada en cientos de extractos reales que pasaron por nuestros parsers. No es un ranking de bancos: cada uno tiene sus razones para usar lo que usa. Pero si te interesa saber cuál formato te conviene pedir para tus análisis, esto te puede servir.
+
+## Los formatos en juego
+
+Antes de entrar a los bancos, repasemos qué significan los formatos posibles:
+
+### CSV (Comma-Separated Values)
+
+Texto plano con valores separados por comas (o punto y coma, o tabulación). **Estructurado, predecible, fácil de leer programáticamente.** Es el mejor escenario para cualquier herramienta que procese extractos. Si tu banco te ofrece CSV, agradecé.
+
+### Excel (XLS / XLSX)
+
+Archivo de Microsoft Excel. Estructurado en columnas, pero con quirks: a veces incluye headers cosméticos, celdas combinadas, totales intercalados con movimientos. Procesable, pero requiere más cuidado que un CSV puro.
+
+### PDF
+
+Documento visualmente lindo pero pesadísimo de procesar. El texto del PDF se extrae línea por línea, y el orden lógico no siempre coincide con el orden visual. Categorización por columnas es complicada y propensa a errores. **El peor formato para análisis.**
+
+### OFX / QFX (Open Financial Exchange)
+
+Estándar diseñado específicamente para intercambio de datos financieros. Idealmente la mejor opción para parsers. **Casi ningún banco uruguayo lo ofrece nativamente.** Donde está disponible, suele tener inconsistencias.
+
+### QIF (Quicken Interchange Format)
+
+Formato viejo de Quicken. Predecible pero limitado: no soporta moneda explícita, ni metadata adicional. Rara vez usado en Uruguay en 2026.
+
+## La comparativa banco por banco
+
+A continuación, qué exporta cada banco uruguayo principal y nuestra evaluación basada en parsing real.
+
+### BROU (Banco República)
+
+| Formato | Calidad | Notas |
+|---------|---------|-------|
+| **CSV** | Muy buena | Columnas claras (fecha, descripción, monto débito/crédito, saldo). |
+| **PDF** | Buena | Estructurado, fácil de extraer. |
+| Excel | Disponible | Equivalente al CSV. |
+
+**Veredicto:** BROU es el mejor caso. CSV limpio, columnas predecibles, fácil de procesar. Si sos cliente de BROU y querés analizar tus finanzas, **siempre bajá el CSV**.
+
+**Detalle técnico:** las primeras filas a veces traen headers cosméticos. Hay que skipearlas. Una vez pasada esa zona, cada fila es un movimiento limpio.
+
+### Itaú
+
+| Formato | Calidad | Notas |
+|---------|---------|-------|
+| **Excel (XLSX)** | Buena | Estructurado en columnas, fácil de procesar. |
+| **PDF** | Media | Funcional pero con secciones complejas. |
+| CSV | Disponible | Menos común que el Excel. |
+
+**Veredicto:** Itaú tradicionalmente exporta Excel. Los XLSX vienen con celdas combinadas en los headers, lo que requiere cuidado, pero los movimientos están en filas regulares.
+
+**Particularidad:** algunos productos de Itaú (cuentas con secciones distintas para débito automático, transferencias enviadas/recibidas) generan múltiples bloques en el mismo PDF. Hay que reconocer dónde empieza cada bloque.
+
+### BBVA
+
+| Formato | Calidad | Notas |
+|---------|---------|-------|
+| **PDF** | Media | Es el formato más empujado al cliente. Estructura razonable. |
+| Excel | Disponible | Mejor que el PDF para análisis. |
+
+**Veredicto:** BBVA empuja al cliente al PDF, que es funcional pero no óptimo. Si lográs encontrar la opción de Excel en el home banking, mucho mejor.
+
+**Detalle:** los PDFs de BBVA suelen tener cabeceras claras de moneda (USD vs UYU) por sección. Eso ayuda al parser.
+
+### Santander
+
+| Formato | Calidad | Notas |
+|---------|---------|-------|
+| **PDF** | Media-baja | Algunas inconsistencias en formato moneda. |
+| Excel | Disponible | Mejor opción que el PDF. |
+
+**Veredicto:** los extractos PDF de Santander a veces no marcan claramente la moneda, lo que complica el detector. Si tu cuenta de Santander es bimoneda, prefiere Excel.
+
+**Particularidad:** Santander aplica formatos distintos según el producto. Una cuenta corriente exporta distinto que una cuenta de ahorro o una tarjeta de crédito.
+
+### Scotia
+
+| Formato | Calidad | Notas |
+|---------|---------|-------|
+| **PDF** | Baja | Bastante denso, con muchas secciones. |
+| Excel | Disponible | Recomendado fuertemente para análisis. |
+
+**Veredicto:** los PDFs de Scotia son los más densos visualmente. Mucha información, secciones múltiples, texto extraído desordenado. Excel es muchísimo mejor.
+
+### Heritage
+
+| Formato | Calidad | Notas |
+|---------|---------|-------|
+| **CSV** | Buena | Columnas claras, similar a BROU. |
+| Excel | Disponible | Equivalente al CSV. |
+
+**Veredicto:** Heritage es de los más amigables para análisis. CSVs limpios, formato estable.
+
+## Tabla resumen: qué pedir en cada banco
+
+| Banco | Formato recomendado | Si no, segundo mejor |
+|-------|---------------------|---------------------|
+| BROU | CSV | PDF |
+| Itaú | Excel (XLSX) | PDF |
+| BBVA | Excel | PDF |
+| Santander | Excel | PDF |
+| Scotia | Excel | PDF (último recurso) |
+| Heritage | CSV | Excel |
+
+**Regla general:** si tu banco te ofrece CSV o Excel, **siempre elegí esos sobre PDF**. La diferencia en calidad de procesamiento es enorme.
+
+## Lo que cada formato pierde
+
+Cada exportación pierde algo respecto del original que ve el banco internamente. Conocer qué pierde te ayuda a no esperar lo imposible:
+
+### CSVs y Excels
+
+- Generalmente **conservan** fecha, descripción, monto y saldo.
+- Frecuentemente **pierden** detalle granular del comercio (códigos de POS específicos, ID de transferencia interbancaria detallado).
+- Casi siempre **omiten** la categoría asignada internamente por el banco (los bancos suelen tener categorizaciones internas que no exportan).
+
+### PDFs
+
+- **Conservan** todo lo visible al humano.
+- **Pierden** estructura: el orden de las celdas en el texto extraído puede ser caótico.
+- Frecuentemente tienen **caracteres especiales mal codificados** (problemas con acentos, espacios no breaking, etc.).
+
+### OFX
+
+- **Conserva** lo más estructurado: códigos de transacción, categorías, datos del comercio.
+- Pero **casi nadie lo ofrece bien en Uruguay**.
+
+## Qué hacer si solo te dan PDF
+
+A veces no hay opción: solo te dan PDF. ¿Qué hacer?
+
+### Opción 1: extractor PDF de tu banco propio
+
+Algunos bancos tienen herramientas web para exportar a Excel desde el PDF. Buscalo en el home banking antes de descargar el PDF.
+
+### Opción 2: convertir PDF a Excel/CSV
+
+Hay herramientas online y de escritorio que extraen tablas de PDFs (Tabula, Adobe Acrobat Pro). La calidad depende mucho del PDF: si está bien estructurado funciona razonablemente; si está mal estructurado, vas a tener que limpiar mucho manualmente.
+
+### Opción 3: parser especializado
+
+Herramientas como [Ahorrin](/) tienen parsers específicos por banco que conocen los quirks de cada formato PDF. Subís el PDF tal cual y la herramienta extrae los movimientos. Es lo más cómodo, pero requiere que el banco esté soportado.
+
+### Opción 4: tipear manualmente (no recomendado)
+
+Si tenés pocos movimientos al mes, copiar y pegar a un Excel propio es factible. Para más de 30-40 movimientos mensuales se vuelve impráctico.
+
+## El factor "frecuencia de exportación"
+
+Independientemente del formato, otro factor importante es **cada cuánto podés exportar**:
+
+- **Mensual**: la mayoría de los bancos te dejan exportar el último mes completo o el período actual. Fácil.
+- **Trimestral / anual**: para análisis de tendencias necesitás varios meses. Algunos bancos limitan el rango de exportación (BROU permite hasta 6 meses por export; otros, hasta 12).
+- **Histórico antiguo**: si querés datos de hace 2-3 años, generalmente tenés que bajarlos mes a mes desde la sección de extractos archivados.
+
+Para análisis profundos, **conviene exportar mensualmente y archivar localmente**. Una vez al mes, después del cierre, bajás el CSV/Excel y lo guardás. Así construís tu propio histórico sin depender de cuánto retiene cada banco.
+
+## La gran ausencia: OFX nativo
+
+OFX (Open Financial Exchange) fue diseñado específicamente para este caso: intercambio estructurado de datos financieros entre bancos y software cliente. Es lo que usa Quicken, Mint, YNAB y otras herramientas internacionales para conectarse directamente al banco.
+
+En Uruguay **casi ningún banco lo ofrece de manera plena**. Algunos exportan OFX en condiciones específicas (cuentas de inversión, ciertos productos), pero la mayoría se quedó en PDF/Excel.
+
+¿Por qué? Conjeturas:
+
+- La demanda local de herramientas que consumen OFX es baja históricamente.
+- Los bancos uruguayos invirtieron pesado en home banking nativo, donde el cliente "vive" sin necesidad de exportar.
+- Sin presión competitiva fuerte, el formato se quedó.
+
+Es una de las áreas donde el sistema bancario uruguayo podría mejorar relativamente fácil. Hasta entonces, el ecosistema de herramientas de finanzas personales tiene que trabajar con lo que hay.
+
+## ¿Y APIs bancarias?
+
+La nueva ola fintech internacional (Open Banking) está construida sobre **APIs que permiten acceso directo y autorizado a los datos bancarios**. En Europa esto es regulación (PSD2); en EEUU es un estándar de facto entre proveedores como Plaid.
+
+En Uruguay esto **todavía no existe en forma masiva**. Hay iniciativas tempranas, algunos bancos exponen APIs limitadas para sus clientes corporativos, pero el caso de consumo individual sigue dependiendo de la exportación manual de extractos.
+
+Cuando Uruguay tenga Open Banking efectivo, todo este post se vuelve obsoleto. Mientras tanto, exportar el extracto sigue siendo la realidad operativa.
+
+## En síntesis
+
+- **CSV y Excel** son los formatos amigables para análisis. PDF es el peor escenario.
+- **BROU y Heritage** ofrecen CSVs limpios — son los más amigables.
+- **Itaú, BBVA, Santander, Scotia** te empujan a Excel o PDF según el producto.
+- **OFX nativo** es raro en Uruguay; cuando exista será game-changer.
+- Para análisis serios: **descargá mensualmente, archivá localmente, no dependas del retention del banco**.
+
+Si nunca exportaste un extracto en tu vida, te invitamos a hacerlo este mes. Buscá la opción de "Exportar movimientos" o "Descargar extracto" en tu home banking, elegí el formato más estructurado disponible y guardalo. El día que quieras analizar realmente tus finanzas, vas a agradecer haber tenido la disciplina.
+
+---
+
+**Lectura relacionada:**
+
+- [Cómo Detectamos USD/UYU en Extractos](/blog/usd-uyu-deteccion-extractos-bancarios-uruguay) — El problema técnico de procesar formatos de varios bancos.
+- [Taxonomía de Comercios Uruguay](/blog/taxonomia-comercios-uruguay-normalizacion-merchant) — Cómo normalizamos los nombres que vienen sucios en los extractos.
+- [Organizar tus Finanzas Personales](/blog/organizar-finanzas-personales-uruguay-2025) — Qué hacer una vez tenés el extracto importado.

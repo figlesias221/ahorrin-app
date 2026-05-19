@@ -92,6 +92,12 @@ const PROFILES: Record<string, Omit<CategoryProfile, 'name' | 'slug'>> = {
     intro:
       'Si estás pensando en facturar por tu cuenta, esta es la categoría: cuándo conviene monotributo, cuándo SAS, cuándo unipersonal, qué impuestos vas a pagar (IRAE vs IRPF), cuánto cuesta un contador, cómo facturar al exterior si trabajás como freelancer IT y los pasos para crear una SAS desde cero.',
   },
+  'tecnologia-y-producto': {
+    description:
+      'Detrás de Ahorrin: decisiones de producto, ingeniería de parsers bancarios, normalización de comercios y transparencia técnica.',
+    intro:
+      'Cómo construimos Ahorrin por dentro: por qué tomamos las decisiones de producto que tomamos, cómo procesamos extractos de los bancos uruguayos, cómo agrupamos comercios con nombres distintos, qué problemas técnicos resolvemos en una economía bimonetaria. Posts honestos sobre el costado de ingeniería del producto, para quien le interese ver el motor por dentro.',
+  },
 };
 
 export function getCategoryProfile(slug: string): CategoryProfile | null {

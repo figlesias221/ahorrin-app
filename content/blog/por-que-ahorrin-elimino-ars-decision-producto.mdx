@@ -1,0 +1,156 @@
+---
+title: 'Por Qué Eliminamos el Soporte para ARS: Una Decisión de Producto'
+excerpt: >-
+  En mayo de 2026 sacamos el peso argentino de Ahorrin. Por qué un producto que
+  podía haber expandido a Argentina decidió quedarse 100% en Uruguay, qué
+  significa "enfocarse" en software, y por qué a veces menos opciones hacen
+  mejor producto.
+category: Tecnología y Producto
+date: '2026-05-19'
+readTime: 8 min
+author:
+  name: Equipo Ahorrin
+  avatar: /logo.svg
+keywords:
+  - decisión producto ahorrin
+  - por qué uruguay solo
+  - enfocarse producto saas
+  - simplificación producto fintech
+  - multi-moneda fintech
+  - producto uruguay vs argentina
+  - moneda argentina ars
+  - estrategia producto software
+  - menos es más producto
+  - decisiones técnicas producto
+lastReviewed: '2026-05-19'
+---
+
+En mayo de 2026, en el commit `598266b` del repositorio de Ahorrin, hicimos un cambio aparentemente pequeño en una línea de TypeScript:
+
+```ts
+// Antes
+type Currency = 'UYU' | 'USD' | 'ARS';
+
+// Después
+type Currency = 'UYU' | 'USD';
+```
+
+Adiós al peso argentino. Una sola línea, pero detrás hay una decisión de producto que vale la pena explicar. Porque eliminar funcionalidad — sobre todo de un producto chico que recién está creciendo — es una decisión contraintuitiva. La intuición dice "sumá países, sumá usuarios potenciales". Pero a veces el camino correcto es el inverso.
+
+Este post no es una guía. Es una reflexión transparente sobre por qué tomamos esa decisión, qué la motivó, y qué aprendimos del proceso. Si dirigís un producto SaaS o estás pensando en uno, capaz te sirve.
+
+## El contexto: por qué estaba ARS en primer lugar
+
+Ahorrin empezó como un producto para uruguayos. Pero como muchos uruguayos tenemos algo de actividad financiera en Argentina (vacaciones, compras cross-border, familias con doble residencia, freelancers que facturan a clientes argentinos), incluimos ARS desde el principio como **moneda secundaria**.
+
+La idea era: "no nos cuesta tanto soportarla, y permite que el producto sea más completo para los uruguayos con exposición a Argentina". Y técnicamente, era cierto: ARS no era enorme en código, sumaba probablemente un 5-10% al esfuerzo de mantenimiento.
+
+El problema apareció cuando empezamos a ver cómo crecía el producto en producción.
+
+## Lo que descubrimos a los seis meses
+
+### Solo un puñado de usuarios usaba ARS
+
+De los 121 usuarios activos del producto al momento de la decisión, **menos de 5 tenían movimientos en ARS** en sus extractos. Y de esos 5, ninguno usaba ARS como moneda principal: era una moneda secundaria menor, con 1 o 2 movimientos esporádicos al año.
+
+Los datos eran claros: el feature ARS estaba sirviendo a un caso de uso marginal.
+
+### El esfuerzo de mantenimiento era desproporcionado
+
+ARS no era simplemente "un texto más en la lista de monedas". Tenía implicaciones técnicas:
+
+- **Conversiones**: el peso argentino tiene varios tipos de cambio (oficial, blue, MEP, CCL). ¿Cuál usábamos para convertir? Ninguno era totalmente correcto para todos los casos.
+- **Volatilidad extrema**: el ARS se devalúa rápido. Un movimiento de hace 3 meses en ARS, convertido a UYU al cambio actual, distorsiona los totales históricos.
+- **Reglas locales argentinas**: si soportábamos ARS de verdad, tendríamos que entender retenciones argentinas, IVA argentino, percepciones, etc. Nunca llegamos a ese nivel de detalle.
+- **Detección de moneda en parsers**: el algoritmo de detección que aplicamos para [USD/UYU](/blog/usd-uyu-deteccion-extractos-bancarios-uruguay) tenía que considerar también marcadores de ARS, ampliando la complejidad y los casos de prueba.
+
+Lo que era "5-10% del código" se sentía como un 20-30% del esfuerzo cognitivo a la hora de tomar decisiones de diseño. Cada feature nuevo que pensábamos, había que preguntarse "¿cómo se comporta esto con ARS?".
+
+### El producto se diluía
+
+Cada vez que hablábamos del producto a un potencial usuario uruguayo, nos preguntaban: "¿es para Uruguay o para Argentina también?". Esa pregunta indicaba que el posicionamiento no era claro. Un producto que intenta ser tres cosas a la vez generalmente termina siendo ninguna.
+
+## La decisión
+
+Discutimos tres opciones:
+
+**Opción 1: Profundizar ARS y expandir a Argentina como mercado.** Posicionarnos como herramienta regional. Construir features específicos para Argentina (retenciones, IVA argentino, monotributo argentino, conexiones con MercadoPago Argentina). Esto requería **mucho más equipo, conocimiento local profundo de Argentina, y un compromiso comercial fuerte**.
+
+**Opción 2: Mantener ARS como está.** Soporte mínimo, sin profundizar. Riesgo: la deuda técnica acumulada y la confusión de posicionamiento siguen creciendo.
+
+**Opción 3: Eliminar ARS completamente.** Posicionarnos clara y exclusivamente como producto **UY-only**. Concentrar 100% del esfuerzo en hacer el mejor producto para el mercado uruguayo.
+
+Elegimos la opción 3.
+
+## Por qué eligimos eliminar
+
+Tres razones:
+
+### 1. Foco como ventaja competitiva
+
+Construir bien para un mercado chico (Uruguay tiene ~3,5 millones de habitantes) ya es difícil. Hacerlo bien para Uruguay + Argentina (45M habitantes con sistema fiscal y bancario distinto) es 10× más difícil, no 2× más difícil. La ventaja competitiva de Ahorrin se construye **conociendo Uruguay mejor que nadie**: BPS, DGI, FONASA, IRPF, bancos uruguayos, costumbres uruguayas. Diluir el foco amenazaba esa ventaja.
+
+### 2. Calidad sobre cobertura
+
+Quitar ARS nos permitió eliminar código y casos de prueba que existían solo para una moneda secundaria. El detector de moneda se simplificó. La UI de selección de moneda se simplificó. La gestión de tasas de cambio se simplificó. Cada pequeña simplificación libera atención cognitiva para mejorar lo que sí importa.
+
+### 3. Honestidad con el usuario
+
+Tener una funcionalidad a medias es peor que no tenerla. Soportar ARS "a medias" (sin conexión con bancos argentinos, sin reglas fiscales argentinas, sin tipo de cambio claro) era una promesa incumplida. Sacarlo limpia esa promesa.
+
+## Qué pasó después
+
+El commit fue limpio: 200 líneas de código eliminadas, 0 líneas agregadas. Eliminamos:
+
+- ARS de la unión de tipos `Currency`.
+- Las tasas de cambio ARS.
+- Las opciones de UI con ARS (selectores, filtros).
+- Los validadores y parsers que aceptaban ARS.
+- Marcadores ARS del detector de moneda.
+
+**Lo que dejamos:** el contenido editorial del blog que menciona Argentina (comparativas, regiones, ejemplos comerciales). Eso sigue siendo válido como referencia educativa, no como funcionalidad del producto.
+
+### Comunicación a usuarios
+
+Los pocos usuarios que tenían movimientos ARS recibieron una notificación in-app explicando el cambio. Sus movimientos pasados en ARS se conservaron como datos históricos pero los nuevos uploads no aceptan ARS.
+
+Hasta ahora: cero reclamos, cero cancelaciones por este motivo. La intuición de que el feature no era importante para nuestros usuarios se confirmó.
+
+## La lección general: "feature creep" es silencioso
+
+El feature creep — la acumulación gradual de funcionalidades — es uno de los enemigos silenciosos de los productos de software. Cada feature parece pequeña al agregarla. La suma de todas ellas termina ahogando al equipo y diluyendo la propuesta de valor.
+
+La pregunta correcta no es solo **"¿deberíamos agregar X feature?"**, sino también:
+
+- **"¿Cuál es el costo de mantenimiento a perpetuidad?"** (no solo el costo de construirlo)
+- **"¿Distrae de lo que sí importa?"** (foco)
+- **"¿Genera expectativas que no podemos cumplir?"** (honestidad con el usuario)
+
+Y crucialmente: **revisitar features existentes** con la misma rigurosidad con la que evaluamos features nuevas. Si una feature existente no pasaría la prueba si la propusiéramos hoy, es candidata a eliminación.
+
+## Lo que esto significa para nuestros usuarios
+
+Si sos usuario de Ahorrin, esta decisión te beneficia indirectamente:
+
+- **Más velocidad de desarrollo** en features que sí importan para uruguayos.
+- **Menos bugs** en categorización y detección.
+- **Mejor experiencia de UI** sin opciones que no usás.
+- **Posicionamiento más claro** del producto.
+
+Si tenías movimientos en ARS y los necesitabas, lo sentimos. La decisión fue dolorosa pero correcta para el rumbo del producto.
+
+## Cuando "menos es más" no es solo un cliché
+
+En negocios de software, especialmente en startups chicas, "hacé menos cosas pero hacelas bien" es probablemente el consejo más valioso. No es una frase de Steve Jobs en una camiseta: es una disciplina diaria que requiere decir "no" más veces de las que decís "sí".
+
+Eliminar ARS fue un "no" tardío. La línea fue chica pero el mensaje interno fue claro: **Ahorrin es uruguayo, y va a ser cada vez más uruguayo**. Esa claridad cambió cómo discutimos features nuevas, cómo evaluamos métricas y cómo nos presentamos al mundo.
+
+A veces la mejor línea de código que escribís en una semana es la que eliminás.
+
+---
+
+**Lectura relacionada:**
+
+- [Cómo Detectamos Moneda en Extractos Bancarios](/blog/usd-uyu-deteccion-extractos-bancarios-uruguay) — La parte técnica de soportar USD y UYU.
+- [Sobre Ahorrin](/sobre-nosotros) — Quiénes somos y qué buscamos construir.
+- [Metodología](/metodologia) — Cómo trabajamos en el blog y las herramientas.

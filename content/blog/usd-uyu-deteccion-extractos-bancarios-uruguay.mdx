@@ -1,0 +1,163 @@
+---
+title: 'Cómo los Bancos Uruguayos Notan tus Gastos en USD (y por qué cada uno lo hace distinto)'
+excerpt: >-
+  Detrás de la simple pregunta "¿esto es en pesos o en dólares?" hay seis bancos
+  uruguayos usando notaciones distintas (U$S, US$, $U, USD, MONEDA NACIONAL).
+  Cómo procesamos esa diversidad en Ahorrin y por qué la categorización por
+  moneda es más difícil de lo que parece.
+category: Tecnología y Producto
+date: '2026-05-19'
+readTime: 9 min
+author:
+  name: Equipo Ahorrin
+  avatar: /logo.svg
+keywords:
+  - extracto bancario uruguay dolares
+  - usd uyu deteccion moneda
+  - cómo lee mi banco los dolares
+  - parser extracto banco uruguay
+  - moneda nacional pesos uruguay
+  - notaciones dolar bancos uruguay
+  - extracto pdf csv bancos uruguay
+  - como categorizar dolares pesos
+  - ahorrin parser bancos
+  - bimonetaria uruguay extractos
+lastReviewed: '2026-05-19'
+---
+
+Si abrís el extracto de tu cuenta de BROU y otro de Itaú al mismo tiempo, vas a notar algo curioso: las dos páginas hablan de la misma moneda — el dólar estadounidense — pero usan notaciones distintas para identificarlo. Una dice **U$S**, la otra dice **USD**. Una tercera dice **US$**. Para vos como lector humano es obvio que las tres significan dólar. Para un parser de software, es un pequeño campo minado.
+
+Este post no es para explicarte qué es el dólar. Es para mostrarte **qué pasa dentro de Ahorrin cuando le subís un extracto** y por qué saber leer la moneda correctamente — algo aparentemente trivial — es uno de los problemas más interesantes que tuvimos que resolver para que la herramienta funcione bien en una economía bimonetaria como la uruguaya.
+
+## El problema que no parece un problema
+
+Imaginá que sos un parser leyendo el extracto de un banco uruguayo. Te toca esta fila:
+
+```
+12/04/2026   COMPRA DEBITO    -2.450,00   PEDIDOSYA UY
+```
+
+Pregunta: ¿esos $2.450 son **pesos uruguayos** o **dólares**? El parser solo ve el número y el texto. Sin contexto, no puede saber.
+
+La solución obvia parece ser **mirar la cabecera del extracto**: si dice "Cuenta en Pesos Uruguayos", todas las filas son UYU. Si dice "Cuenta en Dólares", todas son USD. **Listo.**
+
+Salvo que muchos bancos uruguayos te dan extractos donde **conviven los dos en el mismo PDF**, separados por secciones. O extractos donde la cabecera no dice explícitamente la moneda (sobre todo en CSVs). O extractos donde una cuenta es bimoneda y cada movimiento puede ser en una u otra. El "mira la cabecera" no funciona en general.
+
+## Los 5 marcadores que importan
+
+Después de procesar cientos de extractos de **6 bancos uruguayos** (BROU, BBVA, Itaú, Santander, Scotia, Heritage), reducimos las notaciones reales a un conjunto manejable. Estos son los marcadores que un parser uruguayo necesita reconocer:
+
+### Marcadores de USD (dólares)
+
+- **`USD`** — el ISO 4217 oficial. Lo usa Itaú y Heritage en sus CSVs/Excels.
+- **`US$`** — abreviación tradicional. La ve uno en BROU PDF cabecera de sección.
+- **`U$S`** — variante local muy frecuente. BBVA, Santander, Scotia lo usan en distintos contextos.
+- **`DÓLAR`** / **`DÓLARES`** — texto largo en encabezados de secciones tipo "Movimientos en Dólares".
+- El símbolo **`$`** aislado, en algunos contextos.
+
+### Marcadores de UYU (pesos uruguayos)
+
+- **`UYU`** — el ISO oficial.
+- **`$U`** — abreviación local del peso.
+- **`MONEDA NACIONAL`** — texto largo, lo usan PDFs de Santander e Itaú.
+- **`PESOS`** o **`PESO`** — texto largo, frecuente en cabeceras.
+
+Y como detalle: en convención uruguaya, el símbolo **`$` aislado sin "U"** delante del número típicamente representa pesos uruguayos (no USD). Esto difiere de otros países hispanos donde "$" puede significar USD por defecto.
+
+## El edge case que muestra por qué esto no es trivial
+
+Acá está el caso que rompe el detector ingenuo. Imaginá esta cabecera de un PDF:
+
+```
+Cuenta en DÓLARES estadounidenses
+(valores expresados en pesos uruguayos equivalentes)
+```
+
+Un detector ingenuo, viendo "DÓLARES" y "PESOS" en el mismo bloque de texto, dice: "encuentro los dos, no sé qué moneda es". Pero el contexto humano es claro: la **cuenta es en dólares**; el paréntesis solo aclara que los valores están convertidos para fines informativos.
+
+Esto significa que el detector necesita más que matching de palabras: necesita entender contexto. Lo resolvemos así (simplificado del código real):
+
+> Si encontrás DÓLAR/DÓLARES y luego dentro de los siguientes 40 caracteres aparece PESOS, **ignorá el PESOS**: es una aclaración secundaria, no la moneda de la cuenta.
+
+Con esa única regla, capturamos correctamente el 95%+ de los casos donde la moneda no es obvia.
+
+## Distintos formatos, distintas estrategias
+
+No todos los bancos uruguayos usan el mismo formato de extracto. Cada uno trae su propio desafío:
+
+### CSV (BROU principalmente)
+
+Los CSVs son los más limpios: vienen con una columna explícita de "Moneda" en algunos casos. Cuando esa columna no existe, recurrimos a inspeccionar el texto de cada fila buscando marcadores de USD o UYU.
+
+### PDF (BBVA, Santander, Itaú, Heritage)
+
+Los PDFs son lo más sucio. Vienen con texto extraído capa por capa, donde el orden del texto a veces no coincide con el orden visual. Una sección que dice "PESOS" arriba puede tener movimientos numéricos abajo sin etiqueta de moneda.
+
+Para PDFs aplicamos el detector a nivel de **sección** (cada sección del PDF en la que aparezcan movimientos), no a nivel de fila individual. Si la sección "Movimientos en Dólares" tiene una etiqueta clara, todas las filas dentro de esa sección heredan USD.
+
+### Excel / XLSX (Itaú generalmente)
+
+Excel tiene la ventaja de columnas estructuradas: si hay columna "Moneda" la usamos directamente. Si no la hay, caemos al detector de texto sobre el contenido de cada fila.
+
+### QIF (formatos antiguos)
+
+QIF (Quicken Interchange Format) lo usaban algunas exportaciones legacy. No tiene noción de moneda en el formato estándar. Tuvimos que asumir UYU por default y dejar al usuario marcarlo distinto si su extracto QIF era en USD.
+
+### OFX (formatos modernos)
+
+OFX (Open Financial Exchange) tiene una etiqueta `CURDEF` que indica la moneda del extracto. Es el formato más fácil de procesar — desafortunadamente, casi ningún banco uruguayo lo exporta nativamente. Más allá de eso, algunos bancos exportan OFX pero con CURDEF en blanco o incorrecto.
+
+## ¿Por qué importa esto para vos como usuario?
+
+Si subís un extracto a Ahorrin (o a cualquier herramienta similar) y la moneda se detectó mal, **todo el análisis posterior queda viciado**. Si tus compras en USD de USD 50 se interpretan como $50 pesos uruguayos, tu gasto mensual estimado en supermercado o servicios queda completamente distorsionado.
+
+En la práctica esto significa:
+
+- Categorización por monto deja de funcionar (porque $50 UYU vs. USD 50 son magnitudes muy distintas).
+- Las reglas del usuario tipo "marcar como Servicios todo lo de UTE menor a $3000" se aplican incorrectamente.
+- Los promedios mensuales en pesos quedan inflados o aplastados.
+- Los reportes de gasto por moneda salen mal.
+
+Por eso invertimos tiempo en hacer el detector lo más robusto posible, con casos de prueba específicos para los 6 bancos uruguayos. **El parser tiene actualmente más de 30 tests de detección de moneda** que cubren las notaciones de cada banco y los edge cases más comunes.
+
+## Lo que no hace el detector (todavía)
+
+Hay casos donde el detector se rinde y prefiere preguntarle al usuario en lugar de adivinar mal:
+
+- **Filas individuales sin contexto**: si una fila no tiene marcador y la sección donde está tampoco, el sistema marca esa fila como "moneda dudosa" y te pide confirmación.
+- **Extractos completamente sin etiquetas de moneda**: muy raros, pero existen (algunos PDFs viejos de bancos cooperativos). Asumimos UYU pero pedimos confirmación.
+- **Movimientos en monedas exóticas** (EUR, ARS, etc.): el sistema solo soporta USD y UYU para Uruguay. Cualquier otra moneda genera un warning.
+
+Estos casos son raros (<2% de los extractos en producción), pero cuando aparecen es mejor preguntarte antes de equivocarse.
+
+## La decisión de producto: solo USD y UYU
+
+Originalmente Ahorrin soportaba también ARS (pesos argentinos). Lo eliminamos en mayo de 2026 para concentrar el producto en Uruguay. Es un caso interesante de **simplificación deliberada**: a veces, recortar opciones es la mejor manera de mejorar la calidad del producto para el público objetivo. Si te interesa la lógica detrás de esa decisión, lo contamos en otro post.
+
+## Lo que aprendimos haciendo esto
+
+Tres aprendizajes que se aplican más allá de la categorización de moneda:
+
+### 1. La diversidad de notaciones en el sistema bancario uruguayo es mayor de lo que parece
+
+No hay un estándar de exportación. Cada banco hace lo suyo, a veces incluso variando entre tipos de cuenta o productos del mismo banco. Cualquier herramienta seria de finanzas personales tiene que abrazar esa diversidad.
+
+### 2. Las reglas heurísticas son frágiles, pero los tests las hacen sostenibles
+
+Cada vez que detectamos un nuevo edge case (un extracto raro que el detector no manejaba bien), lo agregamos como test antes de cambiar el código. El detector creció en complejidad pero nunca perdió cobertura sobre los casos previos.
+
+### 3. Tener un único punto de detección importa
+
+Cuando empezamos, cada parser (PDF, CSV, QIF) tenía su propia lógica para detectar moneda, y todas eran ligeramente distintas. Centralizar en una sola función (`detectCurrencyFromText`) hizo que cualquier mejora aplique a todos los formatos al mismo tiempo.
+
+## ¿Querés ver esto en acción?
+
+Si tenés extractos de cualquier banco uruguayo, podés subirlos a [Ahorrin](/) y ver cómo el sistema detecta y categoriza la moneda de cada movimiento. Si encontrás un caso donde la detección falla, [escribinos](/contacto) con el extracto (anonimizado) y lo agregamos a la suite de tests.
+
+---
+
+**Lectura relacionada:**
+
+- [Bancos Uruguayos: Formatos de Extracto](/blog/bancos-uruguay-formatos-extracto-csv-pdf-comparativa) — Comparativa técnica de los formatos de cada banco.
+- [Dólar en Uruguay: Estrategia 2026](/blog/dolar-estrategia-uruguay-2025-cuando-comprar-ui-vs-dolares) — Cuándo conviene ahorrar en USD vs UI.
+- [Hipoteca en UI, UR o USD](/blog/hipoteca-uy-ui-ur-usd-cual-moneda-elegir) — Cómo elegir la moneda para créditos largos.
