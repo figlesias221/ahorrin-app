@@ -71,7 +71,6 @@ export function ResponsiveLanding() {
       <AIAssistantShowcase />
       <FreeToolsShowcase />
       <StatsShowcase />
-      <Testimonials />
       <BlogSection />
       <FAQReal />
     </>
