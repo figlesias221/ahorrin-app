@@ -86,11 +86,10 @@ export default function BlogPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <section className="relative bg-gradient-to-br from-primary via-primary-600 to-primary-700 pt-28 sm:pt-36 pb-16 sm:pb-24 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,transparent,rgba(255,255,255,0.6))]" />
+      <section className="relative bg-gradient-to-br from-emerald-700 via-teal-800 to-emerald-900 pt-28 sm:pt-36 pb-16 sm:pb-24 overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 text-sm text-primary-foreground/80">
+            <ol className="flex items-center gap-2 text-sm text-white/80">
               <li>
                 <Link href="/" className="hover:text-white transition-colors">
                   Inicio
@@ -104,11 +103,11 @@ export default function BlogPage() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 text-white">
               Blog de Finanzas Personales
             </h1>
-            <p className="text-lg sm:text-xl text-primary-foreground/80">
+            <p className="text-lg sm:text-xl text-white/85">
               Guías prácticas, análisis honestos y consejos sobre finanzas
               personales, impuestos, inversiones y bancos en Uruguay.
             </p>
-            <p className="text-base text-primary-foreground/70 mt-4">
+            <p className="text-base text-white/75 mt-4">
               {blogPosts.length} artículos disponibles · Actualizados regularmente
             </p>
           </div>

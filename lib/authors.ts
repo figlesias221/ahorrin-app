@@ -15,10 +15,10 @@ export interface Author {
 }
 
 const AUTHORS: Record<string, Author> = {
-  'federico-iglesias': {
-    slug: 'federico-iglesias',
-    name: 'Federico Iglesias',
-    displayName: 'Federico Iglesias',
+  'federico': {
+    slug: 'federico',
+    name: 'Federico',
+    displayName: 'Federico',
     role: 'Fundador y editor de Ahorrin',
     bio: 'Desarrollador full-stack uruguayo. Fundador de Ahorrin. Escribe sobre finanzas personales, impuestos uruguayos e inversiones desde la perspectiva de quien convive con el sistema todos los días.',
     longBio:
@@ -30,18 +30,17 @@ const AUTHORS: Record<string, Author> = {
       'Convive con IRPF, BPS, FONASA y monotributo en su propio recibo de sueldo cada mes',
     ],
     avatar: '/logo.svg',
-    email: 'federico@larsonlabs.xyz',
-    github: 'https://github.com/figlesias221',
-    url: 'https://www.ahorrin.app/autor/federico-iglesias',
+    email: 'hola@ahorrin.app',
+    url: 'https://www.ahorrin.app/autor/federico',
   },
   'equipo-ahorrin': {
     slug: 'equipo-ahorrin',
     name: 'Equipo Ahorrin',
     displayName: 'Equipo Ahorrin',
     role: 'Equipo editorial',
-    bio: 'El equipo editorial de Ahorrin investiga y escribe contenido sobre finanzas personales en Uruguay. Liderado por Federico Iglesias, fundador de Ahorrin.',
+    bio: 'El equipo editorial de Ahorrin investiga y escribe contenido sobre finanzas personales en Uruguay. Liderado por Federico, fundador de Ahorrin.',
     longBio:
-      'El equipo editorial de Ahorrin investiga, escribe y actualiza el contenido del blog, el glosario y las herramientas. El equipo está liderado por Federico Iglesias, desarrollador full-stack y fundador de Ahorrin. Cada artículo se contrasta contra fuentes oficiales (DGI, BPS, BCU, MEF) antes de publicarse, y se revisa al menos cada 90 días para mantener la información actualizada con la normativa vigente.',
+      'El equipo editorial de Ahorrin investiga, escribe y actualiza el contenido del blog, el glosario y las herramientas. El equipo está liderado por Federico, desarrollador full-stack y fundador de Ahorrin. Cada artículo se contrasta contra fuentes oficiales (DGI, BPS, BCU, MEF) antes de publicarse, y se revisa al menos cada 90 días para mantener la información actualizada con la normativa vigente.',
     credentials: [
       'Equipo editorial basado en Montevideo, Uruguay',
       'Fuentes oficiales contrastadas: DGI, BPS, BCU, MEF',

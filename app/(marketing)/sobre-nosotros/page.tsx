@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default function SobreNosotrosPage() {
-  const federico = getAuthor('federico-iglesias');
+  const federico = getAuthor('federico');
   const sameAs = federico
     ? [federico.linkedin, federico.twitter, federico.github].filter(
         (u): u is string => Boolean(u)
@@ -80,14 +80,13 @@ export default function SobreNosotrosPage() {
         <section className="mb-10">
           <h2 className="text-2xl font-bold mb-4">Quién está detrás</h2>
           <p className="text-muted-foreground leading-relaxed mb-4">
-            Ahorrin lo desarrolla un pequeño equipo basado en Montevideo. La empresa se llama
-            <strong> Larson Labs</strong> y construye productos digitales para el mercado
-            uruguayo. El producto está liderado por{' '}
+            Ahorrin lo desarrolla un pequeño equipo basado en Montevideo, dedicado a construir
+            productos digitales para el mercado uruguayo. El producto está liderado por{' '}
             <Link
-              href="/autor/federico-iglesias"
+              href="/autor/federico"
               className="text-primary hover:underline font-medium"
             >
-              Federico Iglesias
+              Federico
             </Link>
             , desarrollador full-stack con experiencia en startups SaaS, que también escribe la
             mayor parte del contenido del blog.
@@ -107,7 +106,7 @@ export default function SobreNosotrosPage() {
           </p>
         </section>
 
-        <section id="politica-editorial" className="mb-10 border border-border rounded-lg p-6 bg-muted/20">
+        <section id="politica-editorial" className="mb-10 bg-card border border-border rounded-lg p-6">
           <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-primary" />
             Política editorial
@@ -241,7 +240,7 @@ export default function SobreNosotrosPage() {
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: 'Ahorrin',
-              alternateName: 'Larson Labs',
+              alternateName: 'Ahorrin',
               url: 'https://www.ahorrin.app',
               logo: 'https://www.ahorrin.app/logo.svg',
               description:
@@ -249,8 +248,8 @@ export default function SobreNosotrosPage() {
               email: 'hola@ahorrin.app',
               founder: {
                 '@type': 'Person',
-                name: 'Federico Iglesias',
-                url: 'https://www.ahorrin.app/autor/federico-iglesias',
+                name: 'Federico',
+                url: 'https://www.ahorrin.app/autor/federico',
                 ...(sameAs.length ? { sameAs } : {}),
               },
               foundingLocation: {

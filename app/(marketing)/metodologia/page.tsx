@@ -86,7 +86,7 @@ export default function MetodologiaPage() {
             </li>
             <li>
               <strong>Redacción humana.</strong> El contenido lo escribe una persona del equipo,
-              en general Federico Iglesias, fundador de Ahorrin. Usamos asistentes de redacción
+              en general Federico, fundador de Ahorrin. Usamos asistentes de redacción
               para ortografía y estilo, pero no para inventar datos ni cálculos.
             </li>
             <li>

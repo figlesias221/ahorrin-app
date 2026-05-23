@@ -42,8 +42,8 @@ export function FounderStory() {
             <div className="pt-4 sm:pt-6 border-t border-border">
               <p className="text-muted-foreground text-xs sm:text-sm">
                 ¿Feedback o ayuda?{' '}
-                <a href="mailto:figlesias221@gmail.com" className="text-primary hover:underline font-medium">
-                  figlesias221@gmail.com
+                <a href="mailto:hola@ahorrin.app" className="text-primary hover:underline font-medium">
+                  hola@ahorrin.app
                 </a>
               </p>
             </div>

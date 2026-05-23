@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
       { source: '/scotiabank', destination: '/bancos-uruguay', permanent: true },
       { source: '/brou', destination: '/bancos-uruguay', permanent: true },
       { source: '/heritage', destination: '/bancos-uruguay', permanent: true },
+      { source: '/autor/federico-iglesias', destination: '/autor/federico', permanent: true },
     ];
   },
   webpack: (config) => {
