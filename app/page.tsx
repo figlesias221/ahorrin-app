@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { Navbar } from '@/components/marketing/navbar';
 import { ResponsiveLanding } from '@/components/marketing/responsive-landing';
 import { Footer } from '@/components/marketing/footer';
+import { getAllPostsMetadata } from '@/lib/mdx';
 
 export const metadata: Metadata = {
   alternates: {
@@ -297,7 +298,7 @@ export default async function Home() {
       />
       <main className="min-h-screen overflow-x-hidden">
         <Navbar />
-        <ResponsiveLanding />
+        <ResponsiveLanding latestPosts={getAllPostsMetadata().slice(0, 4)} />
         <Footer />
       </main>
     </>

@@ -51,13 +51,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  // Don't render context until mounted to prevent hydration issues
-  if (!mounted || !theme) {
-    return <>{children}</>;
-  }
-
+  // Always provide context so children server-render; default to light
+  // until the real preference loads on mount.
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme: theme ?? 'light', toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

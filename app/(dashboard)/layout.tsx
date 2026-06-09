@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Auth-gated, per-user pages: never prerender. Client hooks like
+// useSearchParams would otherwise fail static generation at build time.
+export const dynamic = 'force-dynamic';
+
 export default function DashboardLayout({
   children,
 }: {

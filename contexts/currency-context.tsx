@@ -121,11 +121,8 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Don't render until loaded to avoid hydration mismatch
-  if (!isLoaded) {
-    return null;
-  }
-
+  // Render immediately with deterministic defaults (UYU) so pages are
+  // server-rendered; user preferences are applied after the async load.
   return (
     <CurrencyContext.Provider value={{
       displayCurrency,
