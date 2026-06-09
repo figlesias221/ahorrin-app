@@ -14,12 +14,6 @@ const PROFILES: Record<string, Omit<CategoryProfile, 'name' | 'slug'>> = {
     intro:
       'Acá está todo lo que necesitás saber sobre impuestos uruguayos: tramos del IRPF, deducciones legales, cómo distinguir IRPF de IRAE, qué se grava con IVA, cuándo conviene monotributo, calendario de vencimientos DGI y guías paso a paso para presentar declaraciones jurídicas. Cada artículo se contrasta contra DGI, MEF y BPS antes de publicarse.',
   },
-  'impuestos-y-tramites': {
-    description:
-      'Trámites tributarios en Uruguay: declaraciones juradas, devoluciones, formularios, FONASA y trámites BPS.',
-    intro:
-      'Trámites tributarios concretos: cómo presentar la declaración jurada de IRPF online, cómo pedir devolución de IRPF y FONASA, qué formularios usás cuando, qué papelitos te pide BPS para registrar cargas familiares. Sin verseo: pasos reales, capturas, plazos.',
-  },
   'salarios-y-beneficios': {
     description:
       'Cómo se compone tu sueldo en Uruguay: liquidación, aguinaldo, salario vacacional, FONASA y descuentos.',
@@ -32,29 +26,11 @@ const PROFILES: Record<string, Omit<CategoryProfile, 'name' | 'slug'>> = {
     intro:
       'Inversión desde Uruguay sin marketing: qué bróker conviene (incluido IBKR), cómo abrir cuenta paso a paso, qué ETFs y fondos son accesibles, cuándo conviene UI vs dólares vs pesos, plazos fijos comparados, letras de regulación monetaria del BCU y rentabilidad real (con números) de comprar inmuebles para alquilar.',
   },
-  'inversion-y-ahorro': {
-    description:
-      'Inversión y ahorro para uruguayos: instrumentos accesibles, estrategias defensivas y errores comunes.',
-    intro:
-      'Cómo construir un colchón de ahorro y empezar a invertir desde Uruguay sin perder plata por desconocimiento. Fondo de emergencia, plazo fijo en UI, dólares, ETFs, brokers internacionales y errores típicos que hace la mayoría cuando pone los primeros pesos en algo que no sea la caja de ahorro.',
-  },
-  'ahorro-y-presupuesto': {
-    description:
-      'Presupuesto mensual y ahorro en Uruguay: regla 50/30/20, gastos hormiga, planificación con doble moneda.',
-    intro:
-      'Cómo armar un presupuesto que de verdad uses: la regla 50/30/20 adaptada a la realidad uruguaya, gastos hormiga que se vuelven miles de pesos al año, qué hacer cuando ganás en pesos pero pensás en dólares, y cómo planificar a 6 y 12 meses sin que la inflación te deje sin margen.',
-  },
   'jubilacion-y-ahorro': {
     description:
       'Jubilación en Uruguay: AFAP, sistema mixto BPS, comisiones, rendimientos y cómo elegir.',
     intro:
       'Sobre tu jubilación futura, sin mística: cómo funciona el sistema mixto uruguayo (BPS + AFAP), qué AFAP rinde más históricamente, cuánto cobran de comisión, cómo cambiar de AFAP y qué pasa con tu plata si cambia el régimen. Datos del BCU y BPS, no proyecciones marketineras.',
-  },
-  'finanzas-personales': {
-    description:
-      'Finanzas personales en Uruguay: organización, deuda, bancos, herramientas y decisiones cotidianas.',
-    intro:
-      'Lo que la educación formal en Uruguay no te enseña sobre tu plata: cómo organizar tus finanzas, cuándo pedir un préstamo y cuándo no, cómo elegir banco, qué herramientas usar y cómo no caer en las trampas más comunes (cuotas eternas en tarjeta, préstamos con CFT alto, gastos hormiga).',
   },
   'educacion-financiera': {
     description:
@@ -67,18 +43,6 @@ const PROFILES: Record<string, Omit<CategoryProfile, 'name' | 'slug'>> = {
       'Bancos uruguayos comparados: BBVA, Itaú, Scotia, BROU, Santander, Heritage, prepagas y tarjetas.',
     intro:
       'Comparativas honestas de los bancos y tarjetas en Uruguay: qué banco conviene según uso, cómo se diferencian las tarjetas de crédito en CFT real (no la "tasa" que muestran), cashback efectivo de OCA Blue, Prex, MiDinero y otras prepagas, y cuándo conviene cambiar de banco.',
-  },
-  'tarjetas-de-credito': {
-    description:
-      'Tarjetas de crédito en Uruguay: comparativas, cashback, CFT real, prepagas y trampas a evitar.',
-    intro:
-      'Las tarjetas de crédito en Uruguay tienen las tasas más altas de la región y los marketing más confusos. Acá tenés comparativas con CFT real (no la nominal), cuáles devuelven cashback que vale la pena, cuándo una prepaga te conviene más que una tarjeta tradicional y la trampa de las cuotas con financiación.',
-  },
-  'creditos-y-prestamos': {
-    description:
-      'Préstamos personales e hipotecarios en Uruguay: tasas reales, CFT, comparativas y cuándo conviene.',
-    intro:
-      'Antes de firmar un préstamo en Uruguay, necesitás entender el CFT real (no la tasa nominal que te tiran) y comparar entre bancos y financieras. Acá tenés tasas vigentes, cuándo conviene un préstamo personal, cuándo un hipotecario en UI o UR, y qué cláusulas leer antes de aceptar.',
   },
   'vivienda-y-creditos': {
     description:
