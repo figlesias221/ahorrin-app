@@ -31,6 +31,8 @@ const SITEMAP_URL = `https://${HOST}/sitemap.xml`;
 const ARGS = process.argv.slice(2);
 const ONLY_SITEMAP = ARGS.includes('--only-sitemap');
 const INSPECT_ALL = ARGS.includes('--inspect-all');
+// INSPECT_URLS="https://...,https://..." inspecciona solo esas URLs
+const INSPECT_URLS = process.env.INSPECT_URLS?.split(',').map((u) => u.trim()).filter(Boolean);
 
 function newUrls(): string[] {
   // Las 12 páginas más nuevas a verificar manualmente.
@@ -107,7 +109,7 @@ async function main() {
   if (ONLY_SITEMAP) return;
 
   // --- 3. URL Inspection -------------------------------------------------
-  const targets = INSPECT_ALL ? allUrls() : newUrls();
+  const targets = INSPECT_URLS?.length ? INSPECT_URLS : INSPECT_ALL ? allUrls() : newUrls();
   console.log(`\n🔬 Inspeccionando ${targets.length} URLs (read-only) ...\n`);
 
   const results: Array<{ url: string; verdict: string; coverage: string; lastCrawl: string }> = [];
