@@ -5,7 +5,7 @@ import { ArrowLeft, Calendar, Clock, User, ChevronRight, ShieldCheck } from 'luc
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getAllPostSlugs, getPostBySlug, getRelatedPosts, categoryToSlug } from '@/lib/mdx';
 import { getAuthorByName } from '@/lib/authors';
-import { ComparisonTable, CalloutBox } from '@/components/mdx';
+import { ComparisonTable, CalloutBox, AffiliateCTA } from '@/components/mdx';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -16,6 +16,7 @@ import { SourcesBlock } from '@/components/blog/sources-block';
 const mdxComponents = {
   ComparisonTable,
   CalloutBox,
+  AffiliateCTA,
   h1: (props: any) => <h1 className="text-4xl font-bold mt-8 mb-4 text-foreground" {...props} />,
   h2: (props: any) => <h2 className="text-3xl font-bold mt-8 mb-4 text-foreground" {...props} />,
   h3: (props: any) => <h3 className="text-2xl font-semibold mt-6 mb-3 text-foreground/90" {...props} />,
