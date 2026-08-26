@@ -1,11 +1,12 @@
 import { AdSense } from './adsense';
 
-// Ad slots - AdSense auto-creates these when you enable "Auto ads"
-// Or create manual ad units at: https://www.google.com/adsense → Ads → By ad unit
-// For now, using a single auto slot works fine - AdSense handles sizing
-const AD_SLOT = process.env.NEXT_PUBLIC_ADSENSE_AD_SLOT || '1234567890';
+// Sin un slot real configurado no renderizamos nada: un <ins> vacío reserva
+// espacio muerto arriba del artículo y sirve un slot inexistente al crawler.
+const AD_SLOT = process.env.NEXT_PUBLIC_ADSENSE_AD_SLOT;
 
 export function BlogAdTop() {
+  if (!AD_SLOT) return null;
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6">
       <AdSense
@@ -18,6 +19,8 @@ export function BlogAdTop() {
 }
 
 export function BlogAdSidebar() {
+  if (!AD_SLOT) return null;
+
   return (
     <AdSense
       slot={AD_SLOT}
@@ -28,6 +31,8 @@ export function BlogAdSidebar() {
 }
 
 export function BlogAdInContent() {
+  if (!AD_SLOT) return null;
+
   return (
     <div className="my-8">
       <AdSense
@@ -40,6 +45,8 @@ export function BlogAdInContent() {
 }
 
 export function BlogAdBottom() {
+  if (!AD_SLOT) return null;
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-6">
       <AdSense
